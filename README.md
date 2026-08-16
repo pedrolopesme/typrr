@@ -33,6 +33,10 @@ make serve PORT=3000
 make stop
 ```
 
+## Live Demo
+
+**https://pedrolopesme.github.io/typrr/**
+
 ## Themes
 
 | Theme | Stages | Focus |
