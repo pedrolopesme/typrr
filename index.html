@@ -1,0 +1,2561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typrr — Master Touch Typing</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #282a36;
+  --bg-card: #44475a;
+  --bg-card-hover: #4d5070;
+  --bg-input: #21222c;
+  --border: #3a3d50;
+  --text: #f8f8f2;
+  --text-dim: #8494cc;
+  --text-muted: #7c88ad;
+  --accent: #d4b8fd;
+  --accent-glow: rgba(212, 184, 253, 0.15);
+  --accent-light: #e8daff;
+  --green: #50fa7b;
+  --green-dim: rgba(80, 250, 123, 0.12);
+  --red: #ff5555;
+  --red-dim: rgba(255, 85, 85, 0.12);
+  --orange: #ffb86c;
+  --orange-dim: rgba(255, 184, 108, 0.12);
+  --blue: #8be9fd;
+  --blue-dim: rgba(139, 233, 253, 0.12);
+  --gold: #f1fa8c;
+  --pink: #ff79c6;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
+  --font: 'Georgia', 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cdc4b7; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #b5aa9a; }
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, #343746, var(--bg-card));
+}
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: var(--font-sans);
+  letter-spacing: -0.5px;
+  color: var(--accent);
+}
+.logo-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+/* User Stats in Sidebar */
+.user-stats {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.stat-mini {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.stat-mini-value { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+.stat-mini-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* XP Bar */
+.xp-bar-wrap {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.xp-bar-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.xp-level { font-size: 0.8rem; font-weight: 600; color: var(--gold); font-family: var(--font-sans); }
+.xp-count { font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-sans); }
+.xp-bar-track {
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* Nav */
+.nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.nav-section-title {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  padding: 12px 20px 6px;
+  font-weight: 600;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+}
+.nav-item:hover { background: var(--bg-card-hover); color: var(--text); }
+.nav-item.active {
+  background: var(--bg-card-hover);
+  color: var(--text);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+.nav-item.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+.nav-item-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.nav-item.completed .nav-item-icon { background: var(--green-dim); color: var(--green); }
+.nav-item.current .nav-item-icon { background: var(--accent-glow); color: var(--accent-light); }
+.nav-item.locked .nav-item-icon { background: var(--bg); color: var(--text-muted); }
+.nav-item-text { flex: 1; line-height: 1.3; }
+.nav-item-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+.badge-test { background: var(--orange-dim); color: var(--orange); }
+.badge-new { background: var(--blue-dim); color: var(--blue); }
+.nav-stars { font-size: 0.65rem; color: var(--gold); letter-spacing: 1px; }
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+.btn-sidebar {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-dim);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+}
+.btn-sidebar:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Main Content */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.main-header {
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.breadcrumb { font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-sans); }
+.breadcrumb span { color: var(--text); font-weight: 600; }
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--orange-dim);
+  color: var(--orange);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid #f0dcc8;
+  font-family: var(--font-sans);
+}
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: var(--font-sans);
+}
+
+/* Content Area */
+.content { flex: 1; padding: 32px; max-width: 960px; margin: 0 auto; width: 100%; }
+
+/* Dashboard */
+.dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+.dashboard-subtitle { color: var(--text-dim); margin-bottom: 28px; font-size: 0.9rem; font-family: var(--font-sans); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-card-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.stat-card-value { font-size: 1.6rem; font-weight: 700; color: var(--text); font-family: var(--font-sans); }
+.stat-card-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+/* Stage Cards */
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stage-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.stage-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.stage-card.locked { opacity: 0.5; cursor: not-allowed; }
+.stage-card.locked:hover { transform: none; border-color: var(--border); box-shadow: none; }
+.stage-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.stage-card-number {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+}
+.stage-card.completed .stage-card-number { background: var(--green-dim); color: var(--green); }
+.stage-card-title { font-weight: 600; font-size: 1rem; font-family: var(--font-sans); }
+.stage-card-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; font-family: var(--font-sans); }
+.stage-progress-bar {
+  height: 4px;
+  background: var(--bg);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.stage-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 2px;
+  transition: width 0.5s;
+}
+.stage-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); }
+.stage-card .lock-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: var(--text-muted);
+  display: none;
+}
+.stage-card.locked .lock-icon { display: block; }
+.stage-card.locked .stage-card-header,
+.stage-card.locked .stage-card-desc,
+.stage-card.locked .stage-progress-bar,
+.stage-card.locked .stage-meta { visibility: hidden; }
+
+/* Lesson View */
+.lesson-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.lesson-title { font-size: 1.3rem; font-weight: 700; font-family: var(--font-sans); }
+.lesson-timer {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--accent);
+  background: var(--bg-card);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Live Stats */
+.live-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.live-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  flex: 1;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.live-stat-value { font-size: 1.3rem; font-weight: 700; font-family: var(--mono); }
+.live-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; font-family: var(--font-sans); }
+.live-stat.wpm .live-stat-value { color: var(--accent); }
+.live-stat.accuracy .live-stat-value { color: var(--green); }
+.live-stat.errors .live-stat-value { color: var(--red); }
+
+/* Typing Area */
+.typing-area {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 24px;
+  min-height: 200px;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(44,36,24,0.03);
+}
+.typing-text {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  line-height: 2;
+  letter-spacing: 0.3px;
+  user-select: none;
+  word-break: break-word;
+  color: var(--text);
+}
+.typing-text .char { position: relative; transition: color 0.05s; }
+.typing-text .char.correct { color: var(--green); }
+.typing-text .char.incorrect { color: var(--red); background: var(--red-dim); border-radius: 2px; }
+.typing-text .char.current {
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  animation: blink 1s ease-in-out infinite;
+}
+.typing-text .char.pending { color: var(--text-muted); }
+@keyframes blink { 0%, 100% { border-bottom-color: var(--accent); } 50% { border-bottom-color: transparent; } }
+.typing-area.active .typing-text .char.current { animation: none; border-bottom-color: var(--accent); }
+
+/* Focus prompt */
+.focus-prompt {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30,26,21,0.92);
+  border-radius: var(--radius);
+  z-index: 10;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.focus-prompt-text {
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+}
+.focus-prompt-text kbd {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(44,36,24,0.06);
+}
+
+/* Virtual Keyboard */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.kb-row { display: flex; gap: 4px; }
+.kb-key {
+  min-width: 44px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  background: var(--bg);
+  transition: all 0.1s;
+  text-transform: uppercase;
+}
+.kb-key.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+.kb-key.correct {
+  background: var(--green-dim);
+  border-color: var(--green);
+  color: var(--green);
+}
+.kb-key.wrong {
+  background: var(--red-dim);
+  border-color: var(--red);
+  color: var(--red);
+}
+.kb-key.space { min-width: 280px; }
+.kb-key.wide { min-width: 70px; font-size: 0.7rem; }
+.kb-key.wider { min-width: 90px; font-size: 0.7rem; }
+
+/* Finger color coding */
+.kb-key[data-finger="l5"] { border-left: 3px solid #ff6e6e; }
+.kb-key[data-finger="l4"] { border-left: 3px solid #ffb86c; }
+.kb-key[data-finger="l3"] { border-left: 3px solid #50fa7b; }
+.kb-key[data-finger="l2"] { border-left: 3px solid #8be9fd; }
+.kb-key[data-finger="r2"] { border-left: 3px solid #d4b8fd; }
+.kb-key[data-finger="r3"] { border-left: 3px solid #ff79c6; }
+.kb-key[data-finger="r4"] { border-left: 3px solid #f1fa8c; }
+.kb-key[data-finger="r5"] { border-left: 3px solid #ff5555; }
+.kb-key[data-finger="thumb"] { border-left: 3px solid var(--text-muted); }
+
+.kb-key.finger-highlight {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent-light);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Finger guide */
+.finger-guide {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.finger-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+}
+.finger-dot {
+  width: 14px; height: 14px;
+  border-radius: 4px;
+  border: 2px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
+}
+
+/* Hand diagram */
+.hand-diagram {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 12px 20px 8px;
+  margin-bottom: 8px;
+}
+.hand {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+}
+.finger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.finger-bar {
+  width: 18px;
+  border-radius: 6px 6px 3px 3px;
+  transition: all 0.15s;
+  opacity: 0.5;
+}
+.finger-bar.active {
+  opacity: 1;
+  transform: scaleY(1.15);
+  box-shadow: 0 0 8px currentColor;
+}
+.finger-label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Combo counter */
+.combo-counter {
+  position: absolute;
+  top: -32px;
+  right: 12px;
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+.combo-1-text { color: var(--text-dim); font-size: 1rem; }
+.combo-5-text { color: var(--accent); font-size: 1.2rem; }
+.combo-10-text { color: var(--green); font-size: 1.4rem; text-shadow: 0 0 10px var(--green-dim); }
+.combo-20-text { color: var(--gold); font-size: 1.6rem; text-shadow: 0 0 16px rgba(241,250,140,0.3); }
+.combo-50-text { color: var(--pink); font-size: 1.8rem; text-shadow: 0 0 20px rgba(255,121,198,0.4); animation: comboPulse 0.4s ease infinite alternate; }
+
+@keyframes comboPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+
+/* Keyboard combo glow levels */
+.keyboard {
+  position: relative;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.keyboard.combo-1 {
+  box-shadow: 0 0 8px rgba(212,184,253,0.08);
+}
+.keyboard.combo-5 {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(212,184,253,0.15), inset 0 0 30px rgba(212,184,253,0.04);
+}
+.keyboard.combo-10 {
+  border-color: var(--green);
+  box-shadow: 0 0 30px rgba(80,250,123,0.18), inset 0 0 40px rgba(80,250,123,0.05);
+}
+.keyboard.combo-20 {
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(241,250,140,0.15), inset 0 0 50px rgba(241,250,140,0.04);
+  animation: keyboardGlow 1.5s ease-in-out infinite alternate;
+}
+.keyboard.combo-50 {
+  border-color: var(--pink);
+  box-shadow: 0 0 60px rgba(255,121,198,0.2), inset 0 0 60px rgba(255,121,198,0.05);
+  animation: keyboardGlowIntense 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes keyboardGlow {
+  from { box-shadow: 0 0 30px rgba(241,250,140,0.1), inset 0 0 40px rgba(241,250,140,0.03); }
+  to { box-shadow: 0 0 50px rgba(241,250,140,0.2), inset 0 0 60px rgba(241,250,140,0.06); }
+}
+@keyframes keyboardGlowIntense {
+  from { box-shadow: 0 0 50px rgba(255,121,198,0.15), inset 0 0 50px rgba(255,121,198,0.04); }
+  to { box-shadow: 0 0 80px rgba(255,121,198,0.3), inset 0 0 70px rgba(255,121,198,0.08); }
+}
+
+/* Results Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44,36,24,0.3);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+  box-shadow: var(--shadow-lg);
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal-icon { font-size: 3rem; margin-bottom: 16px; }
+.modal-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; font-family: var(--font-sans); }
+.modal-subtitle { color: var(--text-dim); margin-bottom: 24px; font-size: 0.9rem; font-family: var(--font-sans); }
+.modal-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.modal-stat {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 16px 12px;
+  border: 1px solid var(--border);
+}
+.modal-stat-value { font-size: 1.3rem; font-weight: 700; font-family: var(--mono); }
+.modal-stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; font-family: var(--font-sans); }
+.modal-stars { font-size: 2rem; margin-bottom: 20px; letter-spacing: 4px; }
+.modal-xp {
+  background: var(--orange-dim);
+  color: var(--orange);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+.modal-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.modal-kbd {
+  display: inline-block;
+  background: rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-right: 4px;
+  min-width: 18px;
+  text-align: center;
+}
+.btn-primary .modal-kbd { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.15); }
+.btn {
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+}
+.btn-primary { background: var(--accent); color: #282a36; font-weight: 700; }
+.btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,184,253,0.25); }
+.btn-secondary { background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+
+/* Badges */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.badge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.badge-card.earned { border-color: var(--gold); background: var(--orange-dim); }
+.badge-card.locked { opacity: 0.4; }
+.badge-card-icon { font-size: 2rem; margin-bottom: 8px; }
+.badge-card-name { font-size: 0.8rem; font-weight: 600; }
+.badge-card-desc { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
+
+/* History */
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+.history-date { font-size: 0.75rem; color: var(--text-muted); min-width: 80px; }
+.history-lesson { flex: 1; font-size: 0.85rem; }
+.history-wpm { font-family: var(--mono); font-weight: 600; color: var(--accent-light); min-width: 60px; }
+.history-accuracy { font-family: var(--mono); font-weight: 600; color: var(--green); min-width: 60px; }
+.history-stars { color: var(--gold); min-width: 50px; }
+
+/* Chart */
+.chart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.chart-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; font-family: var(--font-sans); }
+.chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 120px; }
+.chart-bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--accent), var(--accent-light));
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: height 0.5s ease;
+  position: relative;
+}
+.chart-bar:hover { opacity: 0.8; }
+.chart-bar-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Countdown */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30,26,21,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.countdown-overlay.show { opacity: 1; pointer-events: all; }
+.countdown-number {
+  font-size: 8rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  animation: countPulse 0.5s ease;
+}
+@keyframes countPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hamburger { display: block; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .live-stats { flex-wrap: wrap; }
+  .live-stat { min-width: calc(50% - 8px); }
+  .content { padding: 20px 16px; }
+  .typing-text { font-size: 1.1rem; }
+  .kb-key { min-width: 32px; height: 34px; font-size: 0.7rem; }
+  .kb-key.space { min-width: 180px; }
+}
+
+/* Hidden input for capturing */
+#hiddenInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Tab Navigation */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+}
+.tab-btn.active { background: var(--accent); color: #282a36; font-weight: 700; }
+.tab-btn:hover:not(.active) { color: var(--text); }
+
+/* Achievement popup */
+.achievement-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 3000;
+  box-shadow: 0 4px 20px rgba(201,154,46,0.15);
+  transform: translateX(120%);
+  transition: transform 0.4s ease;
+}
+.achievement-popup.show { transform: translateX(0); }
+.achievement-popup-icon { font-size: 2rem; }
+.achievement-popup-text { font-size: 0.85rem; font-family: var(--font-sans); }
+.achievement-popup-name { font-weight: 700; color: var(--gold); }
+.achievement-popup-desc { color: var(--text-dim); font-size: 0.75rem; margin-top: 2px; }
+
+/* Theme Selector */
+.theme-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px 0;
+  background: var(--bg);
+}
+.theme-tab {
+  flex: 1;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.15s;
+  background: transparent;
+  font-family: var(--font-sans);
+}
+.theme-tab:hover { color: var(--text-dim); background: var(--bg-card-hover); }
+.theme-tab.active {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--bg-card);
+  position: relative;
+}
+.theme-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0; right: 0;
+  height: 2px;
+  background: var(--bg-card);
+}
+.theme-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.theme-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.theme-card-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.theme-card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; font-family: var(--font-sans); }
+.theme-card-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; font-family: var(--font-sans); }
+.theme-card-meta { display: flex; gap: 16px; font-size: 0.75rem; color: var(--text-muted); }
+.theme-card-progress {
+  height: 4px;
+  background: var(--bg);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+.theme-card-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 2px;
+  transition: width 0.5s;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">Typrr</div>
+      <div class="logo-sub">Touch Typing Mastery</div>
+    </div>
+    <div class="user-stats">
+      <div class="stat-mini">
+        <div class="stat-mini-value" id="sideWpm">0</div>
+        <div class="stat-mini-label">Best WPM</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-value" id="sideAccuracy">0%</div>
+        <div class="stat-mini-label">Avg Accuracy</div>
+      </div>
+    </div>
+    <div class="xp-bar-wrap">
+      <div class="xp-bar-header">
+        <span class="xp-level" id="xpLevel">Level 1</span>
+        <span class="xp-count" id="xpCount">0 / 100 XP</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xpBarFill"></div>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar" onclick="App.showDashboard()">Dashboard</button>
+      <button class="btn-sidebar" onclick="App.showPerformance()">Stats</button>
+      <button class="btn-sidebar" onclick="App.showBadges()">Badges</button>
+      <button class="btn-sidebar" onclick="App.showHistory()">History</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="main-header">
+      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <div class="breadcrumb" id="breadcrumb">Typrr — <span>Dashboard</span></div>
+      <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span> day streak</div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- Countdown -->
+<div class="countdown-overlay" id="countdownOverlay">
+  <div class="countdown-number" id="countdownNumber">3</div>
+</div>
+
+<!-- Achievement Popup -->
+<div class="achievement-popup" id="achievementPopup">
+  <div class="achievement-popup-icon" id="achievementIcon">🏆</div>
+  <div>
+    <div class="achievement-popup-name" id="achievementName">Achievement!</div>
+    <div class="achievement-popup-desc" id="achievementDesc">Unlocked</div>
+  </div>
+</div>
+
+<!-- Hidden input for mobile -->
+<input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+<script>
+// ═══════════════════════════════════════════
+// CONTENT DATABASE
+// ═══════════════════════════════════════════
+const THEMES = {
+  general: {
+    id: "general", name: "General Typing", icon: "⌨️",
+    desc: "Master touch typing from zero to professional speed",
+    stages: [
+      {
+        id: 1, title: "Home Row Basics", desc: "Master the foundation: a s d f j k l ;",
+        icon: "🏠", keys: "asdfjkl;",
+        lessons: [
+          { id: "1a", title: "Left Hand Home", text: "a sad lad fad flash ask flask fall salaad all salad dad flags shall half flask" },
+          { id: "1b", title: "Right Hand Home", text: "jail kala kill look jolly jell kohl all jolly lads fall jail all shall look" },
+          { id: "1c", title: "Both Hands", text: "a lad shall ask all fall kids flash all flags ask dad jail lads fall glad hall" },
+          { id: "1d", title: "Home Row Words", text: "all ask sad glad fall shall flash flags salad flask dad jail lads halls kdash" },
+          { id: "1e", title: "Speed Drill", text: "ask all fall sad lad glad flash shall dad jail flags salad flask halls kdash" },
+        ],
+        test: { title: "Stage 1 Test", text: "a sad lad shall ask all fall glad flash flags dad jail lads salad halls flask a glad flash shall ask all lads fall dad jail flags salad sad lad halls", minWpm: 15, minAccuracy: 85 }
+      },
+      {
+        id: 2, title: "Home Row + E/I", desc: "Add e and i to your home row muscle memory",
+        icon: "✋", keys: "asdfjkl;ei",
+        lessons: [
+          { id: "2a", title: "Adding E", text: "ease seal deal fake lake jade kale idle alike lead idea alike sealed leaked" },
+          { id: "2b", title: "Adding I", text: "is if ill kid idle idea alike skill alike jail filed idea alike side kill" },
+          { id: "2c", title: "E and I Mixed", text: "idea alike sealed skilled ideal field alike side file idea jade kale idle" },
+          { id: "2d", title: "Word Flow", text: "idea alike sealed skilled ideal field alike side file jade kale idle ease" },
+          { id: "2e", title: "Speed Challenge", text: "a skilled idea is alike an ideal field file sealed jade ease deal kill" },
+        ],
+        test: { title: "Stage 2 Test", text: "idea alike sealed skilled ideal field side file jade kale idle ease is if ill kid alike deal skill jail idea alike sealed ease filed idea deal kill", minWpm: 18, minAccuracy: 85 }
+      },
+      {
+        id: 3, title: "Top Row", desc: "Reach up: q w e r t y u i o p",
+        icon: "⬆️", keys: "qwertyuiop",
+        lessons: [
+          { id: "3a", title: "Right Top", text: "type your power portray pouty ploy proper trip troop erupt typewriter poetry" },
+          { id: "3b", title: "Left Top", text: "quit quest quote quite quilt quiet require queen queer quick quote quite" },
+          { id: "3c", title: "Top Row Flow", text: "pretty quiet requite equipt typewriter portrait poetry quartet turquoise" },
+          { id: "3d", title: "Top + Home", text: "the quick brown fox jumps over the lazy dog a type of perfect word quest" },
+          { id: "3e", title: "Speed Run", text: "perfect quality requires true power your effort quite trophy uproot proper" },
+        ],
+        test: { title: "Stage 3 Test", text: "the quick brown fox jumps over a lazy dog your type of perfect quiet power requires true effort quality uproot pretty proper poetry quartet trophy", minWpm: 20, minAccuracy: 85 }
+      },
+      {
+        id: 4, title: "Bottom Row", desc: "Reach down: z x c v b n m",
+        icon: "⬇️", keys: "zxcvbnm",
+        lessons: [
+          { id: "4a", title: "Left Bottom", text: "zany zinc civil mix fix box coax cancel exceed vexing maximize complex" },
+          { id: "4b", title: "Right Bottom", text: "name numb nob vine banner vanilla banana manner common money connive" },
+          { id: "4c", title: "Bottom Flow", text: "exam venom zinc calm cabin vexing combine complex bamboo common banana" },
+          { id: "4d", title: "All Rows", text: "the quick brown fox jumps over a lazy dog maximize complex bamboo cabin" },
+          { id: "4e", title: "Speed Test", text: "amazing complex bamboo combine vexing cancel exceed banana common civic" },
+        ],
+        test: { title: "Stage 4 Test", text: "amazing complex bamboo combine vexing cancel exceed banana common civic venom zinc calm cabin mix fix name numb vine banner vanilla money", minWpm: 22, minAccuracy: 85 }
+      },
+      {
+        id: 5, title: "Common Words", desc: "The 100 most frequent English words at speed",
+        icon: "📝", keys: "common",
+        lessons: [
+          { id: "5a", title: "Top 30 Words", text: "the of and to a in is it you that he was for on are with his they at be this" },
+          { id: "5b", title: "Next 30 Words", text: "have from or one had by word but not what all were we when your can said there" },
+          { id: "5c", title: "Next 30 Words", text: "use an each which she do how their if will up other about out many then them" },
+          { id: "5d", title: "Phrases", text: "there is no one who does not know that the truth of the matter is quite clear" },
+          { id: "5e", title: "Speed Flow", text: "the quick brown fox jumps over the lazy dog and every word in between was found" },
+        ],
+        test: { title: "Stage 5 Test", text: "the of and to a in is it you that he was for on are with his they at be this have from or one had by word but not what all were we when your can said", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 6, title: "Short Sentences", desc: "Real English sentences with punctuation",
+        icon: "💬", keys: "sentences",
+        lessons: [
+          { id: "6a", title: "Simple Sentences", text: "The cat sat on the mat. I like to read books. She runs every morning. We love music." },
+          { id: "6b", title: "Questions", text: "Where did you go? What time is it? How are you today? Can you help me?" },
+          { id: "6c", title: "Mixed Punctuation", text: "Hello, world! How are you? I am fine, thanks. Let us go; it is late." },
+          { id: "6d", title: "Quotation", text: "She said, \"Hello there!\" He replied, \"I am well.\" They asked, \"Ready?\"" },
+          { id: "6e", title: "Speed Sentences", text: "Practice makes perfect. Every day is a new chance. Keep going; never stop trying." },
+        ],
+        test: { title: "Stage 6 Test", text: "The cat sat on the mat. Where did you go? Hello, world! She said, \"Hello!\" Practice makes perfect. Every day is a new chance. Keep going; never stop.", minWpm: 30, minAccuracy: 88 }
+      },
+      {
+        id: 7, title: "Numbers & Symbols", desc: "Master the number row and common symbols",
+        icon: "🔢", keys: "numbers",
+        lessons: [
+          { id: "7a", title: "Numbers", text: "123 456 789 1024 2025 9999 0 100 50 42 7 13 21 34 55 89 144 233 377 610" },
+          { id: "7b", title: "Mixed Numbers", text: "Room 101 on floor 3 at 4pm in 2025 with 50 people and 7 speakers" },
+          { id: "7c", title: "Email Format", text: "user@mail.com name@site.org info@company.net admin@domain.io help@type.dev" },
+          { id: "7d", title: "Code Snippets", text: "let x = 42; const y = 'hello'; if (x > 0) { return true; } for (let i = 0;)" },
+          { id: "7e", title: "Symbols", text: "100% complete @ 5pm #day7 & more! price is $50 + tax (about 10%) = $55" },
+        ],
+        test: { title: "Stage 7 Test", text: "Room 101 on floor 3 at 4pm in 2025 with 50 people. user@mail.com sent 100% of the $50 payment (about 10% tax) = $55 total on 07/15/2025", minWpm: 25, minAccuracy: 85 }
+      },
+      {
+        id: 8, title: "Paragraphs", desc: "Full paragraph typing with mixed content",
+        icon: "📖", keys: "paragraphs",
+        lessons: [
+          { id: "8a", title: "Nature", text: "The sun rose slowly over the mountain peaks, painting the sky in shades of orange and pink. Birds began their morning songs, filling the cool air with melody." },
+          { id: "8b", title: "Technology", text: "Computers have changed the way we live and work. Every day, millions of people type on keyboards to communicate, create, and solve problems around the world." },
+          { id: "8c", title: "History", text: "The first typewriter was invented in the 1860s. Since then, typing has become one of the most important skills in the modern workplace and education." },
+          { id: "8d", title: "Science", text: "Water covers about seventy-one percent of the Earth's surface. The human body is made up of roughly sixty percent water, making it essential for all life." },
+          { id: "8e", title: "Daily Life", text: "Every morning, she wakes up at six, makes coffee, reads the news on her phone, and then sits down at her desk to start typing her daily journal entry." },
+        ],
+        test: { title: "Stage 8 Test", text: "The art of typing quickly and accurately is a valuable skill in today's digital world. Practice every day, and you will see improvement over time. Remember to sit up straight, keep your fingers on the home row, and look at the screen, not the keyboard.", minWpm: 32, minAccuracy: 90 }
+      },
+      {
+        id: 9, title: "Speed Building", desc: "Push your WPM to the next level",
+        icon: "⚡", keys: "speed",
+        lessons: [
+          { id: "9a", title: "Rhythm Drill", text: "the and for are but not you all can had her was one our out day has his how its may new now old see way who boy did get him let say she too use" },
+          { id: "9b", title: "Fast Phrases", text: "as a matter of fact in the long run at the end of the day on the other hand it goes without saying for the time being" },
+          { id: "9c", title: "Tongue Twisters", text: "she sells sea shells by the sea shore peter piper picked a peck of pickled peppers how much wood would a woodchuck chuck" },
+          { id: "9d", title: "Speed Sentences", text: "quickly jump over the lazy dog before the fox catches you running through the field of golden wheat under the bright blue sky" },
+          { id: "9e", title: "Maximum Speed", text: "every great achievement begins with the decision to try and the courage to fail and learn from those failures along the way" },
+        ],
+        test: { title: "Stage 9 Test", text: "the art of speed typing requires constant practice and dedication. every day you should spend at least five minutes improving your skills. remember that accuracy is more important than speed at first. once you can type without looking at the keyboard, speed will come naturally.", minWpm: 38, minAccuracy: 90 }
+      },
+      {
+        id: 10, title: "Mastery", desc: "The final challenge — type like a professional",
+        icon: "👑", keys: "mastery",
+        lessons: [
+          { id: "10a", title: "Business Email", text: "Dear Team, I hope this message finds you well. I wanted to follow up on our discussion from last week regarding the quarterly report and next steps." },
+          { id: "10b", title: "Technical Writing", text: "The implementation follows a modular architecture pattern. Each component is designed to be independently testable and deployable, reducing coupling between services." },
+          { id: "10c", title: "Creative Writing", text: "The old lighthouse stood at the edge of the cliff, its beam cutting through the thick fog that rolled in from the sea each evening without fail." },
+          { id: "10d", title: "News Article", text: "Global leaders gathered at the summit to discuss climate change, economic growth, and digital transformation. The talks are expected to continue through the week." },
+          { id: "10e", title: "Final Challenge", text: "Typing is not just about speed; it is about expressing your thoughts clearly and efficiently. With practice, your fingers will dance across the keyboard effortlessly." },
+        ],
+        test: { title: "Final Test — Mastery", text: "Congratulations on reaching the final stage. Typing is a fundamental skill that opens doors in the modern world. Whether you are writing code, composing emails, or creating content, your ability to type quickly and accurately will serve you well for the rest of your life. Keep practicing, stay curious, and never stop improving.", minWpm: 42, minAccuracy: 92 }
+      }
+    ]
+  },
+  go: {
+    id: "go", name: "Go Programming", icon: "🐹",
+    desc: "Build muscle memory for fluent Go development — types, error handling, concurrency",
+    stages: [
+      {
+        id: 1, title: "Go Keywords & Basics", desc: "Core Go keywords and simple declarations",
+        icon: "🔑",
+        lessons: [
+          { id: "1a", title: "Package & Import", text: "package main import fmt import os import io import net import http import math import strconv import strings" },
+          { id: "1b", title: "Var & Const", text: "var name string var age int var active bool const pi float64 const maxRetries int const timeout string" },
+          { id: "1c", title: "Short Declaration", text: "name := \"Alice\" age := 30 active := true count := 0 result := false items := 5" },
+          { id: "1d", title: "Basic Types", text: "string int int8 int16 int32 int64 uint float32 float64 bool byte rune error complex64 complex128" },
+          { id: "1e", title: "Keywords Mixed", text: "func return if else for range switch case default break continue go chan select defer fallthrough" },
+        ],
+        test: { title: "Go Basics Test", text: "package main import fmt var count int name := \"Go\" const version = 2 func main() { fmt.Println(name, version) } return nil if err != nil { return err }", minWpm: 20, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Functions & Returns", desc: "Function signatures, multiple returns, named returns",
+        icon: "ƒ",
+        lessons: [
+          { id: "2a", title: "Simple Functions", text: "func add(a int, b int) int { return a + b } func greet(name string) string { return \"Hello \" + name }" },
+          { id: "2b", title: "Multiple Returns", text: "func divide(a, b float64) (float64, error) { if b == 0 { return 0, errors.New(\"division by zero\") }" },
+          { id: "2c", title: "Named Returns", text: "func swap(x, y string) (first string, second string) { first = y second = x return }" },
+          { id: "2d", title: "Variadic Functions", text: "func sum(nums ...int) int { total := 0 for _, n := range nums { total += n } return total }" },
+          { id: "2e", title: "Function Types", text: "type handler func(w http.ResponseWriter, r *http.Request) type callback func(data []byte) error" },
+        ],
+        test: { title: "Functions Test", text: "func process(name string, count int) (string, error) { if count < 0 { return \"\", errors.New(\"invalid count\") } result := fmt.Sprintf(\"%s: %d\", name, count) return result, nil }", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Control Flow", desc: "if/else, for, switch, and Go-specific patterns",
+        icon: "🔄",
+        lessons: [
+          { id: "3a", title: "If Else", text: "if err != nil { return err } if count > 0 { process(count) } else { log.Println(\"empty\") }" },
+          { id: "3b", title: "For Loops", text: "for i := 0; i < len(items); i++ { fmt.Println(items[i]) } for _, v := range data { total += v }" },
+          { id: "3c", title: "Switch", text: "switch status { case 200: return \"OK\" case 404: return \"Not Found\" case 500: return \"Server Error\" default: return \"Unknown\" }" },
+          { id: "3d", title: "Type Switch", text: "switch v := i.(type) { case string: fmt.Println(\"string:\", v) case int: fmt.Println(\"int:\", v) default: fmt.Println(\"other\") }" },
+          { id: "3e", title: "If With Init", text: "if err := validate(data); err != nil { return fmt.Errorf(\"validation failed: %w\", err) } if n, err := reader.Read(buf); err == nil { writer.Write(buf[:n]) }" },
+        ],
+        test: { title: "Control Flow Test", text: "for i, v := range items { if v == nil { continue } switch val := v.(type) { case string: result[i] = val case int: result[i] = strconv.Itoa(val) default: return fmt.Errorf(\"unsupported type at index %d\", i) } }", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 4, title: "Structs & Interfaces", desc: "Type definitions, methods, and interface satisfaction",
+        icon: "🧱",
+        lessons: [
+          { id: "4a", title: "Struct Definition", text: "type User struct { Name string Email string Age int Active bool CreatedAt time.Time }" },
+          { id: "4b", title: "Methods", text: "func (u *User) Validate() error { if u.Name == \"\" { return errors.New(\"name required\") } return nil }" },
+          { id: "4c", title: "Interfaces", text: "type Reader interface { Read(p []byte) (n int, err error) } type Writer interface { Write(p []byte) (n int, err error) }" },
+          { id: "4d", title: "Embedding", text: "type Admin struct { User Role string Permissions []string } type Server struct { http.Handler addr string }" },
+          { id: "4e", title: "Constructor Pattern", text: "func NewUser(name string, email string) *User { return &User{Name: name, Email: email, CreatedAt: time.Now()} }" },
+        ],
+        test: { title: "Structs Test", text: "type Service struct { name string client *http.Client timeout time.Duration } func NewService(name string) *Service { return &Service{name: name, client: &http.Client{}, timeout: 30 * time.Second} } func (s *Service) Name() string { return s.name }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 5, title: "Error Handling", desc: "Go's signature error pattern — if err != nil",
+        icon: "⚠️",
+        lessons: [
+          { id: "5a", title: "Basic Error Check", text: "result, err := doSomething() if err != nil { log.Printf(\"error: %v\", err) return nil, err }" },
+          { id: "5b", title: "Error Wrapping", text: "if err := process(data); err != nil { return fmt.Errorf(\"processing %s: %w\", name, err) }" },
+          { id: "5c", title: "Custom Errors", text: "type NotFoundError struct { Resource string ID string } func (e *NotFoundError) Error() string { return fmt.Sprintf(\"%s with id %s not found\", e.Resource, e.ID) }" },
+          { id: "5d", title: "Sentinel Errors", text: "var ErrNotFound = errors.New(\"not found\") var ErrUnauthorized = errors.New(\"unauthorized\") if errors.Is(err, ErrNotFound) { return nil }" },
+          { id: "5e", title: "Errors Are Values", text: "err := first() if err == nil { err = second() } if err == nil { err = third() } return err" },
+        ],
+        test: { title: "Error Handling Test", text: "func loadConfig(path string) (*Config, error) { data, err := os.ReadFile(path) if err != nil { return nil, fmt.Errorf(\"reading config %s: %w\", path, err) } var cfg Config if err := json.Unmarshal(data, &cfg); err != nil { return nil, fmt.Errorf(\"parsing config: %w\", err) } return &cfg, nil }", minWpm: 30, minAccuracy: 90 }
+      },
+      {
+        id: 6, title: "Slices & Maps", desc: "Collection types and their idioms",
+        icon: "📦",
+        lessons: [
+          { id: "6a", title: "Slice Operations", text: "items := make([]string, 0, 100) items = append(items, \"first\") copy(dst, src) sliced := data[1:5]" },
+          { id: "6b", title: "Map Operations", text: "cache := make(map[string]int) cache[\"key\"] = 42 delete(cache, \"old\") val, ok := cache[\"key\"]" },
+          { id: "6c", title: "Range Over Collections", text: "for i, s := range slice { fmt.Printf(\"%d: %s\\n\", i, s) } for k, v := range m { total += v }" },
+          { id: "6d", title: "Sorting", text: "sort.Strings(names) sort.Ints(numbers) sort.Slice(users, func(i, j int) bool { return users[i].Age < users[j].Age })" },
+          { id: "6e", title: "Filter Pattern", text: "func filter(ss []string, f func(string) bool) []string { result := make([]string, 0) for _, s := range ss { if f(s) { result = append(result, s) } } return result }" },
+        ],
+        test: { title: "Slices & Maps Test", text: "func groupBy(items []Item) map[string][]Item { result := make(map[string][]Item) for _, item := range items { key := item.Category result[key] = append(result[key], item) } return result } counts := make(map[string]int) for _, w := range words { counts[w]++ }", minWpm: 30, minAccuracy: 90 }
+      },
+      {
+        id: 7, title: "Goroutines & Channels", desc: "Go's concurrency primitives",
+        icon: "🚀",
+        lessons: [
+          { id: "7a", title: "Goroutines", text: "go process(data) go func() { result := compute() ch <- result }() go handleConnection(conn)" },
+          { id: "7b", title: "Channels", text: "ch := make(chan int) ch <- 42 value := <-ch done := make(chan struct{}) close(ch)" },
+          { id: "7c", title: "Buffered Channels", text: "ch := make(chan Job, 100) results := make(chan Result, 10) sem := make(chan struct{}, maxConcurrent)" },
+          { id: "7d", title: "Select", text: "select { case msg := <-incoming: handle(msg) case <-timeout: return ErrTimeout case <-ctx.Done(): return ctx.Err() }" },
+          { id: "7e", title: "WaitGroup", text: "var wg sync.WaitGroup for _, url := range urls { wg.Add(1) go func(u string) { defer wg.Done() fetch(u) }(url) } wg.Wait()" },
+        ],
+        test: { title: "Concurrency Test", text: "func fanOut(ctx context.Context, jobs <-chan Job) <-chan Result { results := make(chan Result, 10) var wg sync.WaitGroup for i := 0; i < 5; i++ { wg.Add(1) go func() { defer wg.Done() for job := range jobs { select { case results <- process(job): case <-ctx.Done(): return } } }() } go func() { wg.Wait(); close(results) }() return results }", minWpm: 32, minAccuracy: 90 }
+      },
+      {
+        id: 8, title: "Real Go Code", desc: "Full idiomatic Go patterns — handlers, middleware, tests",
+        icon: "🐹",
+        lessons: [
+          { id: "8a", title: "HTTP Handler", text: "func handleUsers(w http.ResponseWriter, r *http.Request) { users, err := db.GetAll(r.Context()) if err != nil { http.Error(w, err.Error(), http.StatusInternalServerError) return } json.NewEncoder(w).Encode(users) }" },
+          { id: "8b", title: "Middleware", text: "func logging(next http.Handler) http.Handler { return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { start := time.Now() next.ServeHTTP(w, r) log.Printf(\"%s %s %v\", r.Method, r.URL.Path, time.Since(start)) }) }" },
+          { id: "8c", title: "Table-Driven Tests", text: "func TestAdd(t *testing.T) { tests := []struct{ a, b, want int }{{1, 2, 3}, {0, 0, 0}, {-1, 1, 0}} for _, tt := range tests { if got := Add(tt.a, tt.b); got != tt.want { t.Errorf(\"Add(%d, %d) = %d, want %d\", tt.a, tt.b, got, tt.want) } } }" },
+          { id: "8d", title: "Context Pattern", text: "func fetchData(ctx context.Context, url string) ([]byte, error) { req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil) if err != nil { return nil, err } resp, err := http.DefaultClient.Do(req) if err != nil { return nil, err } defer resp.Body.Close() return io.ReadAll(resp.Body) }" },
+          { id: "8e", title: "Full Program", text: "package main import (\"encoding/json\" \"log\" \"net/http\" \"os\") type Config struct { Port string Debug bool } func main() { cfg := Config{Port: \"8080\", Debug: false} mux := http.NewServeMux() mux.HandleFunc(\"/health\", func(w http.ResponseWriter, r *http.Request) { json.NewEncoder(w).Encode(map[string]string{\"status\": \"ok\"}) }) log.Fatal(http.ListenAndServe(\":\"+cfg.Port, mux)) }" },
+        ],
+        test: { title: "Go Mastery Test", text: "func processAll(ctx context.Context, items []Item) ([]Result, error) { ctx, cancel := context.WithTimeout(ctx, 30*time.Second) defer cancel() results := make([]Result, 0, len(items)) ch := make(chan Result, len(items)) for _, item := range items { go func(it Item) { ch <- process(ctx, it) }(item) } for range items { select { case r := <-ch: results = append(results, r) case <-ctx.Done(): return nil, ctx.Err() } } return results, nil }", minWpm: 35, minAccuracy: 92 }
+      }
+    ]
+  },
+  pt: {
+    id: "pt", name: "Português", icon: "🇧🇷",
+    desc: "Digite em português brasileiro — acentos, frases e textos reais",
+    stages: [
+      {
+        id: 1, title: "Acentos e Ç", desc: "Domine os acentos brasileiros no teclado",
+        icon: "Á",
+        lessons: [
+          { id: "1a", title: "Cedilha", text: "çaça açúcar coração lição ação direção proteção informação educação comunicação" },
+          { id: "1b", title: "Agudo e Crase", text: "café saúde lápis bebê sofá café área famíliaília fácil rápido pássaro" },
+          { id: "1c", title: "Circunflexo", text: "você também através café pêssegovocêês avô lâmpada câmera fenômenoônibus" },
+          { id: "1d", title: "Til e Nasais", text: "não são irmã pão maçã amanhã manhã ão composição organização informação" },
+          { id: "1e", title: "Tudo Misturado", text: "educação saúde coração você não são também fácil rápido informação proteção direção" },
+        ],
+        test: { title: "Acentos Teste", text: "a educação é a base para uma sociedade melhor. você também pode contribuir com ações simples no dia a dia. não é difícil quando há determinação e coração.", minWpm: 22, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Palavras Comuns", desc: "As 100 palavras mais usadas em português",
+        icon: "📝",
+        lessons: [
+          { id: "2a", title: "Top 30", text: "de que não para com uma por mais como os da mas foi são dos ele ser tem à do seu" },
+          { id: "2b", title: "Próximas 30", text: "foi ter sido está como muito já quando era só até entre sem pode pelo onde tudo" },
+          { id: "2c", title: "Próximas 30", text: "mesmo disse depois bem aqui sobre isso ainda quem assim cada antes nunca porque" },
+          { id: "2d", title: "Frases Curtas", text: "eu não sei o que fazer com isso você pode me ajudar por favor obrigado de nada" },
+          { id: "2e", title: "Fluxo Rápido", text: "o dia a dia é feito de pequenas escolhas que transformam nossa vida completamente" },
+        ],
+        test: { title: "Palavras Teste", text: "de que não para com uma por mais como os da mas foi são dos ele ser tem à do seu foi ter sido está como muito já quando era só até entre sem pode pelo onde tudo", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Frases Completas", desc: "Frases reais do dia a dia brasileiro",
+        icon: "💬",
+        lessons: [
+          { id: "3a", title: "Saudações", text: "Bom dia! Como você está? Tudo bem, obrigado. E você? Prazer em conhecê-lo. Até logo!" },
+          { id: "3b", title: "Perguntas", text: "Que horas são? Onde fica o banheiro? Quanto custa isso? Você pode me ajudar? Qual é o seu nome?" },
+          { id: "3c", title: "Cortesia", text: "Por favor, poderia repetir? Muito obrigado pela ajuda. De nada, fico feliz em ajudar. Com licença." },
+          { id: "3d", title: "Expressões", text: "Que saudade! Legal demais! Sem problemas. Fique à vontade. Não se preocupe. Vai dar certo!" },
+          { id: "3e", title: "Dia a Dia", text: "Preciso ir ao mercado comprar pão e leite. Depois vou ao banco pagar as contas do mês." },
+        ],
+        test: { title: "Frases Teste", text: "Bom dia! Como você está? Tudo bem, obrigado. Por favor, poderia me ajudar? Muito obrigado pela atenção. Que saudade! Até a próxima. Fique com Deus.", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 4, title: "Números e Símbolos", desc: "Valores, datas e formatação brasileira",
+        icon: "🔢",
+        lessons: [
+          { id: "4a", title: "Moeda", text: "R$ 10,00 R$ 25,90 R$ 149,99 R$ 1.250,00 R$ 3.500,50 R$ 10.000,00 R$ 0,50" },
+          { id: "4b", title: "Datas", text: "16/08/2026 01/01/2025 25/12/2024 07/09/1822 15/11/1889 21/04/1960" },
+          { id: "4c", title: "CPF e Telefone", text: "123.456.789-00 (11) 99999-0000 (21) 3333-4444 (31) 9 8888-7777" },
+          { id: "4d", title: "Porcentagem", text: "50% de desconto 10% de juros 3,5% ao mês 100% natural 75% de aproveitamento" },
+          { id: "4e", title: "Endereço", text: "Rua das Flores, 123 Bairro Centro CEP 01234-567 São Paulo - SP Brasil" },
+        ],
+        test: { title: "Números Teste", text: "O produto custa R$ 89,90 com 15% de desconto. O pedido foi feito em 16/08/2026 para entrega na Rua das Flores, 123 - Centro, São Paulo - SP. Telefone: (11) 99999-0000.", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 5, title: "E-mails e Mensagens", desc: "Comunicação profissional em português",
+        icon: "📧",
+        lessons: [
+          { id: "5a", title: "Abertura", text: "Prezado(a) Senhor(a), Escrevo para informar que... Gostaria de solicitar... Seguem em anexo os documentos solicitados." },
+          { id: "5b", title: "Corpo do E-mail", text: "Conforme conversamos na reunião de sexta-feira, segue o relatório atualizado. Por favor, confirme o recebimento." },
+          { id: "5c", title: "Encerramento", text: "Fico à disposição para esclarecer dúvidas. Agradeço antecipadamente pela atenção. Atenciosamente, João Silva." },
+          { id: "5d", title: "WhatsApp", text: "Oi! Tudo bem? Queria saber se você vai na festa sábado. Me confirma, por favor! Depois a gente combina os detalhes." },
+          { id: "5e", title: "Formal", text: "Prezado cliente, informamos que sua fatura do mês de agosto já está disponível. Acesse seu portal para mais detalhes." },
+        ],
+        test: { title: "E-mail Teste", text: "Prezado(a), escrevo para informar que o projeto foi aprovado na reunião de hoje. Seguem em anexo os documentos para assinatura. Fico à disposição para dúvidas. Atenciosamente.", minWpm: 30, minAccuracy: 90 }
+      },
+      {
+        id: 6, title: "Parágrafos", desc: "Textos completos em português brasileiro",
+        icon: "📖",
+        lessons: [
+          { id: "6a", title: "Natureza", text: "O Brasil é um país de dimensões continentais, com uma biodiversidade única no mundo. Da Floresta Amazônica ao Pantanal, cada bioma abriga espécies que só existem aqui." },
+          { id: "6b", title: "Cultura", text: "A culinária brasileira é rica e diversificada. Do acarajé baiano ao churrasco gaúcho, passando pelo feijoada carioca, cada região tem seu prato típico e sabor especial." },
+          { id: "6c", title: "Tecnologia", text: "O Brasil se destaca na área de tecnologia financeira. Startups brasileiras estão transformando a maneira como as pessoas pagam, investem e gerenciam seu dinheiro no dia a dia." },
+          { id: "6d", title: "Esportes", text: "O futebol é o esporte mais popular do Brasil. A seleção brasileira é a maior vencedora da Copa do Mundo, com cinco títulos conquistados ao longo da história." },
+          { id: "6e", title: "Educação", text: "A educação é fundamental para o desenvolvimento de qualquer país. Investir na formação de professores e na infraestrutura das escolas é essencial para o futuro da nação." },
+        ],
+        test: { title: "Parágrafos Teste", text: "O Brasil é um país rico em cultura, diversidade e potencial. De norte a sul, encontramos pessoas trabalhadoras e criativas que constroem o país todos os dias. O futuro depende do que fizermos hoje.", minWpm: 32, minAccuracy: 92 }
+      },
+      {
+        id: 7, title: "Velocidade", desc: "Aumente sua velocidade em português",
+        icon: "⚡",
+        lessons: [
+          { id: "7a", title: "Ritmo", text: "o a e da de do que não para com um por mais como os das dos foi mas são ele ser tem seu" },
+          { id: "7b", title: "Verbos", text: "fazer ter estar ir poder saber querer ver dar falar chegar passar viver trabalhar estudar" },
+          { id: "7c", title: "Conectivos", text: "porque quando enquanto embora porém portanto além disso por isso mesmo assim apesar de" },
+          { id: "7d", title: "Frases Rápidas", text: "vamos lá não tem problema deixa comigo pode confiar eu vou cuidar disso tudo vai ficar bem" },
+          { id: "7e", title: "Máxima Velocidade", text: "a prática constante leva à perfeição cada dia um pouco mais rápido cada dia um pouco mais preciso" },
+        ],
+        test: { title: "Velocidade Teste", text: "a vida é feita de escolhas cada dia decidimos quem queremos ser não existe atalho para o sucesso apenas dedicação e trabalho duro persista e os resultados virão naturalmente", minWpm: 38, minAccuracy: 92 }
+      },
+      {
+        id: 8, title: "Textos Reais", desc: "Notícias, literatura e comunicação profissional",
+        icon: "📰",
+        lessons: [
+          { id: "8a", title: "Notícia", text: "O governo anunciou hoje novas medidas para estimular a economia. Segundo o ministro, as mudanças devem gerar milhares de empregos nos próximos meses." },
+          { id: "8b", title: "Receita", text: "Para preparar um bom feijoada, deixe o feijão de molho na noite anterior. Cozinhe com as carnes salgadas por duas horas. Sirva com arroz, couve e farofa." },
+          { id: "8c", title: "Literatura", text: "O aviãozinho de papel voou alto sobre os telhados da cidade. A criança sorriu, satisfeita com sua criação. O vento carregava sonhos e esperanças." },
+          { id: "8d", title: "Trabalho", text: "A reunião de alinhamento está marcada para segunda-feira às dez horas. Todos os líderes de projeto devem apresentar o status atual de suas entregas." },
+          { id: "8e", title: "Redes Sociais", text: "Compartilho hoje uma reflexão importante: a gentileza transforma dias difíceis em momentos de esperança. Pequenos gestos fazem grande diferença na vida das pessoas." },
+        ],
+        test: { title: "Mestre em Português", text: "Parabéns por chegar até aqui! Digitar bem em português é uma habilidade valiosa. Com prática diária, você conseguirá escrever e-mails, mensagens e textos com fluência e precisão. Continue praticando!", minWpm: 35, minAccuracy: 92 }
+      }
+    ]
+  }
+};
+
+const THEME_ORDER = ["general", "go", "pt"];
+function getStages(themeId) { return THEMES[themeId]?.stages || []; }
+
+const BADGES = [
+  { id: "first_lesson", icon: "🌟", name: "First Step", desc: "Complete your first lesson", check: s => s.totalLessons >= 1 },
+  { id: "five_lessons", icon: "📚", name: "Studious", desc: "Complete 5 lessons", check: s => s.totalLessons >= 5 },
+  { id: "ten_lessons", icon: "🎓", name: "Dedicated", desc: "Complete 10 lessons", check: s => s.totalLessons >= 10 },
+  { id: "stage_clear", icon: "🏆", name: "Stage Clear", desc: "Pass your first stage test", check: s => s.stagesCleared >= 1 },
+  { id: "three_stages", icon: "🚀", name: "On Fire", desc: "Clear 3 stages", check: s => s.stagesCleared >= 3 },
+  { id: "all_stages", icon: "👑", name: "Master Typist", desc: "Clear all stages", check: s => s.stagesCleared >= 10 },
+  { id: "speed_30", icon: "⚡", name: "Quick Fingers", desc: "Reach 30 WPM", check: s => s.bestWpm >= 30 },
+  { id: "speed_50", icon: "💨", name: "Speed Demon", desc: "Reach 50 WPM", check: s => s.bestWpm >= 50 },
+  { id: "speed_70", icon: "🏎️", name: "Blazing Fast", desc: "Reach 70 WPM", check: s => s.bestWpm >= 70 },
+  { id: "perfect", icon: "💎", name: "Perfectionist", desc: "Get 100% accuracy", check: s => s.bestAccuracy >= 100 },
+  { id: "streak_3", icon: "🔥", name: "On a Roll", desc: "3-day practice streak", check: s => s.streak >= 3 },
+  { id: "streak_7", icon: "🌋", name: "Week Warrior", desc: "7-day practice streak", check: s => s.streak >= 7 },
+  { id: "streak_30", icon: "🌈", name: "Monthly Master", desc: "30-day practice streak", check: s => s.streak >= 30 },
+  { id: "night_owl", icon: "🦉", name: "Night Owl", desc: "Practice after 10pm", check: s => s.practicedLate },
+  { id: "early_bird", icon: "🐦", name: "Early Bird", desc: "Practice before 7am", check: s => s.practicedEarly },
+];
+
+// ═══════════════════════════════════════════
+// STATE MANAGEMENT
+// ═══════════════════════════════════════════
+const Store = {
+  KEY: "typrr_data",
+  data: null,
+
+  defaults() {
+    return {
+      xp: 0, level: 1,
+      streak: 0, lastPractice: null,
+      completedLessons: {},  // lessonId -> { bestWpm, bestAccuracy, stars, attempts }
+      clearedStages: [],     // stage ids
+      history: [],           // { date, lessonId, stageId, wpm, accuracy, xp, stars }
+      badges: [],
+      totalLessons: 0,
+      bestWpm: 0,
+      bestAccuracy: 0,
+      errorKeys: {},    // key -> error count
+      practicedLate: false,
+      practicedEarly: false,
+    };
+  },
+
+  load() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      this.data = raw ? { ...this.defaults(), ...JSON.parse(raw) } : this.defaults();
+    } catch { this.data = this.defaults(); }
+    return this.data;
+  },
+
+  save() {
+    localStorage.setItem(this.KEY, JSON.stringify(this.data));
+  },
+
+  get() { if (!this.data) this.load(); return this.data; },
+};
+
+// ═══════════════════════════════════════════
+// KEYBOARD MAP
+// ═══════════════════════════════════════════
+const KEY_MAP = {
+  'a':'a','b':'b','c':'c','d':'d','e':'e','f':'f','g':'g','h':'h','i':'i',
+  'j':'j','k':'k','l':'l','m':'m','n':'n','o':'o','p':'p','q':'q','r':'r',
+  's':'s','t':'t','u':'u','v':'v','w':'w','x':'x','y':'y','z':'z',
+  '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',
+  ' ':'space','`':'`','-':'-','=':'=','[':'[',']':']','\\':'\\',';':';',"'":"'",',':',','.':'.','/':'/',
+  'Shift':'shift','Tab':'tab','CapsLock':'caps',
+};
+
+const KB_ROWS = [
+  ['`','1','2','3','4','5','6','7','8','9','0','-','='],
+  ['q','w','e','r','t','y','u','i','o','p','[',']','\\'],
+  ['a','s','d','f','g','h','j','k','l',';','\''],
+  ['z','x','c','v','b','n','m',',','.','/'],
+  ['space']
+];
+
+const FINGER_MAP = {
+  '`':'l5','1':'l5','2':'l4','3':'l3','4':'l2','5':'l2','6':'l2','7':'r2','8':'r2','9':'r3','0':'r4','-':'r5','=':'r5',
+  'q':'l5','w':'l4','e':'l3','r':'l2','t':'l2','y':'r2','u':'r2','i':'r3','o':'r4','p':'r5',
+  'a':'l5','s':'l4','d':'l3','f':'l2','g':'l2','h':'r2','j':'r2','k':'r3','l':'r4',';':'r5',
+  'z':'l5','x':'l4','c':'l3','v':'l2','b':'l2','n':'r2','m':'r2',',':'r3','.':'r4','/':'r5',
+  ' ':'thumb'
+};
+
+// ═══════════════════════════════════════════
+// GAME ENGINE
+// ═══════════════════════════════════════════
+const App = {
+  view: "dashboard",
+  currentTheme: "general",
+  currentStage: null,
+  currentLesson: null,
+  isTest: false,
+  typingActive: false,
+  text: "",
+  chars: [],
+  charEls: [],
+  cursor: 0,
+  errors: 0,
+  totalTyped: 0,
+  combo: 0,
+  maxCombo: 0,
+  startTime: null,
+  timerInterval: null,
+  lessonDuration: 300, // 5 min max
+  elapsed: 0,
+  wpm: 0,
+  accuracy: 100,
+
+  init() {
+    Store.load();
+    this.updateStreak();
+    this.renderSidebar();
+    this.showDashboard();
+    this.setupInput();
+  },
+
+  // ── Streak ──
+  updateStreak() {
+    const d = Store.get();
+    const today = new Date().toDateString();
+    if (d.lastPractice === today) return;
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (d.lastPractice !== yesterday && d.lastPractice !== today) {
+      d.streak = 0;
+    }
+    Store.save();
+  },
+
+  recordPractice() {
+    const d = Store.get();
+    const today = new Date().toDateString();
+    if (d.lastPractice !== today) {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      d.streak = d.lastPractice === yesterday ? d.streak + 1 : 1;
+      d.lastPractice = today;
+    }
+    const h = new Date().getHours();
+    if (h >= 22) d.practicedLate = true;
+    if (h < 7) d.practicedEarly = true;
+    Store.save();
+    this.updateStreakUI();
+  },
+
+  // ── XP System ──
+  xpForLevel(lvl) { return 100 + (lvl - 1) * 50; },
+
+  addXp(amount) {
+    const d = Store.get();
+    d.xp += amount;
+    while (d.xp >= this.xpForLevel(d.level)) {
+      d.xp -= this.xpForLevel(d.level);
+      d.level++;
+    }
+    Store.save();
+    this.updateXpUI();
+  },
+
+  calcXp(wpm, accuracy, stars) {
+    let base = Math.round(wpm * 2 + accuracy);
+    if (stars >= 3) base = Math.round(base * 1.5);
+    if (stars >= 5) base = Math.round(base * 2);
+    return Math.max(10, base);
+  },
+
+  // ── Stars ──
+  calcStars(wpm, accuracy, minWpm, minAccuracy) {
+    let stars = 1;
+    if (accuracy >= minAccuracy) stars = 2;
+    if (accuracy >= minAccuracy + 2 && wpm >= minWpm) stars = 3;
+    if (accuracy >= minAccuracy + 5 && wpm >= minWpm + 10) stars = 4;
+    if (accuracy >= 98 && wpm >= minWpm + 20) stars = 5;
+    return stars;
+  },
+
+  // ── Badges ──
+  checkBadges() {
+    const d = Store.get();
+    const stats = {
+      totalLessons: d.totalLessons,
+      stagesCleared: d.clearedStages.length,
+      bestWpm: d.bestWpm,
+      bestAccuracy: d.bestAccuracy,
+      streak: d.streak,
+      practicedLate: d.practicedLate,
+      practicedEarly: d.practicedEarly,
+    };
+    const newBadges = [];
+    for (const b of BADGES) {
+      if (!d.badges.includes(b.id) && b.check(stats)) {
+        d.badges.push(b.id);
+        newBadges.push(b);
+      }
+    }
+    Store.save();
+    if (newBadges.length) this.showAchievement(newBadges[0]);
+  },
+
+  showAchievement(badge) {
+    const el = document.getElementById("achievementPopup");
+    document.getElementById("achievementIcon").textContent = badge.icon;
+    document.getElementById("achievementName").textContent = badge.name;
+    document.getElementById("achievementDesc").textContent = badge.desc;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 3500);
+  },
+
+  // ── Sidebar ──
+  renderSidebar() {
+    const d = Store.get();
+    const nav = document.getElementById("nav");
+
+    // Theme selector
+    let html = `<div class="nav-section-title">Themes</div>`;
+    for (const tid of THEME_ORDER) {
+      const t = THEMES[tid];
+      const active = tid === this.currentTheme;
+      const stages = t.stages;
+      const clearedCount = stages.filter(s => d.clearedStages.includes(s.id)).length;
+      const totalLessons = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+      const doneLessons = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+      html += `<div class="nav-item ${active ? 'active' : ''}" onclick="App.switchTheme('${tid}')">
+        <div class="nav-item-icon" style="font-size:1.1rem">${t.icon}</div>
+        <div class="nav-item-text">
+          <div>${t.name}</div>
+          <div style="font-size:0.6rem;color:var(--text-muted)">${doneLessons}/${totalLessons} lessons · ${clearedCount}/${stages.length} cleared</div>
+        </div>
+      </div>`;
+    }
+
+    // Stages for current theme
+    const stages = getStages(this.currentTheme);
+    html += `<div class="nav-section-title" style="margin-top:8px">${THEMES[this.currentTheme].name}</div>`;
+    for (const stage of stages) {
+      const cleared = d.clearedStages.includes(stage.id);
+      const prevCleared = stage.id === 1 || d.clearedStages.includes(stage.id - 1);
+      const locked = !prevCleared && !cleared;
+      const lessonCount = stage.lessons.length;
+      const completedInStage = stage.lessons.filter(l => d.completedLessons[l.id]).length;
+      const progress = cleared ? lessonCount : completedInStage;
+
+      let cls = locked ? "locked" : (cleared ? "completed" : "current");
+      let badge = "";
+      if (stage.test && !cleared && prevCleared && completedInStage >= lessonCount) {
+        badge = `<span class="nav-item-badge badge-test">TEST</span>`;
+      } else if (!locked && !cleared && completedInStage === 0) {
+        badge = `<span class="nav-item-badge badge-new">NEW</span>`;
+      }
+
+      html += `<div class="nav-item ${cls}" onclick="App.openStage(${stage.id})" data-stage="${stage.id}">
+        <div class="nav-item-icon">${stage.icon}</div>
+        <div class="nav-item-text">
+          <div>${stage.title}</div>
+          <div style="font-size:0.65rem;color:var(--text-muted)">${progress}/${lessonCount} lessons</div>
+        </div>
+        ${badge}
+      </div>`;
+    }
+    nav.innerHTML = html;
+    this.updateXpUI();
+    this.updateStreakUI();
+    this.updateSideStats();
+  },
+
+  switchTheme(themeId) {
+    if (!THEMES[themeId]) return;
+    this.currentTheme = themeId;
+    this.renderSidebar();
+    this.showDashboard();
+  },
+
+  updateXpUI() {
+    const d = Store.get();
+    const need = this.xpForLevel(d.level);
+    document.getElementById("xpLevel").textContent = `Level ${d.level}`;
+    document.getElementById("xpCount").textContent = `${d.xp} / ${need} XP`;
+    document.getElementById("xpBarFill").style.width = `${(d.xp / need) * 100}%`;
+  },
+
+  updateStreakUI() {
+    const d = Store.get();
+    document.getElementById("streakCount").textContent = d.streak;
+    document.getElementById("streakBadge").style.display = d.streak > 0 ? "flex" : "none";
+  },
+
+  updateSideStats() {
+    const d = Store.get();
+    document.getElementById("sideWpm").textContent = d.bestWpm;
+    const attempts = d.history.length;
+    const avgAcc = attempts ? Math.round(d.history.reduce((s, h) => s + h.accuracy, 0) / attempts) : 0;
+    document.getElementById("sideAccuracy").textContent = avgAcc + "%";
+  },
+
+  // ── Navigation ──
+  showDashboard() {
+    this.view = "dashboard";
+    this.stopTyping();
+    const d = Store.get();
+    const el = document.getElementById("content");
+    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Dashboard</span>";
+
+    // Recent chart
+    const recent = d.history.slice(-14);
+    let chartHtml = "";
+    if (recent.length > 1) {
+      const maxWpm = Math.max(...recent.map(r => r.wpm), 1);
+      chartHtml = `<div class="chart-container">
+        <div class="chart-title">📈 WPM Progress (Last ${recent.length} Sessions)</div>
+        <div class="chart-bars">
+          ${recent.map((r, i) => `<div class="chart-bar" style="height:${(r.wpm / maxWpm) * 100}%" title="${r.wpm} WPM — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
+        </div>
+      </div>`;
+    }
+
+    // Current stage progress (theme-aware)
+    const stages = getStages(this.currentTheme);
+    const themeName = THEMES[this.currentTheme].name;
+    const currentStage = stages.find(s => {
+      const prev = s.id === 1 || d.clearedStages.includes(s.id - 1);
+      return prev && !d.clearedStages.includes(s.id);
+    }) || stages[stages.length - 1];
+
+    const completedInCurrent = currentStage.lessons.filter(l => d.completedLessons[l.id]).length;
+    const testReady = completedInCurrent >= currentStage.lessons.length && !d.clearedStages.includes(currentStage.id);
+    const stageProgress = d.clearedStages.includes(currentStage.id) ? 100 : Math.round((completedInCurrent / currentStage.lessons.length) * 100);
+
+    el.innerHTML = `
+      <div class="dashboard-title">Welcome back! 👋</div>
+      <div class="dashboard-subtitle">Keep up the great work. ${d.streak > 0 ? `You're on a ${d.streak}-day streak!` : "Start a new streak today!"}</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon">⌨️</div>
+          <div class="stat-card-value">${d.bestWpm}</div>
+          <div class="stat-card-label">Best WPM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">🎯</div>
+          <div class="stat-card-value">${d.bestAccuracy}%</div>
+          <div class="stat-card-label">Best Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">📚</div>
+          <div class="stat-card-value">${d.totalLessons}</div>
+          <div class="stat-card-label">Lessons Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">🏅</div>
+          <div class="stat-card-value">${d.clearedStages.length}/${stages.length}</div>
+          <div class="stat-card-label">Stages Cleared</div>
+        </div>
+      </div>
+
+      ${chartHtml}
+
+      <div class="section-title">📍 Current Stage: ${currentStage.title}</div>
+      <div class="stage-card ${d.clearedStages.includes(currentStage.id) ? 'completed' : ''}" onclick="App.openStage(${currentStage.id})" style="margin-bottom:24px">
+        <div class="stage-card-header">
+          <div class="stage-card-number">${currentStage.id}</div>
+          <div>
+            <div class="stage-card-title">${currentStage.title}</div>
+            <div style="font-size:0.75rem;color:var(--text-dim)">${currentStage.desc}</div>
+          </div>
+        </div>
+        <div class="stage-progress-bar"><div class="stage-progress-fill" style="width:${stageProgress}%"></div></div>
+        <div class="stage-meta">
+          <span>${completedInCurrent}/${currentStage.lessons.length} lessons</span>
+          <span>${testReady ? '🧪 Test Ready!' : d.clearedStages.includes(currentStage.id) ? '✅ Cleared' : `${stageProgress}% complete`}</span>
+        </div>
+      </div>
+
+      <div class="section-title">🗓️ ${themeName} — All Stages</div>
+      <div class="stages-grid">
+        ${stages.map(s => {
+          const cleared = d.clearedStages.includes(s.id);
+          const prevCleared = s.id === 1 || d.clearedStages.includes(s.id - 1);
+          const locked = !prevCleared && !cleared;
+          const done = s.lessons.filter(l => d.completedLessons[l.id]).length;
+          const pct = cleared ? 100 : Math.round((done / s.lessons.length) * 100);
+          return `<div class="stage-card ${locked ? 'locked' : ''} ${cleared ? 'completed' : ''}" onclick="App.openStage(${s.id})">
+            <div class="lock-icon">🔒</div>
+            <div class="stage-card-header">
+              <div class="stage-card-number">${s.id}</div>
+              <div class="stage-card-title">${s.title}</div>
+            </div>
+            <div class="stage-card-desc">${s.desc}</div>
+            <div class="stage-progress-bar"><div class="stage-progress-fill" style="width:${pct}%"></div></div>
+            <div class="stage-meta">
+              <span>${done}/${s.lessons.length} lessons</span>
+              <span>${cleared ? '✅' : locked ? '🔒' : `${pct}%`}</span>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    `;
+  },
+
+  // ── Performance / Stats View ──
+  showPerformance() {
+    this.view = "performance";
+    this.stopTyping();
+    const d = Store.get();
+    const el = document.getElementById("content");
+    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Stats</span>";
+
+    const h = d.history;
+    const sessions = h.length;
+    const avgWpm = sessions ? Math.round(h.reduce((s, r) => s + r.wpm, 0) / sessions) : 0;
+    const avgAcc = sessions ? Math.round(h.reduce((s, r) => s + r.accuracy, 0) / sessions) : 0;
+    const totalXp = h.reduce((s, r) => s + (r.xp || 0), 0);
+    const totalStars = h.reduce((s, r) => s + (r.stars || 0), 0);
+
+    // WPM progression chart
+    const recent = h.slice(-20);
+    let wpmChart = "";
+    if (recent.length > 1) {
+      const max = Math.max(...recent.map(r => r.wpm), 1);
+      wpmChart = `<div class="chart-container">
+        <div class="chart-title">📈 WPM Trend (Last ${recent.length} Sessions)</div>
+        <div class="chart-bars">
+          ${recent.map((r, i) => `<div class="chart-bar" style="height:${(r.wpm / max) * 100}%" title="${r.wpm} WPM — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
+        </div>
+      </div>`;
+    }
+
+    // Accuracy chart
+    let accChart = "";
+    if (recent.length > 1) {
+      accChart = `<div class="chart-container">
+        <div class="chart-title">🎯 Accuracy Trend (Last ${recent.length} Sessions)</div>
+        <div class="chart-bars">
+          ${recent.map(r => `<div class="chart-bar" style="height:${r.accuracy}%;background:var(--accent)" title="${r.accuracy}% — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
+        </div>
+      </div>`;
+    }
+
+    // Top error keys
+    const errorEntries = Object.entries(d.errorKeys || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    let errorHtml = "";
+    if (errorEntries.length) {
+      const maxErr = errorEntries[0][1];
+      errorHtml = `<div class="section-title">🔴 Most Missed Keys</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px">
+          ${errorEntries.map(([key, count]) => `
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:28px;background:var(--surface-alt);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:0.85rem">${key === ' ' ? '␣' : key}</span>
+              <div style="flex:1;height:8px;background:var(--surface-alt);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${(count / maxErr) * 100}%;background:var(--danger);border-radius:4px"></div>
+              </div>
+              <span style="color:var(--text-dim);font-size:0.75rem;min-width:40px;text-align:right">${count}×</span>
+            </div>
+          `).join("")}
+        </div>`;
+    }
+
+    // Per-theme breakdown
+    let themeBreakdown = "";
+    for (const tid of THEME_ORDER) {
+      const t = THEMES[tid];
+      const stages = getStages(tid);
+      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+      const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+      const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
+      themeBreakdown += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-alt);border-radius:10px;margin-bottom:8px">
+        <span style="font-size:1.4rem">${t.icon}</span>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.9rem">${t.name}</div>
+          <div style="font-size:0.7rem;color:var(--text-dim)">${done}/${total} lessons · ${cleared}/${stages.length} cleared</div>
+        </div>
+        <div style="width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${total ? Math.round((done / total) * 100) : 0}%;background:var(--accent);border-radius:3px"></div>
+        </div>
+      </div>`;
+    }
+
+    el.innerHTML = `
+      <div class="dashboard-title">📊 Performance Stats</div>
+      <div class="dashboard-subtitle">${sessions} practice sessions · Level ${d.level} · ${d.streak}-day streak</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon">⌨️</div>
+          <div class="stat-card-value">${d.bestWpm}</div>
+          <div class="stat-card-label">Best WPM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">📊</div>
+          <div class="stat-card-value">${avgWpm}</div>
+          <div class="stat-card-label">Avg WPM</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">🎯</div>
+          <div class="stat-card-value">${d.bestAccuracy}%</div>
+          <div class="stat-card-label">Best Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">📐</div>
+          <div class="stat-card-value">${avgAcc}%</div>
+          <div class="stat-card-label">Avg Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">📚</div>
+          <div class="stat-card-value">${d.totalLessons}</div>
+          <div class="stat-card-label">Lessons Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">⭐</div>
+          <div class="stat-card-value">${totalStars}</div>
+          <div class="stat-card-label">Total Stars</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">✨</div>
+          <div class="stat-card-value">${totalXp}</div>
+          <div class="stat-card-label">Total XP</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">🏅</div>
+          <div class="stat-card-value">${d.badges.length}/${BADGES.length}</div>
+          <div class="stat-card-label">Badges</div>
+        </div>
+      </div>
+
+      ${wpmChart}
+      ${accChart}
+
+      ${errorHtml}
+
+      <div class="section-title">📂 Themes Progress</div>
+      ${themeBreakdown}
+    `;
+  },
+
+  openStage(stageId) {
+    const d = Store.get();
+    const stages = getStages(this.currentTheme);
+    const stage = stages.find(s => s.id === stageId);
+    if (!stage) return;
+    const prevCleared = stageId === 1 || d.clearedStages.includes(stageId - 1);
+    const locked = !prevCleared && !d.clearedStages.includes(stageId);
+    if (locked) return;
+
+    this.view = "stage";
+    this.currentStage = stage;
+    this.stopTyping();
+    const el = document.getElementById("content");
+    document.getElementById("breadcrumb").innerHTML = `Stages — <span>${stage.title}</span>`;
+
+    const cleared = d.clearedStages.includes(stageId);
+    const allDone = stage.lessons.every(l => d.completedLessons[l.id]);
+
+    el.innerHTML = `
+      <div class="lesson-header">
+        <div>
+          <div class="lesson-title">${stage.icon} ${stage.title}</div>
+          <div style="color:var(--text-dim);font-size:0.85rem;margin-top:4px">${stage.desc}</div>
+        </div>
+        ${cleared ? '<span style="color:var(--green);font-weight:600">✅ Cleared</span>' : ''}
+      </div>
+
+      <div class="section-title">📖 Lessons</div>
+      <div class="stages-grid" style="margin-bottom:32px">
+        ${stage.lessons.map((lesson, i) => {
+          const cl = d.completedLessons[lesson.id];
+          const stars = cl ? cl.stars : 0;
+          const starStr = "★".repeat(stars) + "☆".repeat(5 - stars);
+          return `<div class="stage-card ${cl ? 'completed' : ''}" onclick="App.startLesson(${stageId}, '${lesson.id}')" style="cursor:pointer">
+            <div class="stage-card-header">
+              <div class="stage-card-number" style="background:${cl ? 'var(--green-dim)' : 'var(--accent-glow)'};color:${cl ? 'var(--green)' : 'var(--accent-light)'}">${i + 1}</div>
+              <div>
+                <div class="stage-card-title">${lesson.title}</div>
+                ${cl ? `<div style="font-size:0.7rem;color:var(--text-dim)">${cl.bestWpm} WPM · ${cl.bestAccuracy}% acc</div>` : ''}
+              </div>
+            </div>
+            <div style="color:var(--text-muted);font-size:0.75rem;line-height:1.4;margin-bottom:8px">${lesson.text.substring(0, 80)}...</div>
+            <div style="color:var(--gold);font-size:0.9rem;letter-spacing:2px">${starStr}</div>
+          </div>`;
+        }).join("")}
+      </div>
+
+      ${stage.test ? `
+        <div class="section-title">🧪 Stage Test</div>
+        <div class="stage-card ${!allDone ? 'locked' : ''}" onclick="${allDone ? `App.startTest(${stageId})` : ''}" style="${allDone ? 'border-color:var(--orange);cursor:pointer' : ''}">
+          <div class="lock-icon">🔒</div>
+          <div class="stage-card-header">
+            <div class="stage-card-number" style="background:var(--orange-dim);color:var(--orange)">🧪</div>
+            <div>
+              <div class="stage-card-title">${stage.test.title}</div>
+              <div style="font-size:0.7rem;color:var(--text-dim)">Requires: ${stage.test.minWpm}+ WPM · ${stage.test.minAccuracy}%+ accuracy</div>
+            </div>
+          </div>
+          ${!allDone ? '<div style="color:var(--text-muted);font-size:0.8rem">Complete all lessons first to unlock the test.</div>' : ''}
+          ${cleared ? '<div style="color:var(--green);font-size:0.85rem;font-weight:600;margin-top:8px">✅ Test Passed!</div>' : ''}
+        </div>
+      ` : ''}
+    `;
+  },
+
+  // ── Lesson / Test Start ──
+  startLesson(stageId, lessonId) {
+    const stages = getStages(this.currentTheme);
+    const stage = stages.find(s => s.id === stageId);
+    const lesson = stage.lessons.find(l => l.id === lessonId);
+    this.currentStage = stage;
+    this.currentLesson = lesson;
+    this.isTest = false;
+    this.beginTyping(lesson.text, stageId, lessonId);
+  },
+
+  startTest(stageId) {
+    const stages = getStages(this.currentTheme);
+    const stage = stages.find(s => s.id === stageId);
+    this.currentStage = stage;
+    this.currentLesson = null;
+    this.isTest = true;
+    this.beginTyping(stage.test.text, stageId, "test");
+  },
+
+  beginTyping(text, stageId, lessonId) {
+    this.text = text;
+    this.chars = text.split("");
+    this.cursor = 0;
+    this.errors = 0;
+    this.totalTyped = 0;
+    this.combo = 0;
+    this.maxCombo = 0;
+    this.startTime = null;
+    this.elapsed = 0;
+    this.wpm = 0;
+    this.accuracy = 100;
+    this.typingActive = false;
+
+    this.view = "typing";
+    const el = document.getElementById("content");
+    const typeLabel = this.isTest ? "Stage Test" : (this.currentLesson ? this.currentLesson.title : "");
+    document.getElementById("breadcrumb").innerHTML = `${this.currentStage.title} — <span>${typeLabel}</span>`;
+
+    // Build char spans
+    const charHtml = this.chars.map((c, i) => {
+      const display = c === ' ' ? '&nbsp;' : c.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<span class="char ${i === 0 ? 'current' : 'pending'}" data-i="${i}">${display}</span>`;
+    }).join("");
+
+    // Keyboard
+    const fingerColors = { l5:'#ff6e6e', l4:'#ffb86c', l3:'#50fa7b', l2:'#8be9fd', r2:'#d4b8fd', r3:'#ff79c6', r4:'#f1fa8c', r5:'#ff5555', thumb:'var(--text-muted)' };
+    const fingerNames = { l5:'Pinky', l4:'Ring', l3:'Middle', l2:'Index', r2:'Index', r3:'Middle', r4:'Ring', r5:'Pinky', thumb:'Thumb' };
+    const kbHtml = KB_ROWS.map(row => {
+      return `<div class="kb-row">${row.map(k => {
+        const finger = FINGER_MAP[k] || '';
+        const cls = k === 'space' ? 'kb-key space' : (k.length > 1 ? 'kb-key wide' : 'kb-key');
+        const label = k === 'space' ? '⎵' : k;
+        return `<div class="${cls}" data-key="${k}" data-finger="${finger}">${label}</div>`;
+      }).join("")}</div>`;
+    }).join("");
+
+    // Finger guide
+    const guideFingers = [
+      { id:'l5', label:'LP', name:'Left Pinky' },
+      { id:'l4', label:'LR', name:'Left Ring' },
+      { id:'l3', label:'LM', name:'Left Middle' },
+      { id:'l2', label:'LI', name:'Left Index' },
+      { id:'r2', label:'RI', name:'Right Index' },
+      { id:'r3', label:'RM', name:'Right Middle' },
+      { id:'r4', label:'RR', name:'Right Ring' },
+      { id:'r5', label:'RP', name:'Right Pinky' },
+    ];
+    const guideHtml = `<div class="finger-guide">${guideFingers.map(f =>
+      `<div class="finger-item">
+        <div class="finger-dot" style="border-color:${fingerColors[f.id]};color:${fingerColors[f.id]}">${f.label}</div>
+        <span>${f.name}</span>
+      </div>`
+    ).join("")}</div>`;
+
+    // Hand diagram
+    const handDiagramHtml = `<div class="hand-diagram">
+      <div class="hand">
+        ${['l5','l4','l3','l2'].map(f => `<div class="finger"><div class="finger-bar" id="finger-${f}" style="height:${f==='l2'?40:f==='l3'?48:f==='l4'?42:32}px;background:${fingerColors[f]};color:${fingerColors[f]}"></div><div class="finger-label">${fingerNames[f]}</div></div>`).join('')}
+      </div>
+      <div class="hand">
+        ${['r2','r3','r4','r5'].map(f => `<div class="finger"><div class="finger-bar" id="finger-${f}" style="height:${f==='r2'?40:f==='r3'?48:f==='r4'?42:32}px;background:${fingerColors[f]};color:${fingerColors[f]}"></div><div class="finger-label">${fingerNames[f]}</div></div>`).join('')}
+      </div>
+    </div>`;
+
+    el.innerHTML = `
+      <div class="lesson-header">
+        <div class="lesson-title">${this.isTest ? '🧪' : '📖'} ${typeLabel}</div>
+        <div class="lesson-timer" id="timer">0:00</div>
+      </div>
+
+      <div class="live-stats">
+        <div class="live-stat wpm">
+          <div class="live-stat-value" id="liveWpm">0</div>
+          <div class="live-stat-label">WPM</div>
+        </div>
+        <div class="live-stat accuracy">
+          <div class="live-stat-value" id="liveAccuracy">100%</div>
+          <div class="live-stat-label">Accuracy</div>
+        </div>
+        <div class="live-stat errors">
+          <div class="live-stat-value" id="liveErrors">0</div>
+          <div class="live-stat-label">Errors</div>
+        </div>
+      </div>
+
+      <div class="typing-area" id="typingArea" onclick="document.getElementById('hiddenInput').focus()">
+        <div class="focus-prompt" id="focusPrompt" onclick="App.startFocus()">
+          <div class="focus-prompt-text">Click here or press <kbd>Space</kbd> to start typing</div>
+        </div>
+        <div class="typing-text" id="typingText">${charHtml}</div>
+      </div>
+
+      <div class="keyboard" id="keyboard"><div class="combo-counter" id="comboCounter"></div>${handDiagramHtml}${guideHtml}${kbHtml}</div>
+
+      <div style="text-align:center;margin-top:8px">
+        <button class="btn btn-secondary" onclick="App.openStage(${stageId})">← Back to Stage</button>
+      </div>
+    `;
+
+    this.charEls = [...document.querySelectorAll("#typingText .char")];
+  },
+
+  startFocus() {
+    document.getElementById("focusPrompt").style.display = "none";
+    document.getElementById("typingArea").classList.add("active");
+    document.getElementById("hiddenInput").focus();
+    if (!this.typingActive && !this.startTime) {
+      this.showCountdown(() => {
+        this.typingActive = true;
+        this.startTime = Date.now();
+        this.timerInterval = setInterval(() => this.tick(), 200);
+      });
+    }
+  },
+
+  showCountdown(cb) {
+    const overlay = document.getElementById("countdownOverlay");
+    const numEl = document.getElementById("countdownNumber");
+    overlay.classList.add("show");
+    let count = 3;
+    numEl.textContent = count;
+    const interval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        numEl.textContent = count;
+        numEl.style.animation = "none";
+        void numEl.offsetWidth;
+        numEl.style.animation = "countPulse 0.5s ease";
+      } else {
+        clearInterval(interval);
+        overlay.classList.remove("show");
+        cb();
+      }
+    }, 700);
+  },
+
+  // ── Input ──
+  setupInput() {
+    const input = document.getElementById("hiddenInput");
+
+    document.addEventListener("keydown", (e) => {
+      if (this.view !== "typing") return;
+      // Allow Enter/Space to start session when focus prompt is visible
+      if (!this.typingActive) {
+        const prompt = document.getElementById("focusPrompt");
+        if (prompt && prompt.style.display !== "none" && (e.key === " " || e.key === "Enter")) {
+          e.preventDefault();
+          this.startFocus();
+        }
+        return;
+      }
+      if (e.key === "Tab") { e.preventDefault(); return; }
+      input.focus();
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (!this.typingActive) {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          const prompt = document.getElementById("focusPrompt");
+          if (prompt && prompt.style.display !== "none") this.startFocus();
+        }
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        if (this.cursor > 0) {
+          this.cursor--;
+          this.charEls[this.cursor].className = "char current";
+          if (this.cursor + 1 < this.charEls.length)
+            this.charEls[this.cursor + 1].className = "char pending";
+          this.clearKeyHighlights();
+          this.highlightKey(this.chars[this.cursor]);
+        }
+        return;
+      }
+
+      if (e.key.length !== 1) return; // ignore modifier keys
+      e.preventDefault();
+
+      this.handleChar(e.key);
+    });
+
+    // mobile input
+    input.addEventListener("input", (e) => {
+      if (!this.typingActive || !e.data) return;
+      this.handleChar(e.data);
+      input.value = "";
+    });
+  },
+
+  handleChar(ch) {
+    if (this.cursor >= this.chars.length) return;
+
+    this.totalTyped++;
+    const expected = this.chars[this.cursor];
+    const correct = ch === expected;
+
+    this.charEls[this.cursor].className = `char ${correct ? 'correct' : 'incorrect'}`;
+    if (!correct) {
+      this.errors++;
+      this.combo = 0;
+      // Track error key
+      const d = Store.get();
+      const ek = expected.toLowerCase();
+      d.errorKeys[ek] = (d.errorKeys[ek] || 0) + 1;
+      Store.save();
+    } else {
+      this.combo++;
+      if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+    }
+    this.updateComboUI();
+
+    this.cursor++;
+
+    if (this.cursor < this.chars.length) {
+      this.charEls[this.cursor].className = "char current";
+      this.highlightKey(this.chars[this.cursor]);
+    }
+
+    this.updateLiveStats();
+    this.flashKey(ch, correct);
+
+    if (this.cursor >= this.chars.length) {
+      this.finishLesson();
+    }
+  },
+
+  updateComboUI() {
+    const kb = document.getElementById("keyboard");
+    const comboEl = document.getElementById("comboCounter");
+    if (!kb || !comboEl) return;
+
+    // Remove all combo classes
+    kb.classList.remove("combo-1", "combo-5", "combo-10", "combo-20", "combo-50");
+
+    if (this.combo >= 50) {
+      kb.classList.add("combo-50");
+      comboEl.textContent = `🔥 ${this.combo}`;
+      comboEl.className = "combo-counter combo-50-text";
+    } else if (this.combo >= 20) {
+      kb.classList.add("combo-20");
+      comboEl.textContent = `⚡ ${this.combo}`;
+      comboEl.className = "combo-counter combo-20-text";
+    } else if (this.combo >= 10) {
+      kb.classList.add("combo-10");
+      comboEl.textContent = `✨ ${this.combo}`;
+      comboEl.className = "combo-counter combo-10-text";
+    } else if (this.combo >= 5) {
+      kb.classList.add("combo-5");
+      comboEl.textContent = `💫 ${this.combo}`;
+      comboEl.className = "combo-counter combo-5-text";
+    } else if (this.combo >= 1) {
+      kb.classList.add("combo-1");
+      comboEl.textContent = `${this.combo}`;
+      comboEl.className = "combo-counter combo-1-text";
+    } else {
+      comboEl.textContent = "";
+      comboEl.className = "combo-counter";
+    }
+  },
+
+  updateLiveStats() {
+    if (!this.startTime) return;
+    const elapsed = (Date.now() - this.startTime) / 1000 / 60; // minutes
+    const correctChars = this.cursor - this.errors;
+    this.wpm = elapsed > 0 ? Math.round((correctChars / 5) / elapsed) : 0;
+    this.accuracy = this.totalTyped > 0 ? Math.round(((this.totalTyped - this.errors) / this.totalTyped) * 100) : 100;
+    document.getElementById("liveWpm").textContent = this.wpm;
+    document.getElementById("liveAccuracy").textContent = this.accuracy + "%";
+    document.getElementById("liveErrors").textContent = this.errors;
+  },
+
+  tick() {
+    if (!this.startTime) return;
+    this.elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+    const min = Math.floor(this.elapsed / 60);
+    const sec = this.elapsed % 60;
+    document.getElementById("timer").textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    this.updateLiveStats();
+
+    // Auto-finish at 5 min
+    if (this.elapsed >= this.lessonDuration) {
+      this.finishLesson();
+    }
+  },
+
+  flashKey(ch, correct) {
+    const key = ch.toLowerCase();
+    const el = document.querySelector(`.kb-key[data-key="${CSS.escape(key)}"]`);
+    if (!el) return;
+    el.classList.add(correct ? "correct" : "wrong");
+    setTimeout(() => el.classList.remove("correct", "wrong"), 300);
+    // Flash finger bar
+    const finger = el.getAttribute("data-finger");
+    if (finger) {
+      const bar = document.getElementById(`finger-${finger}`);
+      if (bar) {
+        bar.style.opacity = '1';
+        bar.style.transform = 'scaleY(1.2)';
+        setTimeout(() => { bar.style.opacity = ''; bar.style.transform = ''; }, 300);
+      }
+    }
+  },
+
+  highlightKey(ch) {
+    this.clearKeyHighlights();
+    const key = ch.toLowerCase();
+    const el = document.querySelector(`.kb-key[data-key="${CSS.escape(key)}"]`);
+    if (el) {
+      el.classList.add("active");
+      // Highlight finger bar in hand diagram
+      const finger = el.getAttribute("data-finger");
+      if (finger) {
+        const bar = document.getElementById(`finger-${finger}`);
+        if (bar) bar.classList.add("active");
+      }
+    }
+  },
+
+  clearKeyHighlights() {
+    document.querySelectorAll(".kb-key.active").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".finger-bar.active").forEach(el => el.classList.remove("active"));
+  },
+
+  // ── Finish ──
+  finishLesson() {
+    this.typingActive = false;
+    clearInterval(this.timerInterval);
+    this.clearKeyHighlights();
+
+    const stageId = this.currentStage.id;
+    const lessonId = this.isTest ? "test" : this.currentLesson.id;
+    const stage = this.currentStage;
+    const d = Store.get();
+
+    const accuracy = this.accuracy;
+    const wpm = this.wpm;
+    const stars = this.isTest
+      ? this.calcStars(wpm, accuracy, stage.test.minWpm, stage.test.minAccuracy)
+      : this.calcStars(wpm, accuracy, 20, 85);
+    const xp = this.calcXp(wpm, accuracy, stars);
+
+    this.recordPractice();
+    this.addXp(xp);
+
+    // Update best stats
+    if (wpm > d.bestWpm) d.bestWpm = wpm;
+    if (accuracy > d.bestAccuracy) d.bestAccuracy = accuracy;
+
+    // Record history
+    d.history.push({
+      date: new Date().toISOString(),
+      themeId: this.currentTheme,
+      lessonId, stageId, wpm, accuracy, xp, stars,
+      maxCombo: this.maxCombo,
+      totalChars: this.totalTyped,
+      errorCount: this.errors,
+    });
+
+    let passed = true;
+    if (this.isTest) {
+      if (wpm < stage.test.minWpm || accuracy < stage.test.minAccuracy) {
+        passed = false;
+      } else {
+        if (!d.clearedStages.includes(stageId)) {
+          d.clearedStages.push(stageId);
+        }
+      }
+    } else {
+      d.totalLessons++;
+      const existing = d.completedLessons[lessonId];
+      if (!existing || wpm > existing.bestWpm || accuracy > existing.bestAccuracy) {
+        d.completedLessons[lessonId] = {
+          bestWpm: Math.max(wpm, existing?.bestWpm || 0),
+          bestAccuracy: Math.max(accuracy, existing?.bestAccuracy || 0),
+          stars: Math.max(stars, existing?.stars || 0),
+          attempts: (existing?.attempts || 0) + 1,
+        };
+      } else {
+        d.completedLessons[lessonId].attempts++;
+      }
+    }
+
+    Store.save();
+    this.checkBadges();
+    this.renderSidebar();
+
+    // Show modal
+    this.showResults(wpm, accuracy, stars, xp, passed);
+  },
+
+  showResults(wpm, accuracy, stars, xp, passed) {
+    const starStr = "★".repeat(stars) + "☆".repeat(5 - stars);
+    const isTest = this.isTest;
+    const stage = this.currentStage;
+    const stageId = stage.id;
+
+    let title, subtitle, icon;
+    if (isTest) {
+      if (passed) {
+        icon = "🎉"; title = "Stage Cleared!";
+        subtitle = `You passed the ${stage.title} test!`;
+      } else {
+        icon = "💪"; title = "Not Quite...";
+        subtitle = `Need ${stage.test.minWpm}+ WPM and ${stage.test.minAccuracy}%+ accuracy. Try again!`;
+      }
+    } else {
+      if (stars >= 4) { icon = "🌟"; title = "Outstanding!"; }
+      else if (stars >= 3) { icon = "🎉"; title = "Great Job!"; }
+      else if (stars >= 2) { icon = "👍"; title = "Well Done!"; }
+      else { icon = "💪"; title = "Keep Practicing!"; }
+      subtitle = this.currentLesson ? this.currentLesson.title : "Practice complete";
+    }
+
+    const nextLessonId = !isTest ? this.getNextLessonId() : null;
+    const allLessonsDone = stage.lessons.every(l => Store.get().completedLessons[l.id]);
+    const stages = getStages(this.currentTheme);
+
+    // Build action buttons with keyboard shortcut hints
+    const actions = [];
+    if (!isTest && nextLessonId) {
+      actions.push({ key: "1", label: "Next Lesson →", primary: true, action: `App.closeModal();App.startLesson(${stageId},'${nextLessonId}')` });
+    }
+    if (isTest && !passed) {
+      actions.push({ key: "1", label: "Retry Test", primary: true, action: `App.closeModal();App.startTest(${stageId})` });
+    }
+    if (isTest && passed && stageId < stages.length) {
+      actions.push({ key: "1", label: "Next Stage →", primary: true, action: `App.closeModal();App.openStage(${stageId + 1})` });
+    }
+    if (isTest && allLessonsDone && !passed) {
+      actions.push({ key: "1", label: "Retry Test", primary: true, action: `App.closeModal();App.startTest(${stageId})` });
+    }
+    actions.push({ key: "2", label: "Stage Menu", primary: false, action: `App.closeModal();App.openStage(${stageId})` });
+    actions.push({ key: "3", label: "Dashboard", primary: false, action: `App.closeModal();App.showDashboard()` });
+
+    // Store actions for keyboard handler
+    this._modalActions = actions;
+
+    document.getElementById("modal").innerHTML = `
+      <div class="modal-icon">${icon}</div>
+      <div class="modal-title">${title}</div>
+      <div class="modal-subtitle">${subtitle}</div>
+      <div class="modal-stars" style="color:var(--gold)">${starStr}</div>
+      <div class="modal-stats">
+        <div class="modal-stat">
+          <div class="modal-stat-value" style="color:var(--accent)">${wpm}</div>
+          <div class="modal-stat-label">WPM</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" style="color:var(--green)">${accuracy}%</div>
+          <div class="modal-stat-label">Accuracy</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" style="color:var(--gold)">${this.maxCombo}</div>
+          <div class="modal-stat-label">Best Combo</div>
+        </div>
+      </div>
+      <div class="modal-xp">✨ ${xp} XP Earned</div>
+      <div class="modal-actions">
+        ${actions.map(a => `<button class="btn ${a.primary ? 'btn-primary' : 'btn-secondary'}" onclick="${a.action}"><kbd class="modal-kbd">${a.key}</kbd> ${a.label}</button>`).join('')}
+      </div>
+      <div style="text-align:center;margin-top:16px;font-size:0.7rem;color:var(--text-muted)">Press <kbd class="modal-kbd">1</kbd> <kbd class="modal-kbd">2</kbd> <kbd class="modal-kbd">3</kbd> or click</div>
+    `;
+    document.getElementById("modalOverlay").classList.add("show");
+
+    // Keyboard handler for modal
+    this._modalKeyHandler = (e) => {
+      if (!document.getElementById("modalOverlay").classList.contains("show")) return;
+      const action = this._modalActions.find(a => a.key === e.key);
+      if (action) {
+        e.preventDefault();
+        eval(action.action);
+      }
+    };
+    document.addEventListener("keydown", this._modalKeyHandler);
+  },
+
+  getNextLessonId() {
+    if (!this.currentStage || !this.currentLesson) return null;
+    const lessons = this.currentStage.lessons;
+    const idx = lessons.findIndex(l => l.id === this.currentLesson.id);
+    if (idx < lessons.length - 1) return lessons[idx + 1].id;
+    return null;
+  },
+
+  closeModal() {
+    document.getElementById("modalOverlay").classList.remove("show");
+    if (this._modalKeyHandler) {
+      document.removeEventListener("keydown", this._modalKeyHandler);
+      this._modalKeyHandler = null;
+    }
+  },
+
+  stopTyping() {
+    this.typingActive = false;
+    if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+  },
+
+  // ── Badges View ──
+  showBadges() {
+    this.view = "badges";
+    this.stopTyping();
+    const d = Store.get();
+    const el = document.getElementById("content");
+    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Badges</span>";
+    el.innerHTML = `
+      <div class="dashboard-title">🏅 Achievements</div>
+      <div class="dashboard-subtitle">${d.badges.length} of ${BADGES.length} unlocked</div>
+      <div class="badges-grid">
+        ${BADGES.map(b => {
+          const earned = d.badges.includes(b.id);
+          return `<div class="badge-card ${earned ? 'earned' : 'locked'}">
+            <div class="badge-card-icon">${earned ? b.icon : '🔒'}</div>
+            <div class="badge-card-name">${b.name}</div>
+            <div class="badge-card-desc">${b.desc}</div>
+          </div>`;
+        }).join("")}
+      </div>
+    `;
+  },
+
+  // ── History View ──
+  showHistory() {
+    this.view = "history";
+    this.stopTyping();
+    const d = Store.get();
+    const el = document.getElementById("content");
+    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>History</span>";
+
+    const history = [...d.history].reverse().slice(0, 50);
+
+    el.innerHTML = `
+      <div class="dashboard-title">📜 Practice History</div>
+      <div class="dashboard-subtitle">${d.history.length} total sessions</div>
+      ${history.length === 0 ? '<div style="text-align:center;color:var(--text-muted);padding:60px">No practice sessions yet. Start your first lesson!</div>' : `
+        <div class="history-list">
+          ${history.map(h => {
+            let stage = null, lesson = null;
+            for (const tid of THEME_ORDER) {
+              stage = getStages(tid).find(s => s.id === h.stageId);
+              if (stage) { lesson = stage.lessons.find(l => l.id === h.lessonId); break; }
+            }
+            const themeLabel = h.themeId ? THEMES[h.themeId]?.name : "";
+            const name = h.lessonId === "test" ? `${stage?.title || ""} Test` : lesson?.title || h.lessonId;
+            const stars = "★".repeat(h.stars) + "☆".repeat(5 - h.stars);
+            return `<div class="history-item">
+              <div class="history-date">${new Date(h.date).toLocaleDateString()}</div>
+              <div class="history-lesson">${name}</div>
+              <div class="history-wpm">${h.wpm} wpm</div>
+              <div class="history-accuracy">${h.accuracy}%</div>
+              <div class="history-stars">${stars}</div>
+            </div>`;
+          }).join("")}
+        </div>
+      `}
+    `;
+  },
+};
+
+// Boot
+App.init();
+</script>
+</body>
+</html>
