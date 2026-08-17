@@ -2148,6 +2148,17 @@ const App = {
       input.focus();
     });
 
+    // Composition support (dead keys for accented chars like ´+c=ç)
+    this.composing = false;
+    input.addEventListener("compositionstart", () => { this.composing = true; });
+    input.addEventListener("compositionend", (e) => {
+      this.composing = false;
+      if (this.typingActive && e.data) {
+        for (const ch of e.data) this.handleChar(ch);
+      }
+      input.value = "";
+    });
+
     input.addEventListener("keydown", (e) => {
       if (!this.typingActive) {
         if (e.key === " " || e.key === "Enter") {
@@ -2157,6 +2168,9 @@ const App = {
         }
         return;
       }
+
+      // Skip char handling while composing — compositionend will deliver the result
+      if (this.composing) return;
 
       if (e.key === "Backspace") {
         e.preventDefault();
@@ -2179,7 +2193,7 @@ const App = {
 
     // mobile input
     input.addEventListener("input", (e) => {
-      if (!this.typingActive || !e.data) return;
+      if (!this.typingActive || !e.data || this.composing) return;
       this.handleChar(e.data);
       input.value = "";
     });
