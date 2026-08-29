@@ -1297,7 +1297,7 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
       </div>
     </div>
 
-    <nav class="nav" id="nav" aria-label="Themes and stages"></nav>
+    <nav class="nav" id="nav" aria-label="Typing kits and stages"></nav>
 
     <div class="sidebar-footer" id="viewNav" role="group" aria-label="Views"></div>
   </aside>
@@ -2251,7 +2251,7 @@ const App = {
 
   renderSidebar() {
     const d = Store.get();
-    let html = `<div class="nav-section-title">Themes <kbd>t</kbd></div>`;
+    let html = `<div class="nav-section-title">Typing Kits <kbd>t</kbd></div>`;
 
     for (const tid of THEME_ORDER) {
       const t = THEMES[tid];
@@ -2657,7 +2657,7 @@ const App = {
 
       ${errorEntries.length ? '<div class="section-title">Weak spots</div>' + errorHtml : ''}
 
-      <div class="section-title">Themes</div>
+      <div class="section-title">Typing Kits</div>
       ${themeRows}
     `;
     this.indexNavItems();
@@ -3036,7 +3036,7 @@ const App = {
         ${[
           ['Navigate', [
             [['d'], 'Dashboard'], [['s'], 'Stats'], [['b'], 'Badges'], [['h'], 'History'],
-            [['t'], 'Next theme'], [['Shift', 't'], 'Previous theme'],
+            [['t'], 'Next kit'], [['Shift', 't'], 'Previous kit'],
             [['m'], 'Pull the cord (dark mode)'], [['c'], 'Collapse the sidebar'],
             [['Esc'], 'Go back'],
           ]],
@@ -3400,7 +3400,7 @@ const App = {
       </div>` : `<div class="panel" style="padding:16px 6px">
         <table class="history-table">
           <thead><tr>
-            <th>Date</th><th>Session</th><th>Theme</th>
+            <th>Date</th><th>Session</th><th>Kit</th>
             <th class="num">WPM</th><th class="num">Accuracy</th><th class="num">Combo</th><th>Stars</th>
           </tr></thead>
           <tbody>

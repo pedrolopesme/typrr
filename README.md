@@ -46,15 +46,15 @@ make stop
 
 **https://pedrolopesme.github.io/typrr/**
 
-## Themes
+## Typing Kits
 
-| Theme | Stages | Focus |
+| Kit | Stages | Focus |
 |-------|--------|-------|
 | **General Typing** | 10 | Home row → speed building → mastery |
 | **Go Programming** | 8 | Keywords → functions → concurrency → real code |
 | **Português** | 8 | Acentos, cedilha e texto corrido em português |
 
-Each theme has 5 lessons per stage + a gated test.
+Each kit has 5 lessons per stage + a gated test.
 
 ## Keyboard Shortcuts
 
@@ -64,7 +64,7 @@ Press <kbd>?</kbd> anywhere for the full list.
 |-----|--------|
 | `d` `s` `b` `h` | Dashboard · Stats · Badges · History |
 | `n` | Start the next recommended lesson |
-| `t` / `Shift`+`t` | Cycle content themes |
+| `t` / `Shift`+`t` | Cycle typing kits |
 | `m` | Pull the cord (dark mode) |
 | `c` | Collapse / expand the sidebar |
 | `1`–`9` | Open the numbered card |

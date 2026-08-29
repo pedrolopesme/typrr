@@ -39,9 +39,9 @@ Makefile              ← `make serve` to run local HTTP server
 |`theme`|`"light"｜"dark"｜null`|Explicit colour-scheme choice; `null` follows the OS|
 |`sidebarCollapsed`|boolean|Explicit collapse preference; session auto-collapse is transient and never written|
 
-## Theme System
+## Typing Kit System
 
-Content is organized into themes, each with sequential stages:
+Content is organized into typing kits, each with sequential stages:
 
 ```js
 THEMES = { general: { stages: [...] }, go: { stages: [...] }, pt: { stages: [...] } }
@@ -50,8 +50,8 @@ THEME_ORDER = ["general", "go", "pt"]
 
 - Each stage has `id` (int), `lessons[]`, and optional `test`.
 - Lesson IDs are strings like `"1a"`, `"2c"`.
-- Progress is global: `completedLessons["1a"]` works across themes.
-- `clearedStages` uses integer stage IDs, scoped by current theme.
+- Progress is global: `completedLessons["1a"]` works across kits.
+- `clearedStages` uses integer stage IDs, scoped by current kit.
 
 ## UI Conventions
 
@@ -104,10 +104,10 @@ Use the browser tool to navigate, type characters, verify modal behavior. Always
 - `theme-color` is emitted twice with `prefers-color-scheme` media for first paint, then overridden at runtime by `App.applyTheme()` — the in-app choice can disagree with the OS.
 - Icons are generated from a single source logo; see the generator note in the release commit. Regenerate all sizes together so they stay consistent.
 
-## Adding a New Theme
+## Adding a New Typing Kit
 
 1. Add an entry to `THEMES` with `id`, `name`, `icon`, `desc`, `stages[]`.
-2. Add the theme key to `THEME_ORDER`.
+2. Add the kit key to `THEME_ORDER`.
 3. Each stage needs: `id`, `title`, `desc`, `icon`, `lessons[]`, optional `test`.
 4. Tests require `minWpm` and `minAccuracy` fields.
 5. Lesson text should be 100-250 characters for ~1-2 min typing.
