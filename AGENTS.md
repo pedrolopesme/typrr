@@ -9,14 +9,18 @@ Typrr is a standalone typing practice app — single `index.html`, zero dependen
 ## Architecture
 
 ```
-index.html          ← Everything: HTML structure, CSS (<style>), JS (<script>)
-design.md           ← Design system: tokens, component states, data-viz rules
-Makefile            ← `make serve` to run local HTTP server
+index.html            ← Everything: HTML structure, CSS (<style>), JS (<script>)
+manifest.webmanifest  ← Web app manifest
+sw.js                 ← Service worker: offline app shell
+icons/                ← Source-generated app icons
+design.md             ← Design system: tokens, component states, data-viz rules
+Makefile              ← `make serve` to run local HTTP server
 ```
 
 - **No frameworks.** Vanilla HTML/CSS/JS only.
 - **No external resources.** No CDN fonts, no icon libraries, no analytics.
-- **Single file.** CSS is in `<style>`, JS is in `<script>`. Do not split.
+- **Single file.** CSS is in `<style>`, JS is in `<script>`. Do not split. The PWA files beside it are deployment assets, not app code — never move app logic into them.
+- **`index.html` must open clean on `file://`.** The favicon and sidebar logo are inlined as data URIs, and the manifest link is attached only over `http(s)` because fetching it from `file://` is CORS-blocked and logs errors. Anything you add must keep a lone `index.html` silent and complete.
 - **localStorage** for persistence. Key: `typrr_data`.
 
 ## Data Model
@@ -74,6 +78,8 @@ THEME_ORDER = ["general", "go", "pt"]
 - Don't add npm, bundlers, or build tools.
 - Don't split into multiple files.
 - Don't add external fonts or CDN links — the display stack is system-resident by design.
+- Don't let assets 404 or log on `file://`; inline them instead.
+- Don't bump the app without bumping `CACHE` in `sw.js`, or returning users keep the cached shell.
 - Don't use `innerHTML` with unescaped content.
 - Don't leave CSS outside the `<style>` block.
 - Don't hardcode `#fff`, `white`, `#000`, or any raw color — use CSS variables.
@@ -88,6 +94,13 @@ make serve           # starts http://localhost:8080
 ```
 
 Use the browser tool to navigate, type characters, verify modal behavior. Always verify: keyboard-only navigation (`n`, `1`–`9`, arrows, `Esc`, `?`), a full typing session through the results modal, the stats view with seeded history, and **both themes** (`m`) — a hardcoded colour only shows up in dark.
+
+## Web App
+
+- `manifest.webmanifest` declares name, `display: standalone`, `start_url: ./` and three icons (192 any, 512 any, 512 maskable). Chrome must report zero errors from `Page.getAppManifest` and zero `Page.getInstallabilityErrors`.
+- `sw.js` is **network-first for navigations** and cache-first for static assets. Never make the document cache-first: users would be pinned to the build they first visited and every deploy would be swallowed silently. `CACHE` is bumped per release and stale caches are dropped on activate.
+- `theme-color` is emitted twice with `prefers-color-scheme` media for first paint, then overridden at runtime by `App.applyTheme()` — the in-app choice can disagree with the OS.
+- Icons are generated from a single source logo; see the generator note in the release commit. Regenerate all sizes together so they stay consistent.
 
 ## Adding a New Theme
 
@@ -111,25 +124,25 @@ The `check` function receives a stats object from `Store.get()`.
 
 |Section|Line|Purpose|
 |---|---|---|
-|CSS `:root`|12|Light design tokens|
-|Dark theme tokens|93|`html[data-theme="dark"]` overrides — values only|
-|CSS components|217-1172|All styling, grouped by `/* ── Section ── */` banners|
-|Pre-paint theme script|1174|Resolves `data-theme` before first paint|
-|Shell markup|1187-1275|Sidebar, header, pull cord, modals, toast|
-|`THEMES` data|1280|Content database|
-|`BADGES`|1616|Achievement definitions|
-|`Store`|1637|localStorage layer|
-|`KB_ROWS` / `FINGER_MAP` / `FINGERS`|1677|Keyboard geometry and finger coding|
-|`lineChart()` / `heatmap()`|1725 / 1764|Inline SVG data-viz helpers|
-|`VIEWS`|1794|View registry + their shortcut keys|
-|`PullCord`|1806|Verlet rope theme switch|
-|`App`|1996|All game logic|
-|`App.init()`|2019|Entry point|
-|`App.setViewChrome()`|2128|Breadcrumb, hint bar, nav indexing|
-|`App.applyTheme()` / `toggleTheme()`|2235|Dark mode resolution and persistence|
-|`App.renderSidebar()`|2165|Sidebar themes + stages|
-|`App.showDashboard()`|2295|Dashboard + continue CTA|
-|`App.showPerformance()`|2389|Stats view|
-|`App.beginTyping()`|2638|Typing engine setup|
-|`App.setupGlobalKeys()`|2800|Global keyboard router|
-|`App.showResults()`|3130|Results modal|
+|CSS `:root`|44|Light design tokens|
+|Dark theme tokens|125|`html[data-theme="dark"]` overrides — values only|
+|CSS components|249-1202|All styling, grouped by `/* ── Section ── */` banners|
+|Head script|1204|Pre-paint theme + `http`-only manifest link|
+|Shell markup|1225-1313|Sidebar, header, pull cord, modals, toast|
+|`THEMES` data|1318|Content database|
+|`BADGES`|1654|Achievement definitions|
+|`Store`|1675|localStorage layer|
+|`KB_ROWS` / `FINGER_MAP` / `FINGERS`|1715|Keyboard geometry and finger coding|
+|`lineChart()` / `heatmap()`|1763 / 1802|Inline SVG data-viz helpers|
+|`VIEWS`|1832|View registry + their shortcut keys|
+|`PullCord`|1844|Verlet rope theme switch|
+|`App`|2034|All game logic|
+|`App.init()`|2057|Entry point|
+|`App.setViewChrome()`|2166|Breadcrumb, hint bar, nav indexing|
+|`App.applyTheme()`|2273|Theme resolution, persistence, `theme-color`|
+|`App.renderSidebar()`|2203|Sidebar themes + stages|
+|`App.showDashboard()`|2344|Dashboard + continue CTA|
+|`App.showPerformance()`|2438|Stats view|
+|`App.beginTyping()`|2687|Typing engine setup|
+|`App.setupGlobalKeys()`|2849|Global keyboard router|
+|`App.showResults()`|3179|Results modal|

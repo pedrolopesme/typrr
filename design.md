@@ -101,6 +101,12 @@ Resolution order, applied by an inline script in `<head>` before first paint so 
 
 The toggle only ever writes an explicit value, so a user who never touches it keeps following their OS.
 
+## Brand Mark
+
+The logo is a gradient "T" whose darkest ink is `#081b4e`, so it would vanish on the dark surface. It therefore keeps a **light ground in both themes** — a white rounded tile — rather than being recoloured per theme. The same tile is the favicon, the app icon and the apple-touch icon, so the mark is identical everywhere it appears.
+
+App icons place the logo at 76% of the tile; the maskable variant drops to 54% so it survives the 80% safe-zone crop. The favicon and the sidebar mark are inlined as data URIs so a standalone `index.html` still renders complete.
+
 ## The Pull Cord
 
 The theme switch is a ceiling cord hanging in its own lane at the far right of the header — the last control on the row, after everything else.

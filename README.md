@@ -21,6 +21,7 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 - **Full keyboard control** — every screen is drivable without a mouse; press `?` for the shortcut sheet
 - **Light and dark themes** — follows your OS by default; grab the pull cord hanging in the header to switch
 - **Progress persistence** — everything saved in `localStorage`
+- **Installable** — add it to your home screen or dock; it runs standalone and works offline
 
 ![Typrr Typing](screenshots/typing.png)
 
@@ -81,11 +82,29 @@ Dark mode is a pure token swap on `html[data-theme="dark"]`, resolved before fir
 ## Project Structure
 
 ```
-index.html      ← The entire app (HTML + CSS + JS)
-design.md       ← Design system: tokens, states, data-viz rules
-AGENTS.md       ← Conventions for AI agents
-Makefile        ← Local server shortcuts
+index.html            ← The entire app (HTML + CSS + JS)
+manifest.webmanifest  ← Web app manifest
+sw.js                 ← Service worker: offline shell
+icons/                ← App icons (192, 512, maskable, apple-touch)
+design.md             ← Design system: tokens, states, data-viz rules
+AGENTS.md             ← Conventions for AI agents
+Makefile              ← Local server shortcuts
 ```
+
+The app itself is still one file. `index.html` opens and runs on its own — the
+favicon and logo are inlined, so nothing is missing. The manifest, worker and
+icon files are deployment assets that only engage over `http(s)`.
+
+## Install It
+
+Served over https, Typrr is a full web app:
+
+- **Chrome / Edge** — install button in the address bar
+- **iOS Safari** — Share → Add to Home Screen
+- **Android Chrome** — menu → Install app
+
+It launches standalone, matches your light or dark theme in the OS chrome, and
+the service worker keeps it working with no network.
 
 ## Contributing
 
