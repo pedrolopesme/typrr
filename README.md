@@ -12,14 +12,18 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 
 - **10 general typing stages** — from home row basics to professional speed
 - **Go programming track** — muscle memory for `func`, `if err != nil`, goroutines, and real code
+- **Portuguese track** — acentos, cedilha and dead-key input
 - **5-minute lessons** — designed for daily practice
-- **Finger guide** — color-coded keyboard shows which finger to use for each key
+- **Finger guide** — colour-coded keyboard and live hand diagram show which finger to use
 - **Gamification** — XP, levels, streaks, star ratings, 15 achievements
 - **Stage tests** — must hit WPM + accuracy targets to unlock the next stage
+- **Stats that mean something** — WPM/accuracy trend charts, 5-session deltas, an 18-week practice heatmap and your most-missed keys
+- **Full keyboard control** — every screen is drivable without a mouse; press `?` for the shortcut sheet
 - **Progress persistence** — everything saved in `localStorage`
-- **Keyboard shortcuts** — `Enter`/`Space` to start, `1`/`2`/`3` for post-lesson navigation
 
 ![Typrr Typing](screenshots/typing.png)
+
+![Typrr Stats](screenshots/stats.png)
 
 ## Quick Start
 
@@ -43,18 +47,34 @@ make stop
 |-------|--------|-------|
 | **General Typing** | 10 | Home row → speed building → mastery |
 | **Go Programming** | 8 | Keywords → functions → concurrency → real code |
+| **Português** | 8 | Acentos, cedilha e texto corrido em português |
 
 Each theme has 5 lessons per stage + a gated test.
 
+## Keyboard Shortcuts
+
+Press <kbd>?</kbd> anywhere for the full list.
+
+| Key | Action |
+|-----|--------|
+| `d` `s` `b` `h` | Dashboard · Stats · Badges · History |
+| `n` | Start the next recommended lesson |
+| `t` / `Shift`+`t` | Cycle themes |
+| `1`–`9` | Open the numbered card |
+| `↑` `↓` `←` `→` | Move between cards (grid-aware) |
+| `Space` | Start the typing session |
+| `Esc` | Go back / dismiss |
+| `1` `2` `3` | Post-session actions |
+
 ## Design
 
-Built on the [Dracula](https://draculatheme.com) color palette — dark, vibrant, high-contrast. See [design.md](design.md) for the full token reference.
+White-first and low-chrome: hairline-bordered cards on white, with saturated colour reserved for meaning — indigo for progress and focus, green for correct, red for errors, amber for streaks and tests. See [design.md](design.md) for the full token reference.
 
 ## Project Structure
 
 ```
 index.html      ← The entire app (HTML + CSS + JS)
-design.md       ← Color palette and component states
+design.md       ← Design system: tokens, states, data-viz rules
 AGENTS.md       ← Conventions for AI agents
 Makefile        ← Local server shortcuts
 ```

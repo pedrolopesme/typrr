@@ -3,39 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>Typrr — Master Touch Typing</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #282a36;
-  --bg-card: #44475a;
-  --bg-card-hover: #4d5070;
-  --bg-input: #21222c;
-  --border: #3a3d50;
-  --text: #f8f8f2;
-  --text-dim: #8494cc;
-  --text-muted: #7c88ad;
-  --accent: #d4b8fd;
-  --accent-glow: rgba(212, 184, 253, 0.15);
-  --accent-light: #e8daff;
-  --green: #50fa7b;
-  --green-dim: rgba(80, 250, 123, 0.12);
-  --red: #ff5555;
-  --red-dim: rgba(255, 85, 85, 0.12);
-  --orange: #ffb86c;
-  --orange-dim: rgba(255, 184, 108, 0.12);
-  --blue: #8be9fd;
-  --blue-dim: rgba(139, 233, 253, 0.12);
-  --gold: #f1fa8c;
-  --pink: #ff79c6;
+  /* Neutrals — white-first */
+  --bg: #ffffff;
+  --bg-subtle: #fbfcfd;
+  --surface: #ffffff;
+  --surface-alt: #f4f6f9;
+  --surface-sunken: #eaeef3;
+  --border: #e4e8ee;
+  --border-strong: #c9d1dc;
+  --text: #101828;
+  --text-dim: #4a5567;
+  --text-muted: #808b9d;
+
+  /* Saturated accents — used sparingly, for meaning only */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eef1ff;
+  --green: #047857;
+  --green-soft: #e6f7f1;
+  --red: #d81b48;
+  --red-soft: #ffedf1;
+  --amber: #b45309;
+  --amber-fill: #f59e0b;
+  --amber-soft: #fff5e5;
+  --cyan: #0e7490;
+  --cyan-soft: #e5f6fb;
+  --violet: #6d28d9;
+  --violet-soft: #f3efff;
+  --pink: #be185d;
+  --pink-soft: #fdeef5;
+  --gold: #ca8a04;
+  --gold-fill: #eab308;
+
+  /* Finger coding */
+  --f-l5: #dc2626;
+  --f-l4: #ea580c;
+  --f-l3: #16a34a;
+  --f-l2: #0891b2;
+  --f-r2: #4f46e5;
+  --f-r3: #db2777;
+  --f-r4: #ca8a04;
+  --f-r5: #7c3aed;
+  --f-thumb: #64748b;
+
   --radius: 14px;
   --radius-sm: 10px;
-  --shadow: 0 2px 8px rgba(0,0,0,0.25);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
-  --font: 'Georgia', 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+  --radius-xs: 6px;
+  --shadow-xs: 0 1px 2px rgba(16,24,40,0.05);
+  --shadow-md: 0 4px 12px rgba(16,24,40,0.08);
+  --shadow-lg: 0 16px 40px rgba(16,24,40,0.14);
+
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+
+  --sidebar-w: 272px;
 }
 
 html { font-size: 16px; }
@@ -46,984 +73,1020 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cdc4b7; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #b5aa9a; }
+/* Focus — always visible, never removed */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 5000;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s;
+}
+.skip-link:focus { top: 12px; }
 
-/* Layout */
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-sunken); border-radius: 6px; border: 3px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+/* ── Layout ── */
 .app { display: flex; min-height: 100vh; }
 
-/* Sidebar */
+/* ── Sidebar ── */
 .sidebar {
-  width: 280px;
-  background: var(--bg-card);
+  width: var(--sidebar-w);
+  background: var(--bg-subtle);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
   z-index: 100;
-  transition: transform 0.3s;
+  transition: transform 0.25s ease;
 }
-.sidebar-header {
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, #343746, var(--bg-card));
+.sidebar-header { padding: 20px 20px 16px; }
+.brand { display: flex; align-items: center; gap: 11px; }
+.brand-mark {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
-.logo {
-  font-size: 1.4rem;
-  font-weight: 800;
-  font-family: var(--font-sans);
-  letter-spacing: -0.5px;
+.brand-name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.4px; color: var(--text); line-height: 1.1; }
+.brand-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+
+/* Level block */
+.level-block { padding: 0 20px 16px; }
+.level-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+.level-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
   color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 9px;
+  border-radius: 20px;
 }
-.logo-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-
-/* User Stats in Sidebar */
-.user-stats {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.stat-mini {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  text-align: center;
-  border: 1px solid var(--border);
-}
-.stat-mini-value { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-.stat-mini-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
-
-/* XP Bar */
-.xp-bar-wrap {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.xp-bar-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-.xp-level { font-size: 0.8rem; font-weight: 600; color: var(--gold); font-family: var(--font-sans); }
-.xp-count { font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-sans); }
-.xp-bar-track {
-  height: 6px;
-  background: var(--bg);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.xp-bar-fill {
+.level-xp { font-size: 0.7rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.xp-track { height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; }
+.xp-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--violet));
   border-radius: 3px;
   transition: width 0.5s ease;
-  width: 0%;
 }
+.mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px; }
+.mini-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 8px 4px;
+  text-align: center;
+}
+.mini-stat-value { font-size: 0.95rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.mini-stat-label { font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
 /* Nav */
-.nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.nav { flex: 1; overflow-y: auto; padding: 4px 12px 12px; }
 .nav-section-title {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.9px;
   color: var(--text-muted);
-  padding: 12px 20px 6px;
-  font-weight: 600;
+  padding: 14px 8px 6px;
+  font-weight: 700;
 }
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 2px;
   cursor: pointer;
-  transition: all 0.15s;
-  border-left: 3px solid transparent;
-  font-size: 0.85rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
   color: var(--text-dim);
-  font-family: var(--font-sans);
+  text-align: left;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  position: relative;
 }
-.nav-item:hover { background: var(--bg-card-hover); color: var(--text); }
+.nav-item:hover:not(:disabled) { background: var(--surface); border-color: var(--border); color: var(--text); }
 .nav-item.active {
-  background: var(--bg-card-hover);
+  background: var(--surface);
+  border-color: var(--border);
   color: var(--text);
-  border-left-color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
 }
-.nav-item.locked { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -12px; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+.nav-item:disabled { opacity: 0.45; cursor: not-allowed; }
 .nav-item-icon {
-  width: 30px; height: 30px;
-  border-radius: 8px;
+  width: 26px; height: 26px;
+  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: var(--surface-alt);
+}
+.nav-item.completed .nav-item-icon { background: var(--green-soft); }
+.nav-item.current .nav-item-icon { background: var(--accent-soft); }
+.nav-item-text { display: block; flex: 1; line-height: 1.25; min-width: 0; }
+.nav-item-title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-item-sub { display: block; font-size: 0.63rem; color: var(--text-muted); margin-top: 1px; font-weight: 400; }
+.nav-item-badge {
+  font-size: 0.58rem;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
   flex-shrink: 0;
 }
-.nav-item.completed .nav-item-icon { background: var(--green-dim); color: var(--green); }
-.nav-item.current .nav-item-icon { background: var(--accent-glow); color: var(--accent-light); }
-.nav-item.locked .nav-item-icon { background: var(--bg); color: var(--text-muted); }
-.nav-item-text { flex: 1; line-height: 1.3; }
-.nav-item-badge {
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-}
-.badge-test { background: var(--orange-dim); color: var(--orange); }
-.badge-new { background: var(--blue-dim); color: var(--blue); }
-.nav-stars { font-size: 0.65rem; color: var(--gold); letter-spacing: 1px; }
+.badge-test { background: var(--amber-soft); color: var(--amber); }
+.badge-new { background: var(--cyan-soft); color: var(--cyan); }
+.badge-done { background: var(--green-soft); color: var(--green); }
 
-/* Sidebar Footer */
+/* Sidebar footer — view switcher */
 .sidebar-footer {
-  padding: 16px 20px;
+  padding: 10px 12px 12px;
   border-top: 1px solid var(--border);
-  display: flex;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
-.btn-sidebar {
-  flex: 1;
-  padding: 8px;
+.view-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 9px;
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background: var(--surface);
   color: var(--text-dim);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   cursor: pointer;
   font-size: 0.75rem;
-  text-align: center;
-  transition: all 0.15s;
-  font-family: var(--font-sans);
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.12s;
 }
-.btn-sidebar:hover { border-color: var(--accent); color: var(--accent); }
+.view-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.view-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.view-btn.active kbd { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.28); color: #fff; }
+.view-btn kbd { min-width: 17px; height: 17px; font-size: 0.62rem; }
 
-/* Main Content */
+/* ── Main ── */
 .main {
   flex: 1;
-  margin-left: 280px;
+  margin-left: var(--sidebar-w);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-
-/* Header */
 .main-header {
-  padding: 18px 32px;
+  padding: 0 28px;
+  height: 58px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: var(--bg-card);
+  gap: 14px;
+  background: rgba(255,255,255,0.86);
+  backdrop-filter: saturate(180%) blur(12px);
   position: sticky;
   top: 0;
   z-index: 50;
 }
-.breadcrumb { font-size: 0.8rem; color: var(--text-dim); font-family: var(--font-sans); }
-.breadcrumb span { color: var(--text); font-weight: 600; }
-.streak-badge {
+.breadcrumb { flex: 1; font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 7px; min-width: 0; }
+.breadcrumb button {
+  background: none; border: none; padding: 0;
+  font: inherit; color: var(--text-muted); cursor: pointer;
+  border-radius: 3px;
+}
+.breadcrumb button:hover { color: var(--accent); text-decoration: underline; }
+.breadcrumb .sep { color: var(--border-strong); }
+.breadcrumb .current { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.streak-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.ghost-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--orange-dim);
-  color: var(--orange);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid #f0dcc8;
-  font-family: var(--font-sans);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 5px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
 }
+.ghost-btn:hover { border-color: var(--border-strong); color: var(--text); }
 .hamburger {
   display: none;
   background: none;
-  border: none;
-  color: var(--text);
-  font-size: 1.4rem;
-  cursor: pointer;
-  padding: 4px 8px;
-  font-family: var(--font-sans);
-}
-
-/* Content Area */
-.content { flex: 1; padding: 32px; max-width: 960px; margin: 0 auto; width: 100%; }
-
-/* Dashboard */
-.dashboard-title {
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: 4px;
-  font-family: var(--font-sans);
-  color: var(--text);
-}
-.dashboard-subtitle { color: var(--text-dim); margin-bottom: 28px; font-size: 0.9rem; font-family: var(--font-sans); }
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.stat-card {
-  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  text-align: center;
-  box-shadow: var(--shadow);
-}
-.stat-card-icon { font-size: 1.5rem; margin-bottom: 8px; }
-.stat-card-value { font-size: 1.6rem; font-weight: 700; color: var(--text); font-family: var(--font-sans); }
-.stat-card-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
-
-/* Stage Cards */
-.stages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.stage-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-.stage-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.stage-card.locked { opacity: 0.5; cursor: not-allowed; }
-.stage-card.locked:hover { transform: none; border-color: var(--border); box-shadow: none; }
-.stage-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.stage-card-number {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700;
+  border-radius: var(--radius-xs);
+  color: var(--text);
   font-size: 1rem;
-  background: var(--accent-glow);
-  color: var(--accent-light);
+  cursor: pointer;
+  padding: 5px 9px;
+  font-family: inherit;
 }
-.stage-card.completed .stage-card-number { background: var(--green-dim); color: var(--green); }
-.stage-card-title { font-weight: 600; font-size: 1rem; font-family: var(--font-sans); }
-.stage-card-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; font-family: var(--font-sans); }
-.stage-progress-bar {
-  height: 4px;
-  background: var(--bg);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-.stage-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--green));
-  border-radius: 2px;
-  transition: width 0.5s;
-}
-.stage-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); }
-.stage-card .lock-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
+
+/* Content */
+.content { flex: 1; padding: 32px 28px 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
+.content:focus { outline: none; }
+
+/* Hint bar */
+.hintbar {
+  position: sticky;
+  bottom: 0;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: saturate(180%) blur(12px);
+  padding: 8px 28px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  display: none;
+  z-index: 40;
 }
-.stage-card.locked .lock-icon { display: block; }
-.stage-card.locked .stage-card-header,
-.stage-card.locked .stage-card-desc,
-.stage-card.locked .stage-progress-bar,
-.stage-card.locked .stage-meta { visibility: hidden; }
+.hintbar span { display: inline-flex; align-items: center; gap: 5px; }
 
-/* Lesson View */
-.lesson-header {
+/* ── Page headers ── */
+.page-head { margin-bottom: 26px; }
+.page-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--text);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  gap: 10px;
 }
-.lesson-title { font-size: 1.3rem; font-weight: 700; font-family: var(--font-sans); }
-.lesson-timer {
-  font-family: var(--mono);
-  font-size: 1.1rem;
-  color: var(--accent);
-  background: var(--bg-card);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-/* Live Stats */
-.live-stats {
+.page-subtitle { color: var(--text-dim); margin-top: 5px; font-size: 0.87rem; }
+.section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: var(--text-muted);
+  margin: 30px 0 12px;
   display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
+  align-items: center;
+  gap: 8px;
 }
+.section-title:first-child { margin-top: 0; }
+.section-title .count {
+  background: var(--surface-alt);
+  color: var(--text-dim);
+  padding: 1px 7px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  letter-spacing: 0;
+}
+
+/* ── Stat cards ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stats-grid.four { grid-template-columns: repeat(4, 1fr); }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--tone, var(--accent));
+}
+.stat-card-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.stat-card-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  margin-top: 6px;
+  line-height: 1.05;
+}
+.stat-card-value .unit { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0; }
+.stat-card-foot { margin-top: 6px; font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.delta { font-weight: 700; font-variant-numeric: tabular-nums; }
+.delta.up { color: var(--green); }
+.delta.down { color: var(--red); }
+.delta.flat { color: var(--text-muted); }
+
+/* ── Cards / grids ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 12px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.card:hover:not(:disabled) { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card:disabled { cursor: not-allowed; background: var(--bg-subtle); }
+.card:disabled .card-title, .card:disabled .card-desc { color: var(--text-muted); }
+.card-head { display: flex; align-items: center; gap: 11px; margin-bottom: 11px; }
+.card-badge {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.card.done .card-badge { background: var(--green-soft); color: var(--green); }
+.card.test .card-badge { background: var(--amber-soft); color: var(--amber); }
+.card-head > span:last-child { display: block; min-width: 0; }
+.card-title { display: block; font-weight: 650; font-size: 0.92rem; color: var(--text); line-height: 1.3; }
+.card-sub { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.card-desc { display: block; font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px; }
+.card-preview {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border-radius: var(--radius-xs);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.card-foot { display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.progress-track { display: block; height: 5px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; margin-bottom: 9px; }
+.progress-fill { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; }
+.progress-fill.done { background: var(--green); }
+.card-corner-key {
+  position: absolute;
+  top: 12px; right: 12px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border-radius: 4px;
+  padding: 2px 5px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.card:hover .card-corner-key, .card:focus-visible .card-corner-key, body.keyhints .card-corner-key { opacity: 1; }
+.stars { color: var(--gold); letter-spacing: 2px; font-size: 0.8rem; }
+.stars .off { color: var(--surface-sunken); }
+
+/* Continue banner */
+.continue-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  text-align: left;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 6px 18px rgba(79,70,229,0.25);
+}
+.continue-card:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(79,70,229,0.32); }
+.continue-icon { font-size: 1.7rem; }
+.continue-body { display: block; flex: 1; min-width: 0; }
+.continue-eyebrow { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.78; font-weight: 700; }
+.continue-title { display: block; font-size: 1.05rem; font-weight: 700; margin-top: 3px; }
+.continue-meta { display: block; font-size: 0.75rem; opacity: 0.82; margin-top: 3px; }
+.continue-cta { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+.continue-cta kbd { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); color: #fff; }
+
+/* ── Charts ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; gap: 12px; flex-wrap: wrap; }
+.panel-title { font-size: 0.85rem; font-weight: 650; color: var(--text); }
+.panel-note { font-size: 0.7rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .grid-line { stroke: var(--border); stroke-width: 1; }
+.chart .axis-label { fill: var(--text-muted); font-size: 9px; font-family: var(--font-sans); }
+.chart .avg-line { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart .dot { transition: r 0.15s; }
+.chart .hit:hover + .dot, .chart .dot:hover { r: 5; }
+.chart-legend { display: flex; gap: 16px; margin-top: 10px; font-size: 0.68rem; color: var(--text-muted); flex-wrap: wrap; }
+.chart-legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; margin-right: 5px; }
+
+/* Heatmap */
+.heatmap { display: flex; gap: 3px; overflow-x: auto; padding-bottom: 2px; }
+.heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+.heat-cell { display: block; width: 12px; height: 12px; border-radius: 3px; background: var(--surface-sunken); flex-shrink: 0; }
+.heat-cell.l1 { background: #c7d2fe; }
+.heat-cell.l2 { background: #a5b4fc; }
+.heat-cell.l3 { background: #818cf8; }
+.heat-cell.l4 { background: var(--accent); }
+.heat-cell.future { background: transparent; }
+.heat-scale { display: flex; align-items: center; gap: 4px; font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; }
+
+/* Key error bars */
+.keybar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.keybar-key {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 26px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.keybar-track { display: block; flex: 1; height: 8px; background: var(--surface-alt); border-radius: 4px; overflow: hidden; }
+.keybar-fill { display: block; height: 100%; background: var(--red); border-radius: 4px; }
+.keybar-count { display: block; font-size: 0.72rem; color: var(--text-dim); min-width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Theme progress rows */
+.themerow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--surface); }
+.themerow-icon { font-size: 1.3rem; }
+.themerow-body { display: block; flex: 1; min-width: 0; }
+.themerow-name { display: block; font-weight: 650; font-size: 0.85rem; }
+.themerow-meta { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.themerow-track { display: block; width: 110px; height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.themerow-pct { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-dim); min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── Typing view ── */
+.lesson-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+.lesson-title { font-size: 1.25rem; font-weight: 750; letter-spacing: -0.3px; display: flex; align-items: center; gap: 9px; }
+.lesson-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 3px; }
+.timer {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-alt);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.live-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
 .live-stat {
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  flex: 1;
-  text-align: center;
-  box-shadow: var(--shadow);
+  padding: 10px 14px;
 }
-.live-stat-value { font-size: 1.3rem; font-weight: 700; font-family: var(--mono); }
-.live-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; font-family: var(--font-sans); }
+.live-stat-value { font-size: 1.35rem; font-weight: 800; font-family: var(--mono); font-variant-numeric: tabular-nums; line-height: 1.1; letter-spacing: -0.5px; }
+.live-stat-label { font-size: 0.63rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.7px; margin-top: 3px; font-weight: 600; }
 .live-stat.wpm .live-stat-value { color: var(--accent); }
-.live-stat.accuracy .live-stat-value { color: var(--green); }
-.live-stat.errors .live-stat-value { color: var(--red); }
+.live-stat.acc .live-stat-value { color: var(--green); }
+.live-stat.err .live-stat-value { color: var(--red); }
+.live-stat.combo .live-stat-value { color: var(--amber); }
 
-/* Typing Area */
+.session-progress { height: 4px; background: var(--surface-sunken); border-radius: 2px; overflow: hidden; margin-bottom: 16px; }
+.session-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.12s linear; }
+
 .typing-area {
-  background: var(--bg-card);
-  border: 2px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px;
-  margin-bottom: 24px;
-  min-height: 200px;
+  padding: 30px 32px;
+  margin-bottom: 18px;
+  min-height: 190px;
   position: relative;
-  box-shadow: inset 0 1px 3px rgba(44,36,24,0.03);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+.typing-area.active { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 .typing-text {
   font-family: var(--mono);
-  font-size: 1.3rem;
-  line-height: 2;
-  letter-spacing: 0.3px;
+  font-size: 1.32rem;
+  line-height: 2.05;
+  letter-spacing: 0.2px;
   user-select: none;
   word-break: break-word;
-  color: var(--text);
+  color: var(--text-muted);
 }
-.typing-text .char { position: relative; transition: color 0.05s; }
-.typing-text .char.correct { color: var(--green); }
-.typing-text .char.incorrect { color: var(--red); background: var(--red-dim); border-radius: 2px; }
-.typing-text .char.current {
-  color: var(--text);
-  border-bottom: 2px solid var(--accent);
-  animation: blink 1s ease-in-out infinite;
+.typing-text .char { position: relative; border-radius: 2px; }
+.typing-text .char.correct { color: var(--text); }
+.typing-text .char.incorrect { color: var(--red); background: var(--red-soft); text-decoration: underline wavy var(--red) 1px; text-underline-offset: 4px; }
+.typing-text .char.pending { color: #a3adbb; }
+.typing-text .char.current::before {
+  content: '';
+  position: absolute;
+  left: -2px; top: 0.1em; bottom: 0.05em;
+  width: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  animation: caret 1.05s steps(1) infinite;
 }
-.typing-text .char.pending { color: var(--text-muted); }
-@keyframes blink { 0%, 100% { border-bottom-color: var(--accent); } 50% { border-bottom-color: transparent; } }
-.typing-area.active .typing-text .char.current { animation: none; border-bottom-color: var(--accent); }
+.typing-text .char.current { color: var(--text); }
+@keyframes caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-/* Focus prompt */
 .focus-prompt {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(30,26,21,0.92);
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(3px);
   border-radius: var(--radius);
   z-index: 10;
   cursor: pointer;
-  backdrop-filter: blur(4px);
+  border: none;
+  font-family: inherit;
+  width: 100%;
 }
 .focus-prompt-text {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--text-dim);
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-sans);
-}
-.focus-prompt-text kbd {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  box-shadow: 0 1px 2px rgba(44,36,24,0.06);
+  font-weight: 500;
 }
 
-/* Virtual Keyboard */
+/* Virtual keyboard */
 .keyboard {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 20px;
-  background: var(--bg-card);
+  gap: 5px;
+  padding: 18px 16px 16px;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   align-items: center;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 .kb-row { display: flex; gap: 4px; }
 .kb-key {
-  min-width: 44px;
+  min-width: 42px;
   height: 40px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-bottom: 2px solid var(--border-strong);
+  border-radius: 7px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  padding-bottom: 5px;
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
-  background: var(--bg);
-  transition: all 0.1s;
+  background: var(--surface);
+  transition: background 0.08s, color 0.08s, border-color 0.08s, transform 0.08s;
   text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
 }
-.kb-key.active {
-  background: var(--accent);
-  color: white;
+.kb-key::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--fc, transparent);
+}
+.kb-key[data-finger="l5"] { --fc: var(--f-l5); }
+.kb-key[data-finger="l4"] { --fc: var(--f-l4); }
+.kb-key[data-finger="l3"] { --fc: var(--f-l3); }
+.kb-key[data-finger="l2"] { --fc: var(--f-l2); }
+.kb-key[data-finger="r2"] { --fc: var(--f-r2); }
+.kb-key[data-finger="r3"] { --fc: var(--f-r3); }
+.kb-key[data-finger="r4"] { --fc: var(--f-r4); }
+.kb-key[data-finger="r5"] { --fc: var(--f-r5); }
+.kb-key[data-finger="thumb"] { --fc: var(--f-thumb); }
+.kb-key.next {
+  background: var(--accent-soft);
   border-color: var(--accent);
-  box-shadow: 0 2px 8px var(--accent-glow);
-}
-.kb-key.correct {
-  background: var(--green-dim);
-  border-color: var(--green);
-  color: var(--green);
-}
-.kb-key.wrong {
-  background: var(--red-dim);
-  border-color: var(--red);
-  color: var(--red);
-}
-.kb-key.space { min-width: 280px; }
-.kb-key.wide { min-width: 70px; font-size: 0.7rem; }
-.kb-key.wider { min-width: 90px; font-size: 0.7rem; }
-
-/* Finger color coding */
-.kb-key[data-finger="l5"] { border-left: 3px solid #ff6e6e; }
-.kb-key[data-finger="l4"] { border-left: 3px solid #ffb86c; }
-.kb-key[data-finger="l3"] { border-left: 3px solid #50fa7b; }
-.kb-key[data-finger="l2"] { border-left: 3px solid #8be9fd; }
-.kb-key[data-finger="r2"] { border-left: 3px solid #d4b8fd; }
-.kb-key[data-finger="r3"] { border-left: 3px solid #ff79c6; }
-.kb-key[data-finger="r4"] { border-left: 3px solid #f1fa8c; }
-.kb-key[data-finger="r5"] { border-left: 3px solid #ff5555; }
-.kb-key[data-finger="thumb"] { border-left: 3px solid var(--text-muted); }
-
-.kb-key.finger-highlight {
-  background: var(--accent-glow);
-  border-color: var(--accent);
-  color: var(--accent-light);
-  transform: scale(1.05);
-  box-shadow: 0 0 10px var(--accent-glow);
-}
-
-/* Finger guide */
-.finger-guide {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.finger-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  font-family: var(--font-sans);
-}
-.finger-dot {
-  width: 14px; height: 14px;
-  border-radius: 4px;
-  border: 2px solid;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.55rem;
+  color: var(--accent);
   font-weight: 700;
-  font-family: var(--font-sans);
+  transform: translateY(-1px);
 }
+.kb-key.correct { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.kb-key.wrong { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+.kb-key.space { min-width: 260px; }
+.kb-key.wide { min-width: 66px; font-size: 0.68rem; }
 
 /* Hand diagram */
-.hand-diagram {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  padding: 12px 20px 8px;
-  margin-bottom: 8px;
-}
-.hand {
-  display: flex;
-  gap: 3px;
-  align-items: flex-end;
-}
-.finger {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-.finger-bar {
-  width: 18px;
-  border-radius: 6px 6px 3px 3px;
-  transition: all 0.15s;
-  opacity: 0.5;
-}
-.finger-bar.active {
-  opacity: 1;
-  transform: scaleY(1.15);
-  box-shadow: 0 0 8px currentColor;
-}
-.finger-label {
-  font-size: 0.55rem;
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+.hand-diagram { display: flex; justify-content: center; gap: 44px; margin-bottom: 12px; }
+.hand { display: flex; gap: 4px; align-items: flex-end; }
+.finger { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.finger-bar { width: 16px; border-radius: 5px 5px 2px 2px; opacity: 0.32; transition: opacity 0.12s, transform 0.12s; }
+.finger-bar.active { opacity: 1; transform: scaleY(1.12); }
+.finger-label { font-size: 0.53rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
 
-/* Combo counter */
+/* Finger legend */
+.finger-guide { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.finger-item { display: flex; align-items: center; gap: 5px; font-size: 0.66rem; color: var(--text-dim); }
+.finger-dot { display: block; width: 9px; height: 9px; border-radius: 3px; }
+
+/* Combo */
 .combo-counter {
   position: absolute;
-  top: -32px;
-  right: 12px;
+  top: -14px; right: 14px;
   font-family: var(--mono);
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  transition: all 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 12px;
   pointer-events: none;
+  transition: all 0.18s;
+  opacity: 0;
+  font-variant-numeric: tabular-nums;
 }
-.combo-1-text { color: var(--text-dim); font-size: 1rem; }
-.combo-5-text { color: var(--accent); font-size: 1.2rem; }
-.combo-10-text { color: var(--green); font-size: 1.4rem; text-shadow: 0 0 10px var(--green-dim); }
-.combo-20-text { color: var(--gold); font-size: 1.6rem; text-shadow: 0 0 16px rgba(241,250,140,0.3); }
-.combo-50-text { color: var(--pink); font-size: 1.8rem; text-shadow: 0 0 20px rgba(255,121,198,0.4); animation: comboPulse 0.4s ease infinite alternate; }
+.combo-counter.on { opacity: 1; }
+.combo-1-text { color: var(--text-dim); }
+.combo-5-text { color: var(--accent); border-color: var(--accent); }
+.combo-10-text { color: var(--green); border-color: var(--green); }
+.combo-20-text { color: var(--amber); border-color: var(--amber-fill); }
+.combo-50-text { color: var(--pink); border-color: var(--pink); animation: comboPulse 0.5s ease infinite alternate; }
+@keyframes comboPulse { from { transform: scale(1); } to { transform: scale(1.07); } }
+.keyboard.combo-5 { border-color: #c7cbf5; }
+.keyboard.combo-10 { border-color: #9fdcc6; }
+.keyboard.combo-20 { border-color: #f3cf94; box-shadow: 0 0 0 4px var(--amber-soft); }
+.keyboard.combo-50 { border-color: #f0a7c9; box-shadow: 0 0 0 4px var(--pink-soft); }
 
-@keyframes comboPulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.12); }
-}
-
-/* Keyboard combo glow levels */
-.keyboard {
-  position: relative;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.keyboard.combo-1 {
-  box-shadow: 0 0 8px rgba(212,184,253,0.08);
-}
-.keyboard.combo-5 {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(212,184,253,0.15), inset 0 0 30px rgba(212,184,253,0.04);
-}
-.keyboard.combo-10 {
-  border-color: var(--green);
-  box-shadow: 0 0 30px rgba(80,250,123,0.18), inset 0 0 40px rgba(80,250,123,0.05);
-}
-.keyboard.combo-20 {
-  border-color: var(--gold);
-  box-shadow: 0 0 40px rgba(241,250,140,0.15), inset 0 0 50px rgba(241,250,140,0.04);
-  animation: keyboardGlow 1.5s ease-in-out infinite alternate;
-}
-.keyboard.combo-50 {
-  border-color: var(--pink);
-  box-shadow: 0 0 60px rgba(255,121,198,0.2), inset 0 0 60px rgba(255,121,198,0.05);
-  animation: keyboardGlowIntense 0.8s ease-in-out infinite alternate;
-}
-
-@keyframes keyboardGlow {
-  from { box-shadow: 0 0 30px rgba(241,250,140,0.1), inset 0 0 40px rgba(241,250,140,0.03); }
-  to { box-shadow: 0 0 50px rgba(241,250,140,0.2), inset 0 0 60px rgba(241,250,140,0.06); }
-}
-@keyframes keyboardGlowIntense {
-  from { box-shadow: 0 0 50px rgba(255,121,198,0.15), inset 0 0 50px rgba(255,121,198,0.04); }
-  to { box-shadow: 0 0 80px rgba(255,121,198,0.3), inset 0 0 70px rgba(255,121,198,0.08); }
-}
-
-/* Results Modal */
+/* ── Modal ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(44,36,24,0.3);
-  backdrop-filter: blur(8px);
+  background: rgba(16,24,40,0.36);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
+  padding: 20px;
 }
 .modal-overlay.show { opacity: 1; pointer-events: all; }
 .modal {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 500px;
-  width: 90%;
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
   text-align: center;
-  transform: scale(0.9);
-  transition: transform 0.3s;
+  transform: scale(0.96) translateY(6px);
+  transition: transform 0.2s;
   box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
 }
-.modal-overlay.show .modal { transform: scale(1); }
-.modal-icon { font-size: 3rem; margin-bottom: 16px; }
-.modal-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; font-family: var(--font-sans); }
-.modal-subtitle { color: var(--text-dim); margin-bottom: 24px; font-size: 0.9rem; font-family: var(--font-sans); }
-.modal-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.modal-stat {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 16px 12px;
-  border: 1px solid var(--border);
-}
-.modal-stat-value { font-size: 1.3rem; font-weight: 700; font-family: var(--mono); }
-.modal-stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; font-family: var(--font-sans); }
-.modal-stars { font-size: 2rem; margin-bottom: 20px; letter-spacing: 4px; }
+.modal.wide { max-width: 560px; text-align: left; }
+.modal-overlay.show .modal { transform: scale(1) translateY(0); }
+.modal-icon { font-size: 2.6rem; margin-bottom: 10px; }
+.modal-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.4px; }
+.modal-subtitle { color: var(--text-dim); margin-top: 5px; font-size: 0.85rem; }
+.modal-stars { font-size: 1.7rem; letter-spacing: 5px; margin: 16px 0; color: var(--gold-fill); }
+.modal-stars .off { color: var(--surface-sunken); }
+.modal-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+.modal-stat { background: var(--surface-alt); border-radius: var(--radius-sm); padding: 12px 6px; }
+.modal-stat-value { font-size: 1.15rem; font-weight: 800; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.modal-stat-label { font-size: 0.62rem; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 .modal-xp {
-  background: var(--orange-dim);
-  color: var(--orange);
-  padding: 8px 16px;
+  background: var(--violet-soft);
+  color: var(--violet);
+  padding: 7px 15px;
   border-radius: 20px;
   display: inline-block;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 24px;
-}
-.modal-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.modal-kbd {
-  display: inline-block;
-  background: rgba(0,0,0,0.15);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-family: var(--mono);
-  font-size: 0.7rem;
   font-weight: 700;
-  margin-right: 4px;
-  min-width: 18px;
-  text-align: center;
+  font-size: 0.82rem;
+  margin-bottom: 20px;
 }
-.btn-primary .modal-kbd { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.15); }
+.modal-target {
+  display: flex; justify-content: center; gap: 18px;
+  font-size: 0.75rem; color: var(--text-dim);
+  background: var(--surface-alt); border-radius: var(--radius-sm);
+  padding: 9px 12px; margin-bottom: 18px;
+}
+.modal-target b { font-variant-numeric: tabular-nums; }
+.modal-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.modal-foot { margin-top: 16px; font-size: 0.7rem; color: var(--text-muted); }
+
 .btn {
-  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
   border-radius: var(--radius-sm);
-  border: none;
-  font-size: 0.9rem;
+  border: 1px solid transparent;
+  font-size: 0.85rem;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  transition: all 0.15s;
-  font-family: var(--font-sans);
+  transition: all 0.12s;
 }
-.btn-primary { background: var(--accent); color: #282a36; font-weight: 700; }
-.btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,184,253,0.25); }
-.btn-secondary { background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border); }
-.btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary kbd { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.28); color: #fff; }
+.btn-secondary { background: var(--surface); color: var(--text-dim); border-color: var(--border); }
+.btn-secondary:hover { border-color: var(--border-strong); color: var(--text); }
+
+/* Shortcuts help */
+.shortcut-group { margin-bottom: 18px; }
+.shortcut-group h4 { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-bottom: 9px; }
+.shortcut-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; font-size: 0.82rem; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+.shortcut-row:last-child { border-bottom: none; }
+.shortcut-keys { display: flex; gap: 4px; }
 
 /* Badges */
-.badges-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
-}
+.badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(146px, 1fr)); gap: 10px; }
 .badge-card {
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 16px 12px;
   text-align: center;
-  transition: all 0.2s;
-  box-shadow: var(--shadow);
 }
-.badge-card.earned { border-color: var(--gold); background: var(--orange-dim); }
-.badge-card.locked { opacity: 0.4; }
-.badge-card-icon { font-size: 2rem; margin-bottom: 8px; }
-.badge-card-name { font-size: 0.8rem; font-weight: 600; }
-.badge-card-desc { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
+.badge-card.earned { border-color: var(--gold-fill); background: linear-gradient(180deg, #fffdf5, var(--surface)); }
+.badge-card.locked { background: var(--bg-subtle); }
+.badge-card.locked .badge-card-icon { filter: grayscale(1); opacity: 0.4; }
+.badge-card.locked .badge-card-name { color: var(--text-muted); }
+.badge-card-icon { font-size: 1.7rem; margin-bottom: 7px; }
+.badge-card-name { font-size: 0.78rem; font-weight: 650; color: var(--text); }
+.badge-card-desc { font-size: 0.65rem; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
 
-/* History */
-.history-list { display: flex; flex-direction: column; gap: 8px; }
-.history-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
-  box-shadow: var(--shadow);
-}
-.history-date { font-size: 0.75rem; color: var(--text-muted); min-width: 80px; }
-.history-lesson { flex: 1; font-size: 0.85rem; }
-.history-wpm { font-family: var(--mono); font-weight: 600; color: var(--accent-light); min-width: 60px; }
-.history-accuracy { font-family: var(--mono); font-weight: 600; color: var(--green); min-width: 60px; }
-.history-stars { color: var(--gold); min-width: 50px; }
-
-/* Chart */
-.chart-container {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow);
-}
-.chart-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; font-family: var(--font-sans); }
-.chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 120px; }
-.chart-bar {
-  flex: 1;
-  background: linear-gradient(to top, var(--accent), var(--accent-light));
-  border-radius: 3px 3px 0 0;
-  min-height: 4px;
-  transition: height 0.5s ease;
-  position: relative;
-}
-.chart-bar:hover { opacity: 0.8; }
-.chart-bar-label {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.6rem;
+/* History table */
+.history-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.history-table th {
+  text-align: left;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
   color: var(--text-muted);
-  white-space: nowrap;
+  font-weight: 700;
+  padding: 0 12px 8px;
+  border-bottom: 1px solid var(--border);
 }
+.history-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.history-table tr:last-child td { border-bottom: none; }
+.history-table tbody tr:hover { background: var(--bg-subtle); }
+.history-table .num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.history-table .name { color: var(--text); font-weight: 550; }
+.tag { display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 0.62rem; font-weight: 700; background: var(--surface-alt); color: var(--text-muted); }
+.tag.test { background: var(--amber-soft); color: var(--amber); }
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 56px 20px;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-subtle);
+}
+.empty-icon { font-size: 2rem; margin-bottom: 10px; }
+.empty-title { font-size: 0.95rem; font-weight: 650; color: var(--text-dim); }
+.empty-desc { font-size: 0.8rem; margin-top: 5px; }
 
 /* Countdown */
 .countdown-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(30,26,21,0.95);
+  background: rgba(255,255,255,0.94);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s;
+  transition: opacity 0.15s;
 }
 .countdown-overlay.show { opacity: 1; pointer-events: all; }
 .countdown-number {
-  font-size: 8rem;
+  font-size: 7rem;
   font-weight: 800;
   color: var(--accent);
-  font-family: var(--font-sans);
+  letter-spacing: -4px;
   animation: countPulse 0.5s ease;
 }
 @keyframes countPulse {
-  0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.2); }
+  0% { transform: scale(0.6); opacity: 0; }
+  55% { transform: scale(1.14); }
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* Section titles */
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-sans);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .hamburger { display: block; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .live-stats { flex-wrap: wrap; }
-  .live-stat { min-width: calc(50% - 8px); }
-  .content { padding: 20px 16px; }
-  .typing-text { font-size: 1.1rem; }
-  .kb-key { min-width: 32px; height: 34px; font-size: 0.7rem; }
-  .kb-key.space { min-width: 180px; }
-}
-
-/* Hidden input for capturing */
-#hiddenInput {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* Tab Navigation */
-.tab-nav {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 24px;
-  background: var(--bg);
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-.tab-btn {
-  flex: 1;
-  padding: 10px 16px;
-  background: transparent;
-  border: none;
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.15s;
-  font-family: var(--font-sans);
-}
-.tab-btn.active { background: var(--accent); color: #282a36; font-weight: 700; }
-.tab-btn:hover:not(.active) { color: var(--text); }
-
-/* Achievement popup */
+/* Achievement toast */
 .achievement-popup {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: var(--bg-card);
-  border: 1px solid var(--gold);
+  bottom: 22px; right: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-fill);
   border-radius: var(--radius);
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
   z-index: 3000;
-  box-shadow: 0 4px 20px rgba(201,154,46,0.15);
-  transform: translateX(120%);
-  transition: transform 0.4s ease;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(140%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.achievement-popup.show { transform: translateX(0); }
-.achievement-popup-icon { font-size: 2rem; }
-.achievement-popup-text { font-size: 0.85rem; font-family: var(--font-sans); }
-.achievement-popup-name { font-weight: 700; color: var(--gold); }
-.achievement-popup-desc { color: var(--text-dim); font-size: 0.75rem; margin-top: 2px; }
+.achievement-popup.show { transform: translateY(0); }
+.achievement-popup-icon { font-size: 1.7rem; }
+.achievement-popup-name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+.achievement-popup-desc { color: var(--text-muted); font-size: 0.72rem; margin-top: 1px; }
 
-/* Theme Selector */
-.theme-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 8px 12px 0;
-  background: var(--bg);
+#hiddenInput { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .stats-grid, .stats-grid.four { grid-template-columns: repeat(2, 1fr); }
+  .live-stats { grid-template-columns: repeat(2, 1fr); }
 }
-.theme-tab {
-  flex: 1;
-  padding: 10px 8px;
-  text-align: center;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  transition: all 0.15s;
-  background: transparent;
-  font-family: var(--font-sans);
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); box-shadow: var(--shadow-lg); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hamburger { display: block; }
+  .content { padding: 22px 16px 18px; }
+  .main-header { padding: 0 16px; }
+  .hintbar { display: none; }
+  .typing-text { font-size: 1.05rem; }
+  .typing-area { padding: 20px; }
+  .kb-key { min-width: 30px; height: 34px; font-size: 0.66rem; }
+  .kb-key.space { min-width: 160px; }
+  .kb-key.wide { min-width: 46px; }
+  .hand-diagram { gap: 24px; }
+  .modal-stats { grid-template-columns: repeat(2, 1fr); }
 }
-.theme-tab:hover { color: var(--text-dim); background: var(--bg-card-hover); }
-.theme-tab.active {
-  color: var(--accent);
-  border-color: var(--border);
-  background: var(--bg-card);
-  position: relative;
-}
-.theme-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0; right: 0;
-  height: 2px;
-  background: var(--bg-card);
-}
-.theme-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: var(--shadow);
-}
-.theme-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.theme-card-icon { font-size: 2.5rem; margin-bottom: 12px; }
-.theme-card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; font-family: var(--font-sans); }
-.theme-card-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; font-family: var(--font-sans); }
-.theme-card-meta { display: flex; gap: 16px; font-size: 0.75rem; color: var(--text-muted); }
-.theme-card-progress {
-  height: 4px;
-  background: var(--bg);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 12px;
-}
-.theme-card-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--green));
-  border-radius: 2px;
-  transition: width 0.5s;
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to content</a>
+
 <div class="app">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="sidebar-header">
-      <div class="logo">Typrr</div>
-      <div class="logo-sub">Touch Typing Mastery</div>
-    </div>
-    <div class="user-stats">
-      <div class="stat-mini">
-        <div class="stat-mini-value" id="sideWpm">0</div>
-        <div class="stat-mini-label">Best WPM</div>
-      </div>
-      <div class="stat-mini">
-        <div class="stat-mini-value" id="sideAccuracy">0%</div>
-        <div class="stat-mini-label">Avg Accuracy</div>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">⌨</span>
+        <div>
+          <div class="brand-name">Typrr</div>
+          <div class="brand-sub">Touch typing mastery</div>
+        </div>
       </div>
     </div>
-    <div class="xp-bar-wrap">
-      <div class="xp-bar-header">
-        <span class="xp-level" id="xpLevel">Level 1</span>
-        <span class="xp-count" id="xpCount">0 / 100 XP</span>
+
+    <div class="level-block">
+      <div class="level-row">
+        <span class="level-badge" id="xpLevel">Level 1</span>
+        <span class="level-xp" id="xpCount">0 / 100 XP</span>
       </div>
-      <div class="xp-bar-track">
-        <div class="xp-bar-fill" id="xpBarFill"></div>
+      <div class="xp-track" role="progressbar" aria-label="Level progress" id="xpProgress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="xp-fill" id="xpBarFill"></div>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-value" id="sideWpm">0</div>
+          <div class="mini-stat-label">Best wpm</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-value" id="sideAccuracy">0%</div>
+          <div class="mini-stat-label">Avg acc</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-value" id="sideStreak">0</div>
+          <div class="mini-stat-label">Streak</div>
+        </div>
       </div>
     </div>
-    <nav class="nav" id="nav"></nav>
-    <div class="sidebar-footer">
-      <button class="btn-sidebar" onclick="App.showDashboard()">Dashboard</button>
-      <button class="btn-sidebar" onclick="App.showPerformance()">Stats</button>
-      <button class="btn-sidebar" onclick="App.showBadges()">Badges</button>
-      <button class="btn-sidebar" onclick="App.showHistory()">History</button>
-    </div>
+
+    <nav class="nav" id="nav" aria-label="Themes and stages"></nav>
+
+    <div class="sidebar-footer" id="viewNav" role="group" aria-label="Views"></div>
   </aside>
 
-  <!-- Main -->
   <div class="main">
     <header class="main-header">
-      <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-      <div class="breadcrumb" id="breadcrumb">Typrr — <span>Dashboard</span></div>
-      <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span> day streak</div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
+      <div class="header-right">
+        <div class="streak-chip" id="streakBadge" hidden>🔥 <span id="streakCount">0</span><span>day streak</span></div>
+        <button class="ghost-btn" id="helpBtn" aria-label="Keyboard shortcuts"><kbd>?</kbd> Shortcuts</button>
+      </div>
     </header>
-    <div class="content" id="content"></div>
+    <main class="content" id="content" tabindex="-1"></main>
+    <footer class="hintbar" id="hintbar" aria-hidden="true"></footer>
   </div>
 </div>
 
-<!-- Results Modal -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal" id="modal"></div>
 </div>
 
-<!-- Countdown -->
-<div class="countdown-overlay" id="countdownOverlay">
+<div class="modal-overlay" id="helpOverlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+  <div class="modal wide" id="helpModal"></div>
+</div>
+
+<div class="countdown-overlay" id="countdownOverlay" aria-hidden="true">
   <div class="countdown-number" id="countdownNumber">3</div>
 </div>
 
-<!-- Achievement Popup -->
-<div class="achievement-popup" id="achievementPopup">
+<div class="achievement-popup" id="achievementPopup" role="status" aria-live="polite">
   <div class="achievement-popup-icon" id="achievementIcon">🏆</div>
   <div>
     <div class="achievement-popup-name" id="achievementName">Achievement!</div>
@@ -1031,8 +1094,7 @@ body {
   </div>
 </div>
 
-<!-- Hidden input for mobile -->
-<input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<input type="text" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 
 <script>
 // ═══════════════════════════════════════════
@@ -1432,17 +1494,8 @@ const Store = {
 };
 
 // ═══════════════════════════════════════════
-// KEYBOARD MAP
+// KEYBOARD GEOMETRY
 // ═══════════════════════════════════════════
-const KEY_MAP = {
-  'a':'a','b':'b','c':'c','d':'d','e':'e','f':'f','g':'g','h':'h','i':'i',
-  'j':'j','k':'k','l':'l','m':'m','n':'n','o':'o','p':'p','q':'q','r':'r',
-  's':'s','t':'t','u':'u','v':'v','w':'w','x':'x','y':'y','z':'z',
-  '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',
-  ' ':'space','`':'`','-':'-','=':'=','[':'[',']':']','\\':'\\',';':';',"'":"'",',':',','.':'.','/':'/',
-  'Shift':'shift','Tab':'tab','CapsLock':'caps',
-};
-
 const KB_ROWS = [
   ['`','1','2','3','4','5','6','7','8','9','0','-','='],
   ['q','w','e','r','t','y','u','i','o','p','[',']','\\'],
@@ -1458,6 +1511,114 @@ const FINGER_MAP = {
   'z':'l5','x':'l4','c':'l3','v':'l2','b':'l2','n':'r2','m':'r2',',':'r3','.':'r4','/':'r5',
   ' ':'thumb'
 };
+
+const FINGERS = [
+  { id: 'l5', short: 'LP', name: 'Left pinky',   height: 30 },
+  { id: 'l4', short: 'LR', name: 'Left ring',    height: 40 },
+  { id: 'l3', short: 'LM', name: 'Left middle',  height: 46 },
+  { id: 'l2', short: 'LI', name: 'Left index',   height: 38 },
+  { id: 'r2', short: 'RI', name: 'Right index',  height: 38 },
+  { id: 'r3', short: 'RM', name: 'Right middle', height: 46 },
+  { id: 'r4', short: 'RR', name: 'Right ring',   height: 40 },
+  { id: 'r5', short: 'RP', name: 'Right pinky',  height: 30 },
+];
+const fingerVar = id => `var(--f-${id})`;
+
+// ═══════════════════════════════════════════
+// VIEW HELPERS
+// ═══════════════════════════════════════════
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
+const starHtml = n => Array.from({ length: 5 }, (_, i) =>
+  i < n ? '<span>★</span>' : '<span class="off">★</span>').join('');
+
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+
+function deltaChip(current, previous, unit) {
+  if (previous == null) return '';
+  const diff = current - previous;
+  const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+  const sign = diff > 0 ? '+' : '';
+  const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '·';
+  return `<span class="delta ${cls}">${arrow} ${sign}${diff}${unit || ''}</span> vs previous`;
+}
+
+// Responsive SVG line chart with area fill, average line and hover tooltips.
+function lineChart(series, opts) {
+  const o = Object.assign({ color: 'var(--accent)', unit: '', floorZero: true, id: 'c' }, opts || {});
+  if (series.length < 2) return '';
+  const W = 640, H = 190, L = 38, R = 12, T = 14, B = 26;
+  const values = series.map(s => s.value);
+  const rawMax = Math.max(...values);
+  const rawMin = Math.min(...values);
+  const span = Math.max(rawMax - rawMin, 1);
+  const max = Math.ceil((rawMax + span * 0.15) / 5) * 5;
+  const min = o.floorZero ? 0 : Math.max(0, Math.floor((rawMin - span * 0.25) / 5) * 5);
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  const px = i => L + (i * (W - L - R)) / (series.length - 1);
+  const py = v => T + (H - T - B) * (1 - (v - min) / Math.max(max - min, 1));
+
+  const pts = series.map((s, i) => `${px(i).toFixed(1)},${py(s.value).toFixed(1)}`);
+  const area = `M${L},${py(min)} L${pts.join(' L')} L${px(series.length - 1)},${py(min)} Z`;
+  const gridVals = [min, min + (max - min) / 2, max];
+  const bestIdx = values.indexOf(rawMax);
+
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria || 'trend chart')}">
+    <defs>
+      <linearGradient id="grad-${o.id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${o.color}" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="${o.color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${gridVals.map(v => `<line class="grid-line" x1="${L}" y1="${py(v).toFixed(1)}" x2="${W - R}" y2="${py(v).toFixed(1)}"/>
+      <text class="axis-label" x="${L - 7}" y="${(py(v) + 3).toFixed(1)}" text-anchor="end">${Math.round(v)}</text>`).join('')}
+    <path d="${area}" fill="url(#grad-${o.id})"/>
+    <line class="avg-line" x1="${L}" y1="${py(avg).toFixed(1)}" x2="${W - R}" y2="${py(avg).toFixed(1)}"/>
+    <text class="axis-label" x="${W - R}" y="${(py(avg) - 5).toFixed(1)}" text-anchor="end">avg ${Math.round(avg)}${o.unit}</text>
+    <polyline points="${pts.join(' ')}" fill="none" stroke="${o.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${series.map((s, i) => `<circle class="dot" cx="${px(i).toFixed(1)}" cy="${py(s.value).toFixed(1)}" r="${i === bestIdx ? 4 : 2.5}" fill="${i === bestIdx ? 'var(--amber-fill)' : o.color}" stroke="#fff" stroke-width="1.5"><title>${esc(s.label)}: ${s.value}${o.unit}</title></circle>`).join('')}
+    <text class="axis-label" x="${L}" y="${H - 8}">${esc(series[0].label)}</text>
+    <text class="axis-label" x="${W - R}" y="${H - 8}" text-anchor="end">${esc(series[series.length - 1].label)}</text>
+  </svg>`;
+}
+
+// GitHub-style practice heatmap for the last N weeks.
+function heatmap(history, weeks) {
+  const counts = {};
+  for (const h of history) {
+    const k = new Date(h.date).toDateString();
+    counts[k] = (counts[k] || 0) + 1;
+  }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(today);
+  start.setDate(start.getDate() - (weeks * 7 - 1) - today.getDay());
+
+  const cols = [];
+  for (let w = 0; w < weeks + 1; w++) {
+    let cells = '';
+    for (let dow = 0; dow < 7; dow++) {
+      const day = new Date(start);
+      day.setDate(start.getDate() + w * 7 + dow);
+      if (day > today) { cells += '<div class="heat-cell future"></div>'; continue; }
+      const n = counts[day.toDateString()] || 0;
+      const lvl = n === 0 ? '' : n === 1 ? 'l1' : n <= 3 ? 'l2' : n <= 6 ? 'l3' : 'l4';
+      cells += `<div class="heat-cell ${lvl}" title="${day.toLocaleDateString()} — ${n} session${n === 1 ? '' : 's'}"></div>`;
+    }
+    cols.push(`<div class="heatmap-col">${cells}</div>`);
+  }
+  return `<div class="heatmap">${cols.join('')}</div>
+    <div class="heat-scale">Less
+      <span class="heat-cell"></span><span class="heat-cell l1"></span><span class="heat-cell l2"></span><span class="heat-cell l3"></span><span class="heat-cell l4"></span>
+    More</div>`;
+}
+
+const VIEWS = [
+  { id: 'dashboard',   key: 'd', icon: '🏠', label: 'Dashboard' },
+  { id: 'performance', key: 's', icon: '📊', label: 'Stats' },
+  { id: 'badges',      key: 'b', icon: '🏅', label: 'Badges' },
+  { id: 'history',     key: 'h', icon: '📜', label: 'History' },
+];
 
 // ═══════════════════════════════════════════
 // GAME ENGINE
@@ -1479,17 +1640,21 @@ const App = {
   maxCombo: 0,
   startTime: null,
   timerInterval: null,
-  lessonDuration: 300, // 5 min max
+  lessonDuration: 300,
   elapsed: 0,
   wpm: 0,
   accuracy: 100,
+  composing: false,
 
   init() {
     Store.load();
     this.updateStreak();
+    this.renderViewNav();
     this.renderSidebar();
     this.showDashboard();
     this.setupInput();
+    this.setupGlobalKeys();
+    this.setupDelegation();
   },
 
   // ── Streak ──
@@ -1498,9 +1663,7 @@ const App = {
     const today = new Date().toDateString();
     if (d.lastPractice === today) return;
     const yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (d.lastPractice !== yesterday && d.lastPractice !== today) {
-      d.streak = 0;
-    }
+    if (d.lastPractice !== yesterday) d.streak = 0;
     Store.save();
   },
 
@@ -1519,7 +1682,7 @@ const App = {
     this.updateStreakUI();
   },
 
-  // ── XP System ──
+  // ── XP ──
   xpForLevel(lvl) { return 100 + (lvl - 1) * 50; },
 
   addXp(amount) {
@@ -1540,7 +1703,6 @@ const App = {
     return Math.max(10, base);
   },
 
-  // ── Stars ──
   calcStars(wpm, accuracy, minWpm, minAccuracy) {
     let stars = 1;
     if (accuracy >= minAccuracy) stars = 2;
@@ -1579,61 +1741,99 @@ const App = {
     document.getElementById("achievementName").textContent = badge.name;
     document.getElementById("achievementDesc").textContent = badge.desc;
     el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 3500);
+    clearTimeout(this._achievementTimer);
+    this._achievementTimer = setTimeout(() => el.classList.remove("show"), 4000);
   },
 
-  // ── Sidebar ──
+  // ── Chrome ──
+  renderViewNav() {
+    document.getElementById("viewNav").innerHTML = VIEWS.map(v =>
+      `<button class="view-btn" data-act="view" data-arg="${v.id}" data-view="${v.id}">
+        <kbd>${v.key}</kbd><span>${v.label}</span>
+      </button>`).join('');
+  },
+
+  setViewChrome(viewId, crumbs, hints) {
+    this.view = viewId;
+    document.querySelectorAll('.view-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.view === viewId));
+
+    document.getElementById("breadcrumb").innerHTML = crumbs.map((c, i) => {
+      const sep = i ? '<span class="sep">/</span>' : '';
+      return c.act
+        ? `${sep}<button data-act="${c.act}" data-arg="${c.arg ?? ''}">${esc(c.label)}</button>`
+        : `${sep}<span class="current">${esc(c.label)}</span>`;
+    }).join('');
+
+    const hintRows = (hints || []).concat([['Esc', 'back'], ['?', 'shortcuts']]);
+    const seen = new Set();
+    document.getElementById("hintbar").innerHTML = hintRows
+      .filter(([k]) => !seen.has(k) && seen.add(k))
+      .map(([k, t]) => `<span><kbd>${esc(k)}</kbd> ${esc(t)}</span>`).join('');
+
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("hamburger").setAttribute("aria-expanded", "false");
+    this.indexNavItems();
+  },
+
+  // Assigns 1-9 quick-launch numbers and roving tabindex to the current view's items.
+  indexNavItems() {
+    const items = this.navItems();
+    items.forEach((el, i) => {
+      el.tabIndex = i === 0 ? 0 : -1;
+      const slot = el.querySelector(".card-corner-key");
+      if (slot) slot.textContent = i < 9 ? String(i + 1) : "";
+    });
+  },
+
+  navItems() {
+    return [...document.querySelectorAll('#content [data-nav]')].filter(el => !el.disabled);
+  },
+
   renderSidebar() {
     const d = Store.get();
-    const nav = document.getElementById("nav");
+    let html = `<div class="nav-section-title">Themes <kbd>t</kbd></div>`;
 
-    // Theme selector
-    let html = `<div class="nav-section-title">Themes</div>`;
     for (const tid of THEME_ORDER) {
       const t = THEMES[tid];
-      const active = tid === this.currentTheme;
       const stages = t.stages;
-      const clearedCount = stages.filter(s => d.clearedStages.includes(s.id)).length;
-      const totalLessons = stages.reduce((sum, s) => sum + s.lessons.length, 0);
-      const doneLessons = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
-      html += `<div class="nav-item ${active ? 'active' : ''}" onclick="App.switchTheme('${tid}')">
-        <div class="nav-item-icon" style="font-size:1.1rem">${t.icon}</div>
-        <div class="nav-item-text">
-          <div>${t.name}</div>
-          <div style="font-size:0.6rem;color:var(--text-muted)">${doneLessons}/${totalLessons} lessons · ${clearedCount}/${stages.length} cleared</div>
-        </div>
-      </div>`;
+      const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
+      const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+      html += `<button class="nav-item ${tid === this.currentTheme ? 'active' : ''}" data-act="theme" data-arg="${tid}" ${tid === this.currentTheme ? 'aria-current="true"' : ''}>
+        <span class="nav-item-icon">${t.icon}</span>
+        <span class="nav-item-text">
+          <span class="nav-item-title">${esc(t.name)}</span>
+          <span class="nav-item-sub">${done}/${total} lessons · ${cleared}/${stages.length} cleared</span>
+        </span>
+      </button>`;
     }
 
-    // Stages for current theme
     const stages = getStages(this.currentTheme);
-    html += `<div class="nav-section-title" style="margin-top:8px">${THEMES[this.currentTheme].name}</div>`;
+    html += `<div class="nav-section-title">${esc(THEMES[this.currentTheme].name)}</div>`;
     for (const stage of stages) {
       const cleared = d.clearedStages.includes(stage.id);
       const prevCleared = stage.id === 1 || d.clearedStages.includes(stage.id - 1);
       const locked = !prevCleared && !cleared;
-      const lessonCount = stage.lessons.length;
-      const completedInStage = stage.lessons.filter(l => d.completedLessons[l.id]).length;
-      const progress = cleared ? lessonCount : completedInStage;
+      const count = stage.lessons.length;
+      const doneCount = stage.lessons.filter(l => d.completedLessons[l.id]).length;
 
-      let cls = locked ? "locked" : (cleared ? "completed" : "current");
-      let badge = "";
-      if (stage.test && !cleared && prevCleared && completedInStage >= lessonCount) {
-        badge = `<span class="nav-item-badge badge-test">TEST</span>`;
-      } else if (!locked && !cleared && completedInStage === 0) {
-        badge = `<span class="nav-item-badge badge-new">NEW</span>`;
-      }
+      let badge = '';
+      if (cleared) badge = `<span class="nav-item-badge badge-done">✓</span>`;
+      else if (stage.test && prevCleared && doneCount >= count) badge = `<span class="nav-item-badge badge-test">TEST</span>`;
+      else if (!locked && doneCount === 0) badge = `<span class="nav-item-badge badge-new">NEW</span>`;
 
-      html += `<div class="nav-item ${cls}" onclick="App.openStage(${stage.id})" data-stage="${stage.id}">
-        <div class="nav-item-icon">${stage.icon}</div>
-        <div class="nav-item-text">
-          <div>${stage.title}</div>
-          <div style="font-size:0.65rem;color:var(--text-muted)">${progress}/${lessonCount} lessons</div>
-        </div>
+      html += `<button class="nav-item ${locked ? '' : cleared ? 'completed' : 'current'}" data-act="stage" data-arg="${stage.id}" ${locked ? 'disabled aria-disabled="true"' : ''}>
+        <span class="nav-item-icon">${locked ? '🔒' : stage.icon}</span>
+        <span class="nav-item-text">
+          <span class="nav-item-title">${esc(stage.title)}</span>
+          <span class="nav-item-sub">${cleared ? count : doneCount}/${count} lessons</span>
+        </span>
         ${badge}
-      </div>`;
+      </button>`;
     }
-    nav.innerHTML = html;
+
+    document.getElementById("nav").innerHTML = html;
     this.updateXpUI();
     this.updateStreakUI();
     this.updateSideStats();
@@ -1646,18 +1846,26 @@ const App = {
     this.showDashboard();
   },
 
+  cycleTheme(step) {
+    const i = THEME_ORDER.indexOf(this.currentTheme);
+    this.switchTheme(THEME_ORDER[(i + step + THEME_ORDER.length) % THEME_ORDER.length]);
+  },
+
   updateXpUI() {
     const d = Store.get();
     const need = this.xpForLevel(d.level);
+    const percent = Math.round((d.xp / need) * 100);
     document.getElementById("xpLevel").textContent = `Level ${d.level}`;
     document.getElementById("xpCount").textContent = `${d.xp} / ${need} XP`;
-    document.getElementById("xpBarFill").style.width = `${(d.xp / need) * 100}%`;
+    document.getElementById("xpBarFill").style.width = `${percent}%`;
+    document.getElementById("xpProgress").setAttribute("aria-valuenow", percent);
   },
 
   updateStreakUI() {
     const d = Store.get();
     document.getElementById("streakCount").textContent = d.streak;
-    document.getElementById("streakBadge").style.display = d.streak > 0 ? "flex" : "none";
+    document.getElementById("streakBadge").hidden = d.streak === 0;
+    document.getElementById("sideStreak").textContent = d.streak;
   },
 
   updateSideStats() {
@@ -1668,117 +1876,127 @@ const App = {
     document.getElementById("sideAccuracy").textContent = avgAcc + "%";
   },
 
-  // ── Navigation ──
+  // ── Next recommended target ──
+  nextTarget() {
+    const d = Store.get();
+    const stages = getStages(this.currentTheme);
+    for (const stage of stages) {
+      if (d.clearedStages.includes(stage.id)) continue;
+      const prevCleared = stage.id === 1 || d.clearedStages.includes(stage.id - 1);
+      if (!prevCleared) break;
+      const pending = stage.lessons.find(l => !d.completedLessons[l.id]);
+      if (pending) return { stage, lesson: pending, isTest: false };
+      if (stage.test) return { stage, lesson: null, isTest: true };
+    }
+    const last = stages[stages.length - 1];
+    return { stage: last, lesson: last.lessons[0], isTest: false };
+  },
+
+  startNext() {
+    const t = this.nextTarget();
+    if (t.isTest) this.startTest(t.stage.id);
+    else this.startLesson(t.stage.id, t.lesson.id);
+  },
+
+  // ── Dashboard ──
   showDashboard() {
-    this.view = "dashboard";
     this.stopTyping();
     const d = Store.get();
-    const el = document.getElementById("content");
-    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Dashboard</span>";
-
-    // Recent chart
-    const recent = d.history.slice(-14);
-    let chartHtml = "";
-    if (recent.length > 1) {
-      const maxWpm = Math.max(...recent.map(r => r.wpm), 1);
-      chartHtml = `<div class="chart-container">
-        <div class="chart-title">📈 WPM Progress (Last ${recent.length} Sessions)</div>
-        <div class="chart-bars">
-          ${recent.map((r, i) => `<div class="chart-bar" style="height:${(r.wpm / maxWpm) * 100}%" title="${r.wpm} WPM — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
-        </div>
-      </div>`;
-    }
-
-    // Current stage progress (theme-aware)
     const stages = getStages(this.currentTheme);
-    const themeName = THEMES[this.currentTheme].name;
-    const currentStage = stages.find(s => {
-      const prev = s.id === 1 || d.clearedStages.includes(s.id - 1);
-      return prev && !d.clearedStages.includes(s.id);
-    }) || stages[stages.length - 1];
+    const theme = THEMES[this.currentTheme];
+    this.setViewChrome("dashboard", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Dashboard' }],
+      [['n', 'start next lesson'], ['1-9', 'open stage'], ['↑↓←→', 'move']]);
 
-    const completedInCurrent = currentStage.lessons.filter(l => d.completedLessons[l.id]).length;
-    const testReady = completedInCurrent >= currentStage.lessons.length && !d.clearedStages.includes(currentStage.id);
-    const stageProgress = d.clearedStages.includes(currentStage.id) ? 100 : Math.round((completedInCurrent / currentStage.lessons.length) * 100);
+    const target = this.nextTarget();
+    const recent = d.history.slice(-14);
+    const spark = recent.length > 1 ? `<div class="panel" style="margin-bottom:12px">
+        <div class="panel-head">
+          <div class="panel-title">WPM over your last ${recent.length} sessions</div>
+          <div class="panel-note">best ${Math.max(...recent.map(r => r.wpm))} · latest ${recent[recent.length - 1].wpm}</div>
+        </div>
+        ${lineChart(recent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'dash', aria: 'WPM trend' })}
+      </div>` : '';
 
-    el.innerHTML = `
-      <div class="dashboard-title">Welcome back! 👋</div>
-      <div class="dashboard-subtitle">Keep up the great work. ${d.streak > 0 ? `You're on a ${d.streak}-day streak!` : "Start a new streak today!"}</div>
+    const last5 = d.history.slice(-5);
+    const prev5 = d.history.slice(-10, -5);
+    const avg = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
+    const accAvg = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
 
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">Welcome back 👋</h1>
+        <p class="page-subtitle">${d.streak > 0 ? `You're on a <strong>${d.streak}-day streak</strong>. Keep it alive.` : 'Complete one lesson today to start a streak.'}</p>
+      </div>
+
+      <button class="continue-card" data-act="${target.isTest ? 'test' : 'lesson'}" data-arg="${target.stage.id}" data-arg2="${target.lesson ? target.lesson.id : ''}" data-nav>
+        <span class="continue-icon">${target.isTest ? '🧪' : '▶'}</span>
+        <span class="continue-body">
+          <span class="continue-eyebrow">${target.isTest ? 'Stage test unlocked' : 'Continue where you left off'}</span>
+          <span class="continue-title">${esc(target.isTest ? target.stage.test.title : target.lesson.title)}</span>
+          <span class="continue-meta">${esc(target.stage.title)} · ${esc(theme.name)}</span>
+        </span>
+        <span class="continue-cta"><kbd>n</kbd> Start</span>
+      </button>
+
+      <div class="section-title">Your numbers</div>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-card-icon">⌨️</div>
-          <div class="stat-card-value">${d.bestWpm}</div>
+        <div class="stat-card" style="--tone:var(--accent)">
           <div class="stat-card-label">Best WPM</div>
+          <div class="stat-card-value">${d.bestWpm}</div>
+          <div class="stat-card-foot">${avg(last5) != null ? deltaChip(avg(last5), avg(prev5), '') || `last 5 avg ${avg(last5)}` : 'no sessions yet'}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">🎯</div>
-          <div class="stat-card-value">${d.bestAccuracy}%</div>
-          <div class="stat-card-label">Best Accuracy</div>
+        <div class="stat-card" style="--tone:var(--green)">
+          <div class="stat-card-label">Best accuracy</div>
+          <div class="stat-card-value">${d.bestAccuracy}<span class="unit">%</span></div>
+          <div class="stat-card-foot">${accAvg(last5) != null ? deltaChip(accAvg(last5), accAvg(prev5), '%') || `last 5 avg ${accAvg(last5)}%` : 'no sessions yet'}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">📚</div>
+        <div class="stat-card" style="--tone:var(--cyan)">
+          <div class="stat-card-label">Lessons done</div>
           <div class="stat-card-value">${d.totalLessons}</div>
-          <div class="stat-card-label">Lessons Done</div>
+          <div class="stat-card-foot">${d.history.length} total sessions</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">🏅</div>
-          <div class="stat-card-value">${d.clearedStages.length}/${stages.length}</div>
-          <div class="stat-card-label">Stages Cleared</div>
-        </div>
-      </div>
-
-      ${chartHtml}
-
-      <div class="section-title">📍 Current Stage: ${currentStage.title}</div>
-      <div class="stage-card ${d.clearedStages.includes(currentStage.id) ? 'completed' : ''}" onclick="App.openStage(${currentStage.id})" style="margin-bottom:24px">
-        <div class="stage-card-header">
-          <div class="stage-card-number">${currentStage.id}</div>
-          <div>
-            <div class="stage-card-title">${currentStage.title}</div>
-            <div style="font-size:0.75rem;color:var(--text-dim)">${currentStage.desc}</div>
-          </div>
-        </div>
-        <div class="stage-progress-bar"><div class="stage-progress-fill" style="width:${stageProgress}%"></div></div>
-        <div class="stage-meta">
-          <span>${completedInCurrent}/${currentStage.lessons.length} lessons</span>
-          <span>${testReady ? '🧪 Test Ready!' : d.clearedStages.includes(currentStage.id) ? '✅ Cleared' : `${stageProgress}% complete`}</span>
+        <div class="stat-card" style="--tone:var(--amber-fill)">
+          <div class="stat-card-label">Stages cleared</div>
+          <div class="stat-card-value">${d.clearedStages.filter(id => stages.some(s => s.id === id)).length}<span class="unit">/${stages.length}</span></div>
+          <div class="stat-card-foot">${esc(theme.name)}</div>
         </div>
       </div>
 
-      <div class="section-title">🗓️ ${themeName} — All Stages</div>
-      <div class="stages-grid">
+      <div class="section-title">Progress</div>
+      ${spark || `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet</div><div class="empty-desc">Finish two sessions to unlock your progress chart.</div></div>`}
+
+      <div class="section-title">${esc(theme.name)} stages <span class="count">${stages.length}</span></div>
+      <div class="card-grid">
         ${stages.map(s => {
           const cleared = d.clearedStages.includes(s.id);
           const prevCleared = s.id === 1 || d.clearedStages.includes(s.id - 1);
           const locked = !prevCleared && !cleared;
           const done = s.lessons.filter(l => d.completedLessons[l.id]).length;
-          const pct = cleared ? 100 : Math.round((done / s.lessons.length) * 100);
-          return `<div class="stage-card ${locked ? 'locked' : ''} ${cleared ? 'completed' : ''}" onclick="App.openStage(${s.id})">
-            <div class="lock-icon">🔒</div>
-            <div class="stage-card-header">
-              <div class="stage-card-number">${s.id}</div>
-              <div class="stage-card-title">${s.title}</div>
-            </div>
-            <div class="stage-card-desc">${s.desc}</div>
-            <div class="stage-progress-bar"><div class="stage-progress-fill" style="width:${pct}%"></div></div>
-            <div class="stage-meta">
-              <span>${done}/${s.lessons.length} lessons</span>
-              <span>${cleared ? '✅' : locked ? '🔒' : `${pct}%`}</span>
-            </div>
-          </div>`;
-        }).join("")}
+          const p = cleared ? 100 : pct(done, s.lessons.length);
+          return `<button class="card ${cleared ? 'done' : ''}" data-act="stage" data-arg="${s.id}" ${locked ? 'disabled' : 'data-nav'}>
+            <span class="card-corner-key"></span>
+            <span class="card-head">
+              <span class="card-badge">${locked ? '🔒' : s.id}</span>
+              <span>
+                <span class="card-title">${esc(s.title)}</span>
+                <span class="card-sub">${locked ? 'Clear the previous stage' : `${done}/${s.lessons.length} lessons`}</span>
+              </span>
+            </span>
+            <span class="card-desc">${esc(s.desc)}</span>
+            <span class="progress-track"><span class="progress-fill ${cleared ? 'done' : ''}" style="width:${p}%"></span></span>
+            <span class="card-foot"><span>${p}% complete</span><span>${cleared ? '✅ cleared' : locked ? 'locked' : s.test ? '🧪 test at the end' : ''}</span></span>
+          </button>`;
+        }).join('')}
       </div>
     `;
+    this.indexNavItems();
   },
 
-  // ── Performance / Stats View ──
+  // ── Stats ──
   showPerformance() {
-    this.view = "performance";
     this.stopTyping();
     const d = Store.get();
-    const el = document.getElementById("content");
-    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Stats</span>";
+    this.setViewChrome("performance", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Stats' }], [['d', 'dashboard']]);
 
     const h = d.history;
     const sessions = h.length;
@@ -1786,215 +2004,247 @@ const App = {
     const avgAcc = sessions ? Math.round(h.reduce((s, r) => s + r.accuracy, 0) / sessions) : 0;
     const totalXp = h.reduce((s, r) => s + (r.xp || 0), 0);
     const totalStars = h.reduce((s, r) => s + (r.stars || 0), 0);
+    const totalChars = h.reduce((s, r) => s + (r.totalChars || 0), 0);
 
-    // WPM progression chart
-    const recent = h.slice(-20);
-    let wpmChart = "";
-    if (recent.length > 1) {
-      const max = Math.max(...recent.map(r => r.wpm), 1);
-      wpmChart = `<div class="chart-container">
-        <div class="chart-title">📈 WPM Trend (Last ${recent.length} Sessions)</div>
-        <div class="chart-bars">
-          ${recent.map((r, i) => `<div class="chart-bar" style="height:${(r.wpm / max) * 100}%" title="${r.wpm} WPM — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
+    if (!sessions) {
+      document.getElementById("content").innerHTML = `
+        <div class="page-head">
+          <h1 class="page-title">📊 Stats</h1>
+          <p class="page-subtitle">Speed, accuracy and consistency over time.</p>
         </div>
-      </div>`;
-    }
-
-    // Accuracy chart
-    let accChart = "";
-    if (recent.length > 1) {
-      accChart = `<div class="chart-container">
-        <div class="chart-title">🎯 Accuracy Trend (Last ${recent.length} Sessions)</div>
-        <div class="chart-bars">
-          ${recent.map(r => `<div class="chart-bar" style="height:${r.accuracy}%;background:var(--accent)" title="${r.accuracy}% — ${new Date(r.date).toLocaleDateString()}"></div>`).join("")}
-        </div>
-      </div>`;
-    }
-
-    // Top error keys
-    const errorEntries = Object.entries(d.errorKeys || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
-    let errorHtml = "";
-    if (errorEntries.length) {
-      const maxErr = errorEntries[0][1];
-      errorHtml = `<div class="section-title">🔴 Most Missed Keys</div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px">
-          ${errorEntries.map(([key, count]) => `
-            <div style="display:flex;align-items:center;gap:10px">
-              <span style="display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:28px;background:var(--surface-alt);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:0.85rem">${key === ' ' ? '␣' : key}</span>
-              <div style="flex:1;height:8px;background:var(--surface-alt);border-radius:4px;overflow:hidden">
-                <div style="height:100%;width:${(count / maxErr) * 100}%;background:var(--danger);border-radius:4px"></div>
-              </div>
-              <span style="color:var(--text-dim);font-size:0.75rem;min-width:40px;text-align:right">${count}×</span>
-            </div>
-          `).join("")}
+        <div class="empty">
+          <div class="empty-icon">📊</div>
+          <div class="empty-title">Nothing to measure yet</div>
+          <div class="empty-desc">Finish your first lesson and your stats will appear here.</div>
         </div>`;
+      this.indexNavItems();
+      return;
     }
 
-    // Per-theme breakdown
-    let themeBreakdown = "";
-    for (const tid of THEME_ORDER) {
+    const recent = h.slice(-20);
+    const last5 = h.slice(-5), prev5 = h.slice(-10, -5);
+    const mean = (arr, k) => arr.length ? Math.round(arr.reduce((s, r) => s + r[k], 0) / arr.length) : null;
+
+    const wpmChart = recent.length > 1 ? `<div class="panel" style="margin-bottom:12px">
+      <div class="panel-head">
+        <div class="panel-title">Speed trend</div>
+        <div class="panel-note">last ${recent.length} sessions · peak ${Math.max(...recent.map(r => r.wpm))} wpm</div>
+      </div>
+      ${lineChart(recent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'w', aria: 'WPM trend' })}
+      <div class="chart-legend"><span><i style="background:var(--accent)"></i>WPM</span><span><i style="background:var(--amber-fill)"></i>Personal peak in range</span><span><i style="background:var(--text-muted)"></i>Average</span></div>
+    </div>` : '';
+
+    const accChart = recent.length > 1 ? `<div class="panel" style="margin-bottom:12px">
+      <div class="panel-head">
+        <div class="panel-title">Accuracy trend</div>
+        <div class="panel-note">last ${recent.length} sessions · peak ${Math.max(...recent.map(r => r.accuracy))}%</div>
+      </div>
+      ${lineChart(recent.map(r => ({ value: r.accuracy, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--green)', unit: '%', floorZero: false, id: 'a', aria: 'Accuracy trend' })}
+    </div>` : '';
+
+    const errorEntries = Object.entries(d.errorKeys || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxErr = errorEntries.length ? errorEntries[0][1] : 1;
+    const errorHtml = errorEntries.length ? `<div class="panel">
+      <div class="panel-head"><div class="panel-title">Keys you miss most</div><div class="panel-note">drill these to level up fastest</div></div>
+      ${errorEntries.map(([key, count]) => `<div class="keybar-row">
+        <span class="keybar-key">${key === ' ' ? '␣' : esc(key)}</span>
+        <span class="keybar-track"><span class="keybar-fill" style="width:${(count / maxErr) * 100}%"></span></span>
+        <span class="keybar-count">${count}×</span>
+      </div>`).join('')}
+    </div>` : '';
+
+    const themeRows = THEME_ORDER.map(tid => {
       const t = THEMES[tid];
       const stages = getStages(tid);
       const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
       const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
       const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
-      themeBreakdown += `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface-alt);border-radius:10px;margin-bottom:8px">
-        <span style="font-size:1.4rem">${t.icon}</span>
-        <div style="flex:1">
-          <div style="font-weight:600;font-size:0.9rem">${t.name}</div>
-          <div style="font-size:0.7rem;color:var(--text-dim)">${done}/${total} lessons · ${cleared}/${stages.length} cleared</div>
-        </div>
-        <div style="width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${total ? Math.round((done / total) * 100) : 0}%;background:var(--accent);border-radius:3px"></div>
-        </div>
+      const p = pct(done, total);
+      return `<div class="themerow">
+        <span class="themerow-icon">${t.icon}</span>
+        <span class="themerow-body">
+          <span class="themerow-name">${esc(t.name)}</span>
+          <span class="themerow-meta">${done}/${total} lessons · ${cleared}/${stages.length} stages cleared</span>
+        </span>
+        <span class="themerow-track"><span class="progress-fill ${p === 100 ? 'done' : ''}" style="width:${p}%"></span></span>
+        <span class="themerow-pct">${p}%</span>
       </div>`;
-    }
+    }).join('');
 
-    el.innerHTML = `
-      <div class="dashboard-title">📊 Performance Stats</div>
-      <div class="dashboard-subtitle">${sessions} practice sessions · Level ${d.level} · ${d.streak}-day streak</div>
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">📊 Stats</h1>
+        <p class="page-subtitle">${sessions} sessions · Level ${d.level} · ${totalChars.toLocaleString()} characters typed</p>
+      </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-card-icon">⌨️</div>
-          <div class="stat-card-value">${d.bestWpm}</div>
+      <div class="stats-grid four">
+        <div class="stat-card" style="--tone:var(--accent)">
           <div class="stat-card-label">Best WPM</div>
+          <div class="stat-card-value">${d.bestWpm}</div>
+          <div class="stat-card-foot">${deltaChip(mean(last5, 'wpm'), mean(prev5, 'wpm'), '') || `avg ${avgWpm} all-time`}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">📊</div>
+        <div class="stat-card" style="--tone:var(--cyan)">
+          <div class="stat-card-label">Average WPM</div>
           <div class="stat-card-value">${avgWpm}</div>
-          <div class="stat-card-label">Avg WPM</div>
+          <div class="stat-card-foot">last 5: ${mean(last5, 'wpm')} wpm</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">🎯</div>
-          <div class="stat-card-value">${d.bestAccuracy}%</div>
-          <div class="stat-card-label">Best Accuracy</div>
+        <div class="stat-card" style="--tone:var(--green)">
+          <div class="stat-card-label">Best accuracy</div>
+          <div class="stat-card-value">${d.bestAccuracy}<span class="unit">%</span></div>
+          <div class="stat-card-foot">${deltaChip(mean(last5, 'accuracy'), mean(prev5, 'accuracy'), '%') || `avg ${avgAcc}% all-time`}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">📐</div>
-          <div class="stat-card-value">${avgAcc}%</div>
-          <div class="stat-card-label">Avg Accuracy</div>
+        <div class="stat-card" style="--tone:var(--red)">
+          <div class="stat-card-label">Average accuracy</div>
+          <div class="stat-card-value">${avgAcc}<span class="unit">%</span></div>
+          <div class="stat-card-foot">last 5: ${mean(last5, 'accuracy')}%</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">📚</div>
-          <div class="stat-card-value">${d.totalLessons}</div>
-          <div class="stat-card-label">Lessons Done</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">⭐</div>
-          <div class="stat-card-value">${totalStars}</div>
-          <div class="stat-card-label">Total Stars</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">✨</div>
-          <div class="stat-card-value">${totalXp}</div>
+        <div class="stat-card" style="--tone:var(--violet)">
           <div class="stat-card-label">Total XP</div>
+          <div class="stat-card-value">${totalXp}</div>
+          <div class="stat-card-foot">level ${d.level}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon">🏅</div>
-          <div class="stat-card-value">${d.badges.length}/${BADGES.length}</div>
+        <div class="stat-card" style="--tone:var(--gold-fill)">
+          <div class="stat-card-label">Stars earned</div>
+          <div class="stat-card-value">${totalStars}</div>
+          <div class="stat-card-foot">${(totalStars / sessions).toFixed(1)} per session</div>
+        </div>
+        <div class="stat-card" style="--tone:var(--amber-fill)">
+          <div class="stat-card-label">Current streak</div>
+          <div class="stat-card-value">${d.streak}<span class="unit">d</span></div>
+          <div class="stat-card-foot">${d.lastPractice ? 'last practice ' + esc(new Date(d.lastPractice).toLocaleDateString()) : 'not started'}</div>
+        </div>
+        <div class="stat-card" style="--tone:var(--pink)">
           <div class="stat-card-label">Badges</div>
+          <div class="stat-card-value">${d.badges.length}<span class="unit">/${BADGES.length}</span></div>
+          <div class="stat-card-foot">${pct(d.badges.length, BADGES.length)}% unlocked</div>
         </div>
       </div>
 
+      <div class="section-title">Trends</div>
       ${wpmChart}
       ${accChart}
 
-      ${errorHtml}
+      <div class="section-title">Consistency</div>
+      <div class="panel" style="margin-bottom:12px">
+        <div class="panel-head"><div class="panel-title">Practice calendar</div><div class="panel-note">last 18 weeks</div></div>
+        ${heatmap(h, 18)}
+      </div>
 
-      <div class="section-title">📂 Themes Progress</div>
-      ${themeBreakdown}
+      ${errorEntries.length ? '<div class="section-title">Weak spots</div>' + errorHtml : ''}
+
+      <div class="section-title">Themes</div>
+      ${themeRows}
     `;
+    this.indexNavItems();
   },
 
+  // ── Stage ──
   openStage(stageId) {
     const d = Store.get();
-    const stages = getStages(this.currentTheme);
-    const stage = stages.find(s => s.id === stageId);
+    const stage = getStages(this.currentTheme).find(s => s.id === stageId);
     if (!stage) return;
     const prevCleared = stageId === 1 || d.clearedStages.includes(stageId - 1);
-    const locked = !prevCleared && !d.clearedStages.includes(stageId);
-    if (locked) return;
+    if (!prevCleared && !d.clearedStages.includes(stageId)) return;
 
-    this.view = "stage";
-    this.currentStage = stage;
     this.stopTyping();
-    const el = document.getElementById("content");
-    document.getElementById("breadcrumb").innerHTML = `Stages — <span>${stage.title}</span>`;
+    this.currentStage = stage;
+    this.setViewChrome("stage",
+      [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: THEMES[this.currentTheme].name, act: 'view', arg: 'dashboard' }, { label: stage.title }],
+      [['1-9', 'start lesson'], ['↑↓←→', 'move'], ['Enter', 'open']]);
 
     const cleared = d.clearedStages.includes(stageId);
     const allDone = stage.lessons.every(l => d.completedLessons[l.id]);
+    const doneCount = stage.lessons.filter(l => d.completedLessons[l.id]).length;
 
-    el.innerHTML = `
-      <div class="lesson-header">
-        <div>
-          <div class="lesson-title">${stage.icon} ${stage.title}</div>
-          <div style="color:var(--text-dim);font-size:0.85rem;margin-top:4px">${stage.desc}</div>
-        </div>
-        ${cleared ? '<span style="color:var(--green);font-weight:600">✅ Cleared</span>' : ''}
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">${stage.icon} ${esc(stage.title)}</h1>
+        <p class="page-subtitle">${esc(stage.desc)}</p>
       </div>
 
-      <div class="section-title">📖 Lessons</div>
-      <div class="stages-grid" style="margin-bottom:32px">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card" style="--tone:var(--accent)">
+          <div class="stat-card-label">Lessons</div>
+          <div class="stat-card-value">${doneCount}<span class="unit">/${stage.lessons.length}</span></div>
+          <div class="stat-card-foot">${pct(doneCount, stage.lessons.length)}% complete</div>
+        </div>
+        <div class="stat-card" style="--tone:var(--gold-fill)">
+          <div class="stat-card-label">Stars</div>
+          <div class="stat-card-value">${stage.lessons.reduce((s, l) => s + (d.completedLessons[l.id]?.stars || 0), 0)}<span class="unit">/${stage.lessons.length * 5}</span></div>
+          <div class="stat-card-foot">best per lesson</div>
+        </div>
+        <div class="stat-card" style="--tone:${cleared ? 'var(--green)' : 'var(--amber-fill)'}">
+          <div class="stat-card-label">Status</div>
+          <div class="stat-card-value" style="font-size:1.1rem;margin-top:10px">${cleared ? '✅ Cleared' : allDone ? '🧪 Test ready' : '⏳ In progress'}</div>
+          <div class="stat-card-foot">${stage.test ? `target ${stage.test.minWpm} wpm · ${stage.test.minAccuracy}%` : 'no test'}</div>
+        </div>
+      </div>
+
+      <div class="section-title">Lessons <span class="count">${stage.lessons.length}</span></div>
+      <div class="card-grid">
         ${stage.lessons.map((lesson, i) => {
           const cl = d.completedLessons[lesson.id];
-          const stars = cl ? cl.stars : 0;
-          const starStr = "★".repeat(stars) + "☆".repeat(5 - stars);
-          return `<div class="stage-card ${cl ? 'completed' : ''}" onclick="App.startLesson(${stageId}, '${lesson.id}')" style="cursor:pointer">
-            <div class="stage-card-header">
-              <div class="stage-card-number" style="background:${cl ? 'var(--green-dim)' : 'var(--accent-glow)'};color:${cl ? 'var(--green)' : 'var(--accent-light)'}">${i + 1}</div>
-              <div>
-                <div class="stage-card-title">${lesson.title}</div>
-                ${cl ? `<div style="font-size:0.7rem;color:var(--text-dim)">${cl.bestWpm} WPM · ${cl.bestAccuracy}% acc</div>` : ''}
-              </div>
-            </div>
-            <div style="color:var(--text-muted);font-size:0.75rem;line-height:1.4;margin-bottom:8px">${lesson.text.substring(0, 80)}...</div>
-            <div style="color:var(--gold);font-size:0.9rem;letter-spacing:2px">${starStr}</div>
-          </div>`;
-        }).join("")}
+          return `<button class="card ${cl ? 'done' : ''}" data-act="lesson" data-arg="${stageId}" data-arg2="${lesson.id}" data-nav>
+            <span class="card-corner-key"></span>
+            <span class="card-head">
+              <span class="card-badge">${i + 1}</span>
+              <span>
+                <span class="card-title">${esc(lesson.title)}</span>
+                <span class="card-sub">${cl ? `${cl.bestWpm} wpm · ${cl.bestAccuracy}% · ${cl.attempts} ${cl.attempts === 1 ? 'try' : 'tries'}` : 'not started'}</span>
+              </span>
+            </span>
+            <span class="card-preview">${esc(lesson.text.slice(0, 72))}…</span>
+            <span class="card-foot"><span class="stars">${starHtml(cl ? cl.stars : 0)}</span><span>${lesson.text.length} chars</span></span>
+          </button>`;
+        }).join('')}
       </div>
 
       ${stage.test ? `
-        <div class="section-title">🧪 Stage Test</div>
-        <div class="stage-card ${!allDone ? 'locked' : ''}" onclick="${allDone ? `App.startTest(${stageId})` : ''}" style="${allDone ? 'border-color:var(--orange);cursor:pointer' : ''}">
-          <div class="lock-icon">🔒</div>
-          <div class="stage-card-header">
-            <div class="stage-card-number" style="background:var(--orange-dim);color:var(--orange)">🧪</div>
-            <div>
-              <div class="stage-card-title">${stage.test.title}</div>
-              <div style="font-size:0.7rem;color:var(--text-dim)">Requires: ${stage.test.minWpm}+ WPM · ${stage.test.minAccuracy}%+ accuracy</div>
-            </div>
-          </div>
-          ${!allDone ? '<div style="color:var(--text-muted);font-size:0.8rem">Complete all lessons first to unlock the test.</div>' : ''}
-          ${cleared ? '<div style="color:var(--green);font-size:0.85rem;font-weight:600;margin-top:8px">✅ Test Passed!</div>' : ''}
-        </div>
+        <div class="section-title">Stage test</div>
+        <button class="card test" data-act="test" data-arg="${stageId}" ${allDone ? 'data-nav' : 'disabled'} style="max-width:520px">
+          <span class="card-corner-key"></span>
+          <span class="card-head">
+            <span class="card-badge">${allDone ? '🧪' : '🔒'}</span>
+            <span>
+              <span class="card-title">${esc(stage.test.title)}</span>
+              <span class="card-sub">Pass with ${stage.test.minWpm}+ wpm and ${stage.test.minAccuracy}%+ accuracy</span>
+            </span>
+          </span>
+          <span class="card-desc">${cleared ? '✅ Already passed — retake it any time to raise your score.' : allDone ? 'All lessons done. Clear this test to unlock the next stage.' : 'Complete every lesson in this stage to unlock the test.'}</span>
+        </button>
       ` : ''}
     `;
+    this.indexNavItems();
   },
 
-  // ── Lesson / Test Start ──
+  // ── Typing ──
   startLesson(stageId, lessonId) {
-    const stages = getStages(this.currentTheme);
-    const stage = stages.find(s => s.id === stageId);
-    const lesson = stage.lessons.find(l => l.id === lessonId);
+    const stage = getStages(this.currentTheme).find(s => s.id === stageId);
+    const lesson = stage && stage.lessons.find(l => l.id === lessonId);
+    if (!lesson) return;
     this.currentStage = stage;
     this.currentLesson = lesson;
     this.isTest = false;
-    this.beginTyping(lesson.text, stageId, lessonId);
+    this.beginTyping(lesson.text, stageId);
   },
 
   startTest(stageId) {
-    const stages = getStages(this.currentTheme);
-    const stage = stages.find(s => s.id === stageId);
+    const stage = getStages(this.currentTheme).find(s => s.id === stageId);
+    if (!stage || !stage.test) return;
     this.currentStage = stage;
     this.currentLesson = null;
     this.isTest = true;
-    this.beginTyping(stage.test.text, stageId, "test");
+    this.beginTyping(stage.test.text, stageId);
   },
 
-  beginTyping(text, stageId, lessonId) {
+  restart() {
+    if (this.isTest) this.startTest(this.currentStage.id);
+    else this.startLesson(this.currentStage.id, this.currentLesson.id);
+  },
+
+  beginTyping(text, stageId) {
     this.text = text;
-    this.chars = text.split("");
+    this.chars = [...text];
     this.cursor = 0;
     this.errors = 0;
     this.totalTyped = 0;
@@ -2006,106 +2256,87 @@ const App = {
     this.accuracy = 100;
     this.typingActive = false;
 
-    this.view = "typing";
-    const el = document.getElementById("content");
-    const typeLabel = this.isTest ? "Stage Test" : (this.currentLesson ? this.currentLesson.title : "");
-    document.getElementById("breadcrumb").innerHTML = `${this.currentStage.title} — <span>${typeLabel}</span>`;
+    const stage = this.currentStage;
+    const label = this.isTest ? stage.test.title : this.currentLesson.title;
+    this.setViewChrome("typing",
+      [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: stage.title, act: 'stage', arg: stage.id }, { label }],
+      [['Space', 'start'], ['Esc', 'back to stage'], ['⌫', 'fix last char']]);
 
-    // Build char spans
-    const charHtml = this.chars.map((c, i) => {
-      const display = c === ' ' ? '&nbsp;' : c.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      return `<span class="char ${i === 0 ? 'current' : 'pending'}" data-i="${i}">${display}</span>`;
-    }).join("");
+    const charHtml = this.chars.map((c, i) =>
+      `<span class="char ${i === 0 ? 'current' : 'pending'}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
 
-    // Keyboard
-    const fingerColors = { l5:'#ff6e6e', l4:'#ffb86c', l3:'#50fa7b', l2:'#8be9fd', r2:'#d4b8fd', r3:'#ff79c6', r4:'#f1fa8c', r5:'#ff5555', thumb:'var(--text-muted)' };
-    const fingerNames = { l5:'Pinky', l4:'Ring', l3:'Middle', l2:'Index', r2:'Index', r3:'Middle', r4:'Ring', r5:'Pinky', thumb:'Thumb' };
-    const kbHtml = KB_ROWS.map(row => {
-      return `<div class="kb-row">${row.map(k => {
-        const finger = FINGER_MAP[k] || '';
-        const cls = k === 'space' ? 'kb-key space' : (k.length > 1 ? 'kb-key wide' : 'kb-key');
-        const label = k === 'space' ? '⎵' : k;
-        return `<div class="${cls}" data-key="${k}" data-finger="${finger}">${label}</div>`;
-      }).join("")}</div>`;
-    }).join("");
+    const kbHtml = KB_ROWS.map(row => `<div class="kb-row">${row.map(k => {
+      const key = k === 'space' ? ' ' : k;
+      const finger = FINGER_MAP[key] || '';
+      const cls = k === 'space' ? 'kb-key space' : (k.length > 1 ? 'kb-key wide' : 'kb-key');
+      return `<div class="${cls}" data-key="${esc(key)}" data-finger="${finger}">${k === 'space' ? '' : esc(k)}</div>`;
+    }).join('')}</div>`).join('');
 
-    // Finger guide
-    const guideFingers = [
-      { id:'l5', label:'LP', name:'Left Pinky' },
-      { id:'l4', label:'LR', name:'Left Ring' },
-      { id:'l3', label:'LM', name:'Left Middle' },
-      { id:'l2', label:'LI', name:'Left Index' },
-      { id:'r2', label:'RI', name:'Right Index' },
-      { id:'r3', label:'RM', name:'Right Middle' },
-      { id:'r4', label:'RR', name:'Right Ring' },
-      { id:'r5', label:'RP', name:'Right Pinky' },
-    ];
-    const guideHtml = `<div class="finger-guide">${guideFingers.map(f =>
-      `<div class="finger-item">
-        <div class="finger-dot" style="border-color:${fingerColors[f.id]};color:${fingerColors[f.id]}">${f.label}</div>
-        <span>${f.name}</span>
-      </div>`
-    ).join("")}</div>`;
-
-    // Hand diagram
-    const handDiagramHtml = `<div class="hand-diagram">
-      <div class="hand">
-        ${['l5','l4','l3','l2'].map(f => `<div class="finger"><div class="finger-bar" id="finger-${f}" style="height:${f==='l2'?40:f==='l3'?48:f==='l4'?42:32}px;background:${fingerColors[f]};color:${fingerColors[f]}"></div><div class="finger-label">${fingerNames[f]}</div></div>`).join('')}
-      </div>
-      <div class="hand">
-        ${['r2','r3','r4','r5'].map(f => `<div class="finger"><div class="finger-bar" id="finger-${f}" style="height:${f==='r2'?40:f==='r3'?48:f==='r4'?42:32}px;background:${fingerColors[f]};color:${fingerColors[f]}"></div><div class="finger-label">${fingerNames[f]}</div></div>`).join('')}
-      </div>
+    const handHtml = `<div class="hand-diagram">
+      ${[FINGERS.slice(0, 4), FINGERS.slice(4)].map(hand => `<div class="hand">${hand.map(f =>
+        `<div class="finger"><div class="finger-bar" id="finger-${f.id}" style="height:${f.height}px;background:${fingerVar(f.id)}"></div><div class="finger-label">${f.short}</div></div>`
+      ).join('')}</div>`).join('')}
     </div>`;
 
-    el.innerHTML = `
-      <div class="lesson-header">
-        <div class="lesson-title">${this.isTest ? '🧪' : '📖'} ${typeLabel}</div>
-        <div class="lesson-timer" id="timer">0:00</div>
+    const guideHtml = `<div class="finger-guide">${FINGERS.map(f =>
+      `<span class="finger-item"><span class="finger-dot" style="background:${fingerVar(f.id)}"></span>${f.name}</span>`).join('')}</div>`;
+
+    document.getElementById("content").innerHTML = `
+      <div class="lesson-head">
+        <div>
+          <div class="lesson-title">${this.isTest ? '🧪' : '📖'} ${esc(label)}</div>
+          <div class="lesson-sub">${esc(stage.title)}${this.isTest ? ` · target ${stage.test.minWpm} wpm / ${stage.test.minAccuracy}%` : ''} · ${this.chars.length} characters</div>
+        </div>
+        <div class="timer" id="timer" aria-label="Elapsed time">0:00</div>
       </div>
 
-      <div class="live-stats">
-        <div class="live-stat wpm">
-          <div class="live-stat-value" id="liveWpm">0</div>
-          <div class="live-stat-label">WPM</div>
-        </div>
-        <div class="live-stat accuracy">
-          <div class="live-stat-value" id="liveAccuracy">100%</div>
-          <div class="live-stat-label">Accuracy</div>
-        </div>
-        <div class="live-stat errors">
-          <div class="live-stat-value" id="liveErrors">0</div>
-          <div class="live-stat-label">Errors</div>
-        </div>
+      <div class="live-stats" aria-live="off">
+        <div class="live-stat wpm"><div class="live-stat-value" id="liveWpm">0</div><div class="live-stat-label">WPM</div></div>
+        <div class="live-stat acc"><div class="live-stat-value" id="liveAccuracy">100%</div><div class="live-stat-label">Accuracy</div></div>
+        <div class="live-stat err"><div class="live-stat-value" id="liveErrors">0</div><div class="live-stat-label">Errors</div></div>
+        <div class="live-stat combo"><div class="live-stat-value" id="liveCombo">0</div><div class="live-stat-label">Combo</div></div>
       </div>
 
-      <div class="typing-area" id="typingArea" onclick="document.getElementById('hiddenInput').focus()">
-        <div class="focus-prompt" id="focusPrompt" onclick="App.startFocus()">
-          <div class="focus-prompt-text">Click here or press <kbd>Space</kbd> to start typing</div>
-        </div>
+      <div class="session-progress"><div class="session-progress-fill" id="sessionProgress"></div></div>
+
+      <div class="typing-area" id="typingArea">
+        <button class="focus-prompt" id="focusPrompt" data-act="focus">
+          <span class="focus-prompt-text">Press <kbd>Space</kbd> or click to start</span>
+        </button>
         <div class="typing-text" id="typingText">${charHtml}</div>
       </div>
 
-      <div class="keyboard" id="keyboard"><div class="combo-counter" id="comboCounter"></div>${handDiagramHtml}${guideHtml}${kbHtml}</div>
+      <div class="keyboard" id="keyboard">
+        <div class="combo-counter" id="comboCounter"></div>
+        ${handHtml}
+        ${guideHtml}
+        ${kbHtml}
+      </div>
 
-      <div style="text-align:center;margin-top:8px">
-        <button class="btn btn-secondary" onclick="App.openStage(${stageId})">← Back to Stage</button>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-secondary" data-act="stage" data-arg="${stageId}"><kbd>Esc</kbd> Back to stage</button>
+        <button class="btn btn-secondary" data-act="restart">↻ Restart</button>
       </div>
     `;
 
     this.charEls = [...document.querySelectorAll("#typingText .char")];
+    this.highlightKey(this.chars[0]);
+    document.getElementById("focusPrompt").focus();
   },
 
   startFocus() {
-    document.getElementById("focusPrompt").style.display = "none";
+    if (this.typingActive || this.startTime) return;
+    const prompt = document.getElementById("focusPrompt");
+    if (!prompt) return;
+    prompt.remove();
     document.getElementById("typingArea").classList.add("active");
     document.getElementById("hiddenInput").focus();
-    if (!this.typingActive && !this.startTime) {
-      this.showCountdown(() => {
-        this.typingActive = true;
-        this.startTime = Date.now();
-        this.timerInterval = setInterval(() => this.tick(), 200);
-      });
-    }
+    this.showCountdown(() => {
+      this.typingActive = true;
+      this.startTime = Date.now();
+      document.getElementById("hiddenInput").focus();
+      this.timerInterval = setInterval(() => this.tick(), 200);
+    });
   },
 
   showCountdown(cb) {
@@ -2126,76 +2357,215 @@ const App = {
         overlay.classList.remove("show");
         cb();
       }
-    }, 700);
+    }, 650);
   },
 
-  // ── Input ──
-  setupInput() {
-    const input = document.getElementById("hiddenInput");
+  // ── Event wiring ──
+  setupDelegation() {
+    const run = (e) => {
+      const el = e.target.closest("[data-act]");
+      if (!el || el.disabled) return;
+      e.preventDefault();
+      this.dispatch(el.dataset.act, el.dataset.arg, el.dataset.arg2);
+    };
+    document.getElementById("content").addEventListener("click", run);
+    document.getElementById("nav").addEventListener("click", run);
+    document.getElementById("viewNav").addEventListener("click", run);
+    document.getElementById("breadcrumb").addEventListener("click", run);
+    document.getElementById("helpBtn").addEventListener("click", () => this.toggleHelp(true));
+    document.getElementById("hamburger").addEventListener("click", (e) => {
+      const open = document.getElementById("sidebar").classList.toggle("open");
+      e.currentTarget.setAttribute("aria-expanded", String(open));
+    });
+  },
 
+  dispatch(act, arg, arg2) {
+    switch (act) {
+      case "view": this.showView(arg); break;
+      case "theme": this.switchTheme(arg); break;
+      case "stage": this.openStage(Number(arg)); break;
+      case "lesson": this.startLesson(Number(arg), arg2); break;
+      case "test": this.startTest(Number(arg)); break;
+      case "focus": this.startFocus(); break;
+      case "restart": this.restart(); break;
+    }
+  },
+
+  showView(id) {
+    if (id === "dashboard") this.showDashboard();
+    else if (id === "performance") this.showPerformance();
+    else if (id === "badges") this.showBadges();
+    else if (id === "history") this.showHistory();
+  },
+
+  back() {
+    if (this.view === "typing" && this.currentStage) this.openStage(this.currentStage.id);
+    else if (this.view !== "dashboard") this.showDashboard();
+  },
+
+  // ── Global keyboard router ──
+  setupGlobalKeys() {
     document.addEventListener("keydown", (e) => {
-      if (this.view !== "typing") return;
-      // Allow Enter/Space to start session when focus prompt is visible
-      if (!this.typingActive) {
-        const prompt = document.getElementById("focusPrompt");
-        if (prompt && prompt.style.display !== "none" && (e.key === " " || e.key === "Enter")) {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (document.getElementById("helpOverlay").classList.contains("show")) {
+        if (e.key === "Escape" || e.key === "?") { e.preventDefault(); this.toggleHelp(false); }
+        return;
+      }
+      if (document.getElementById("modalOverlay").classList.contains("show")) {
+        if (e.key === "Escape") { e.preventDefault(); this.closeModal(); this.back(); return; }
+        const action = (this._modalActions || []).find(a => a.key === e.key);
+        if (action) { e.preventDefault(); action.run(); }
+        return;
+      }
+
+      if (this.view === "typing") {
+        if (e.key === "Escape") { e.preventDefault(); this.back(); return; }
+        if (!this.typingActive && !this.startTime && (e.key === " " || e.key === "Enter")) {
           e.preventDefault();
           this.startFocus();
         }
         return;
       }
-      if (e.key === "Tab") { e.preventDefault(); return; }
-      input.focus();
+
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      switch (e.key) {
+        case "?": e.preventDefault(); this.toggleHelp(true); return;
+        case "Escape": e.preventDefault(); this.back(); return;
+        case "n": e.preventDefault(); this.startNext(); return;
+        case "t": e.preventDefault(); this.cycleTheme(e.shiftKey ? -1 : 1); return;
+        case "T": e.preventDefault(); this.cycleTheme(-1); return;
+        case "ArrowRight": case "ArrowDown": e.preventDefault(); this.moveFocus(e.key === "ArrowDown" ? "down" : "next"); return;
+        case "ArrowLeft": case "ArrowUp": e.preventDefault(); this.moveFocus(e.key === "ArrowUp" ? "up" : "prev"); return;
+        case "Home": e.preventDefault(); this.focusIndex(0); return;
+        case "End": e.preventDefault(); this.focusIndex(this.navItems().length - 1); return;
+      }
+
+      const view = VIEWS.find(v => v.key === e.key);
+      if (view) { e.preventDefault(); this.showView(view.id); return; }
+
+      if (/^[1-9]$/.test(e.key)) {
+        const item = this.navItems()[Number(e.key) - 1];
+        if (item) { e.preventDefault(); document.body.classList.add("keyhints"); item.click(); }
+      }
     });
 
-    // Composition support (dead keys for accented chars like ´+c=ç)
-    this.composing = false;
+    // Reveal quick-launch numbers once the user starts driving with the keyboard.
+    document.addEventListener("keydown", (e) => {
+      if (["Tab", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        document.body.classList.add("keyhints");
+      }
+    }, { passive: true });
+  },
+
+  focusIndex(i) {
+    const items = this.navItems();
+    if (!items.length) return;
+    const el = items[Math.max(0, Math.min(i, items.length - 1))];
+    items.forEach(n => { n.tabIndex = -1; });
+    el.tabIndex = 0;
+    el.focus();
+    el.scrollIntoView({ block: "nearest" });
+  },
+
+  moveFocus(dir) {
+    const items = this.navItems();
+    if (!items.length) return;
+    const cur = items.indexOf(document.activeElement);
+    if (cur === -1) return this.focusIndex(0);
+
+    if (dir === "next") return this.focusIndex((cur + 1) % items.length);
+    if (dir === "prev") return this.focusIndex((cur - 1 + items.length) % items.length);
+
+    // Vertical: step a whole grid row, derived from live layout.
+    const top = items[cur].getBoundingClientRect().top;
+    const step = dir === "down" ? 1 : -1;
+    for (let i = cur + step; i >= 0 && i < items.length; i += step) {
+      if (Math.abs(items[i].getBoundingClientRect().top - top) > 4) return this.focusIndex(i);
+    }
+    this.focusIndex(dir === "down" ? items.length - 1 : 0);
+  },
+
+  toggleHelp(show) {
+    const overlay = document.getElementById("helpOverlay");
+    if (show) {
+      document.getElementById("helpModal").innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+          <div class="modal-title">Keyboard shortcuts</div>
+          <button class="ghost-btn" data-close-help><kbd>Esc</kbd> Close</button>
+        </div>
+        ${[
+          ['Navigate', [
+            [['d'], 'Dashboard'], [['s'], 'Stats'], [['b'], 'Badges'], [['h'], 'History'],
+            [['t'], 'Next theme'], [['Shift', 't'], 'Previous theme'], [['Esc'], 'Go back'],
+          ]],
+          ['Act', [
+            [['n'], 'Start next recommended lesson'],
+            [['1', '…', '9'], 'Open the numbered card'],
+            [['↑', '↓', '←', '→'], 'Move between cards'],
+            [['Enter'], 'Open the focused card'],
+            [['Tab'], 'Move through every control'],
+          ]],
+          ['While typing', [
+            [['Space'], 'Start the session'],
+            [['⌫'], 'Fix the previous character'],
+            [['Esc'], 'Leave and return to the stage'],
+          ]],
+          ['Results', [
+            [['1'], 'Primary action'], [['2'], 'Stage menu'], [['3'], 'Dashboard'], [['Esc'], 'Dismiss'],
+          ]],
+        ].map(([title, rows]) => `<div class="shortcut-group">
+          <h4>${title}</h4>
+          ${rows.map(([keys, desc]) => `<div class="shortcut-row"><span>${esc(desc)}</span><span class="shortcut-keys">${keys.map(k => `<kbd>${esc(k)}</kbd>`).join('')}</span></div>`).join('')}
+        </div>`).join('')}`;
+      overlay.classList.add("show");
+      overlay.querySelector("[data-close-help]").focus();
+      overlay.onclick = (e) => { if (e.target === overlay || e.target.closest("[data-close-help]")) this.toggleHelp(false); };
+    } else {
+      overlay.classList.remove("show");
+      overlay.onclick = null;
+    }
+  },
+
+  // ── Typing input ──
+  setupInput() {
+    const input = document.getElementById("hiddenInput");
+
     input.addEventListener("compositionstart", () => { this.composing = true; });
     input.addEventListener("compositionend", (e) => {
       this.composing = false;
-      if (this.typingActive && e.data) {
-        for (const ch of e.data) this.handleChar(ch);
-      }
+      if (this.typingActive && e.data) for (const ch of e.data) this.handleChar(ch);
       input.value = "";
     });
 
     input.addEventListener("keydown", (e) => {
-      if (!this.typingActive) {
-        if (e.key === " " || e.key === "Enter") {
-          e.preventDefault();
-          const prompt = document.getElementById("focusPrompt");
-          if (prompt && prompt.style.display !== "none") this.startFocus();
-        }
-        return;
-      }
-
-      // Skip char handling while composing — compositionend will deliver the result
-      if (this.composing) return;
-
+      if (!this.typingActive || this.composing) return;
       if (e.key === "Backspace") {
         e.preventDefault();
         if (this.cursor > 0) {
           this.cursor--;
           this.charEls[this.cursor].className = "char current";
-          if (this.cursor + 1 < this.charEls.length)
-            this.charEls[this.cursor + 1].className = "char pending";
-          this.clearKeyHighlights();
+          if (this.cursor + 1 < this.charEls.length) this.charEls[this.cursor + 1].className = "char pending";
           this.highlightKey(this.chars[this.cursor]);
+          this.updateProgress();
         }
         return;
       }
-
-      if (e.key.length !== 1) return; // ignore modifier keys
+      if (e.key.length !== 1) return;
       e.preventDefault();
-
       this.handleChar(e.key);
     });
 
-    // mobile input
     input.addEventListener("input", (e) => {
       if (!this.typingActive || !e.data || this.composing) return;
       this.handleChar(e.data);
       input.value = "";
+    });
+
+    input.addEventListener("blur", () => {
+      if (this.typingActive) setTimeout(() => input.focus(), 0);
     });
   },
 
@@ -2207,20 +2577,18 @@ const App = {
     const correct = ch === expected;
 
     this.charEls[this.cursor].className = `char ${correct ? 'correct' : 'incorrect'}`;
-    if (!correct) {
+    if (correct) {
+      this.combo++;
+      if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+    } else {
       this.errors++;
       this.combo = 0;
-      // Track error key
       const d = Store.get();
       const ek = expected.toLowerCase();
       d.errorKeys[ek] = (d.errorKeys[ek] || 0) + 1;
       Store.save();
-    } else {
-      this.combo++;
-      if (this.combo > this.maxCombo) this.maxCombo = this.combo;
     }
     this.updateComboUI();
-
     this.cursor++;
 
     if (this.cursor < this.chars.length) {
@@ -2229,52 +2597,39 @@ const App = {
     }
 
     this.updateLiveStats();
+    this.updateProgress();
     this.flashKey(ch, correct);
 
-    if (this.cursor >= this.chars.length) {
-      this.finishLesson();
-    }
+    if (this.cursor >= this.chars.length) this.finishLesson();
+  },
+
+  updateProgress() {
+    const el = document.getElementById("sessionProgress");
+    if (el) el.style.width = `${(this.cursor / this.chars.length) * 100}%`;
   },
 
   updateComboUI() {
     const kb = document.getElementById("keyboard");
     const comboEl = document.getElementById("comboCounter");
+    const liveCombo = document.getElementById("liveCombo");
     if (!kb || !comboEl) return;
+    if (liveCombo) liveCombo.textContent = this.combo;
 
-    // Remove all combo classes
-    kb.classList.remove("combo-1", "combo-5", "combo-10", "combo-20", "combo-50");
-
-    if (this.combo >= 50) {
-      kb.classList.add("combo-50");
-      comboEl.textContent = `🔥 ${this.combo}`;
-      comboEl.className = "combo-counter combo-50-text";
-    } else if (this.combo >= 20) {
-      kb.classList.add("combo-20");
-      comboEl.textContent = `⚡ ${this.combo}`;
-      comboEl.className = "combo-counter combo-20-text";
-    } else if (this.combo >= 10) {
-      kb.classList.add("combo-10");
-      comboEl.textContent = `✨ ${this.combo}`;
-      comboEl.className = "combo-counter combo-10-text";
-    } else if (this.combo >= 5) {
-      kb.classList.add("combo-5");
-      comboEl.textContent = `💫 ${this.combo}`;
-      comboEl.className = "combo-counter combo-5-text";
-    } else if (this.combo >= 1) {
-      kb.classList.add("combo-1");
-      comboEl.textContent = `${this.combo}`;
-      comboEl.className = "combo-counter combo-1-text";
-    } else {
-      comboEl.textContent = "";
-      comboEl.className = "combo-counter";
-    }
+    kb.classList.remove("combo-5", "combo-10", "combo-20", "combo-50");
+    const tiers = [[50, '🔥', 'combo-50'], [20, '⚡', 'combo-20'], [10, '✨', 'combo-10'], [5, '💫', 'combo-5'], [1, '', 'combo-1']];
+    const tier = tiers.find(([min]) => this.combo >= min);
+    if (!tier) { comboEl.className = "combo-counter"; comboEl.textContent = ""; return; }
+    const [, icon, cls] = tier;
+    if (cls !== "combo-1") kb.classList.add(cls);
+    comboEl.className = `combo-counter on ${cls}-text`;
+    comboEl.textContent = `${icon} ${this.combo}`.trim();
   },
 
   updateLiveStats() {
     if (!this.startTime) return;
-    const elapsed = (Date.now() - this.startTime) / 1000 / 60; // minutes
+    const elapsed = (Date.now() - this.startTime) / 1000 / 60;
     const correctChars = this.cursor - this.errors;
-    this.wpm = elapsed > 0 ? Math.round((correctChars / 5) / elapsed) : 0;
+    this.wpm = elapsed > 0 ? Math.max(0, Math.round((correctChars / 5) / elapsed)) : 0;
     this.accuracy = this.totalTyped > 0 ? Math.round(((this.totalTyped - this.errors) / this.totalTyped) * 100) : 100;
     document.getElementById("liveWpm").textContent = this.wpm;
     document.getElementById("liveAccuracy").textContent = this.accuracy + "%";
@@ -2286,79 +2641,67 @@ const App = {
     this.elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     const min = Math.floor(this.elapsed / 60);
     const sec = this.elapsed % 60;
-    document.getElementById("timer").textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+    const timer = document.getElementById("timer");
+    if (timer) timer.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
     this.updateLiveStats();
-
-    // Auto-finish at 5 min
-    if (this.elapsed >= this.lessonDuration) {
-      this.finishLesson();
-    }
+    if (this.elapsed >= this.lessonDuration) this.finishLesson();
   },
 
   flashKey(ch, correct) {
-    const key = ch.toLowerCase();
-    const el = document.querySelector(`.kb-key[data-key="${CSS.escape(key)}"]`);
+    const el = document.querySelector(`.kb-key[data-key="${CSS.escape(ch.toLowerCase())}"]`);
     if (!el) return;
     el.classList.add(correct ? "correct" : "wrong");
-    setTimeout(() => el.classList.remove("correct", "wrong"), 300);
-    // Flash finger bar
-    const finger = el.getAttribute("data-finger");
-    if (finger) {
-      const bar = document.getElementById(`finger-${finger}`);
-      if (bar) {
-        bar.style.opacity = '1';
-        bar.style.transform = 'scaleY(1.2)';
-        setTimeout(() => { bar.style.opacity = ''; bar.style.transform = ''; }, 300);
-      }
-    }
+    setTimeout(() => el.classList.remove("correct", "wrong"), 220);
   },
 
   highlightKey(ch) {
     this.clearKeyHighlights();
+    if (ch == null) return;
     const key = ch.toLowerCase();
     const el = document.querySelector(`.kb-key[data-key="${CSS.escape(key)}"]`);
-    if (el) {
-      el.classList.add("active");
-      // Highlight finger bar in hand diagram
-      const finger = el.getAttribute("data-finger");
-      if (finger) {
-        const bar = document.getElementById(`finger-${finger}`);
-        if (bar) bar.classList.add("active");
-      }
+    if (el) el.classList.add("next");
+    const finger = FINGER_MAP[key];
+    if (finger) {
+      const bar = document.getElementById(`finger-${finger}`);
+      if (bar) bar.classList.add("active");
     }
   },
 
   clearKeyHighlights() {
-    document.querySelectorAll(".kb-key.active").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".kb-key.next").forEach(el => el.classList.remove("next"));
     document.querySelectorAll(".finger-bar.active").forEach(el => el.classList.remove("active"));
+  },
+
+  stopTyping() {
+    this.typingActive = false;
+    if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
   },
 
   // ── Finish ──
   finishLesson() {
-    this.typingActive = false;
-    clearInterval(this.timerInterval);
+    if (!this.typingActive && this.cursor === 0) return;
+    this.stopTyping();
     this.clearKeyHighlights();
 
-    const stageId = this.currentStage.id;
-    const lessonId = this.isTest ? "test" : this.currentLesson.id;
     const stage = this.currentStage;
+    const stageId = stage.id;
+    const lessonId = this.isTest ? "test" : this.currentLesson.id;
     const d = Store.get();
 
-    const accuracy = this.accuracy;
-    const wpm = this.wpm;
+    this.updateLiveStats();
+    const { wpm, accuracy } = this;
     const stars = this.isTest
       ? this.calcStars(wpm, accuracy, stage.test.minWpm, stage.test.minAccuracy)
       : this.calcStars(wpm, accuracy, 20, 85);
     const xp = this.calcXp(wpm, accuracy, stars);
+    const isRecord = wpm > d.bestWpm;
 
     this.recordPractice();
     this.addXp(xp);
 
-    // Update best stats
     if (wpm > d.bestWpm) d.bestWpm = wpm;
     if (accuracy > d.bestAccuracy) d.bestAccuracy = accuracy;
 
-    // Record history
     d.history.push({
       date: new Date().toISOString(),
       themeId: this.currentTheme,
@@ -2370,205 +2713,184 @@ const App = {
 
     let passed = true;
     if (this.isTest) {
-      if (wpm < stage.test.minWpm || accuracy < stage.test.minAccuracy) {
-        passed = false;
-      } else {
-        if (!d.clearedStages.includes(stageId)) {
-          d.clearedStages.push(stageId);
-        }
-      }
+      passed = wpm >= stage.test.minWpm && accuracy >= stage.test.minAccuracy;
+      if (passed && !d.clearedStages.includes(stageId)) d.clearedStages.push(stageId);
     } else {
       d.totalLessons++;
       const existing = d.completedLessons[lessonId];
-      if (!existing || wpm > existing.bestWpm || accuracy > existing.bestAccuracy) {
-        d.completedLessons[lessonId] = {
-          bestWpm: Math.max(wpm, existing?.bestWpm || 0),
-          bestAccuracy: Math.max(accuracy, existing?.bestAccuracy || 0),
-          stars: Math.max(stars, existing?.stars || 0),
-          attempts: (existing?.attempts || 0) + 1,
-        };
-      } else {
-        d.completedLessons[lessonId].attempts++;
-      }
+      d.completedLessons[lessonId] = {
+        bestWpm: Math.max(wpm, existing?.bestWpm || 0),
+        bestAccuracy: Math.max(accuracy, existing?.bestAccuracy || 0),
+        stars: Math.max(stars, existing?.stars || 0),
+        attempts: (existing?.attempts || 0) + 1,
+      };
     }
 
     Store.save();
     this.checkBadges();
     this.renderSidebar();
-
-    // Show modal
-    this.showResults(wpm, accuracy, stars, xp, passed);
+    this.showResults(wpm, accuracy, stars, xp, passed, isRecord);
   },
 
-  showResults(wpm, accuracy, stars, xp, passed) {
-    const starStr = "★".repeat(stars) + "☆".repeat(5 - stars);
-    const isTest = this.isTest;
+  showResults(wpm, accuracy, stars, xp, passed, isRecord) {
     const stage = this.currentStage;
     const stageId = stage.id;
+    const isTest = this.isTest;
 
     let title, subtitle, icon;
     if (isTest) {
-      if (passed) {
-        icon = "🎉"; title = "Stage Cleared!";
-        subtitle = `You passed the ${stage.title} test!`;
-      } else {
-        icon = "💪"; title = "Not Quite...";
-        subtitle = `Need ${stage.test.minWpm}+ WPM and ${stage.test.minAccuracy}%+ accuracy. Try again!`;
-      }
+      icon = passed ? "🎉" : "💪";
+      title = passed ? "Stage cleared!" : "So close";
+      subtitle = passed
+        ? `You passed the ${stage.title} test.`
+        : `You need ${stage.test.minWpm}+ wpm and ${stage.test.minAccuracy}%+ accuracy.`;
     } else {
-      if (stars >= 4) { icon = "🌟"; title = "Outstanding!"; }
-      else if (stars >= 3) { icon = "🎉"; title = "Great Job!"; }
-      else if (stars >= 2) { icon = "👍"; title = "Well Done!"; }
-      else { icon = "💪"; title = "Keep Practicing!"; }
+      if (stars >= 4) { icon = "🌟"; title = "Outstanding"; }
+      else if (stars >= 3) { icon = "🎉"; title = "Great job"; }
+      else if (stars >= 2) { icon = "👍"; title = "Well done"; }
+      else { icon = "💪"; title = "Keep practicing"; }
       subtitle = this.currentLesson ? this.currentLesson.title : "Practice complete";
     }
 
     const nextLessonId = !isTest ? this.getNextLessonId() : null;
-    const allLessonsDone = stage.lessons.every(l => Store.get().completedLessons[l.id]);
     const stages = getStages(this.currentTheme);
-
-    // Build action buttons with keyboard shortcut hints
     const actions = [];
-    if (!isTest && nextLessonId) {
-      actions.push({ key: "1", label: "Next Lesson →", primary: true, action: `App.closeModal();App.startLesson(${stageId},'${nextLessonId}')` });
-    }
-    if (isTest && !passed) {
-      actions.push({ key: "1", label: "Retry Test", primary: true, action: `App.closeModal();App.startTest(${stageId})` });
-    }
-    if (isTest && passed && stageId < stages.length) {
-      actions.push({ key: "1", label: "Next Stage →", primary: true, action: `App.closeModal();App.openStage(${stageId + 1})` });
-    }
-    if (isTest && allLessonsDone && !passed) {
-      actions.push({ key: "1", label: "Retry Test", primary: true, action: `App.closeModal();App.startTest(${stageId})` });
-    }
-    actions.push({ key: "2", label: "Stage Menu", primary: false, action: `App.closeModal();App.openStage(${stageId})` });
-    actions.push({ key: "3", label: "Dashboard", primary: false, action: `App.closeModal();App.showDashboard()` });
 
-    // Store actions for keyboard handler
+    if (!isTest && nextLessonId) {
+      actions.push({ key: "1", label: "Next lesson →", primary: true, run: () => { this.closeModal(); this.startLesson(stageId, nextLessonId); } });
+    } else if (!isTest && stage.test) {
+      actions.push({ key: "1", label: "Take stage test →", primary: true, run: () => { this.closeModal(); this.startTest(stageId); } });
+    } else if (isTest && !passed) {
+      actions.push({ key: "1", label: "Retry test", primary: true, run: () => { this.closeModal(); this.startTest(stageId); } });
+    } else if (isTest && passed && stages.some(s => s.id === stageId + 1)) {
+      actions.push({ key: "1", label: "Next stage →", primary: true, run: () => { this.closeModal(); this.openStage(stageId + 1); } });
+    } else {
+      actions.push({ key: "1", label: "Practice again", primary: true, run: () => { this.closeModal(); this.restart(); } });
+    }
+    actions.push({ key: "2", label: "Stage menu", primary: false, run: () => { this.closeModal(); this.openStage(stageId); } });
+    actions.push({ key: "3", label: "Dashboard", primary: false, run: () => { this.closeModal(); this.showDashboard(); } });
     this._modalActions = actions;
 
     document.getElementById("modal").innerHTML = `
       <div class="modal-icon">${icon}</div>
-      <div class="modal-title">${title}</div>
-      <div class="modal-subtitle">${subtitle}</div>
-      <div class="modal-stars" style="color:var(--gold)">${starStr}</div>
+      <div class="modal-title" id="modalTitle">${esc(title)}</div>
+      <div class="modal-subtitle">${esc(subtitle)}</div>
+      <div class="modal-stars">${starHtml(stars)}</div>
       <div class="modal-stats">
-        <div class="modal-stat">
-          <div class="modal-stat-value" style="color:var(--accent)">${wpm}</div>
-          <div class="modal-stat-label">WPM</div>
-        </div>
-        <div class="modal-stat">
-          <div class="modal-stat-value" style="color:var(--green)">${accuracy}%</div>
-          <div class="modal-stat-label">Accuracy</div>
-        </div>
-        <div class="modal-stat">
-          <div class="modal-stat-value" style="color:var(--gold)">${this.maxCombo}</div>
-          <div class="modal-stat-label">Best Combo</div>
-        </div>
+        <div class="modal-stat"><div class="modal-stat-value" style="color:var(--accent)">${wpm}</div><div class="modal-stat-label">WPM</div></div>
+        <div class="modal-stat"><div class="modal-stat-value" style="color:var(--green)">${accuracy}%</div><div class="modal-stat-label">Accuracy</div></div>
+        <div class="modal-stat"><div class="modal-stat-value" style="color:var(--red)">${this.errors}</div><div class="modal-stat-label">Errors</div></div>
+        <div class="modal-stat"><div class="modal-stat-value" style="color:var(--amber)">${this.maxCombo}</div><div class="modal-stat-label">Combo</div></div>
       </div>
-      <div class="modal-xp">✨ ${xp} XP Earned</div>
+      ${isTest ? `<div class="modal-target">
+        <span>Target <b>${stage.test.minWpm}</b> wpm — you hit <b style="color:${wpm >= stage.test.minWpm ? 'var(--green)' : 'var(--red)'}">${wpm}</b></span>
+        <span>Target <b>${stage.test.minAccuracy}%</b> — you hit <b style="color:${accuracy >= stage.test.minAccuracy ? 'var(--green)' : 'var(--red)'}">${accuracy}%</b></span>
+      </div>` : ''}
+      <div class="modal-xp">✨ ${xp} XP earned${isRecord ? ' · 🏆 new personal best' : ''}</div>
       <div class="modal-actions">
-        ${actions.map(a => `<button class="btn ${a.primary ? 'btn-primary' : 'btn-secondary'}" onclick="${a.action}"><kbd class="modal-kbd">${a.key}</kbd> ${a.label}</button>`).join('')}
+        ${actions.map((a, i) => `<button class="btn ${a.primary ? 'btn-primary' : 'btn-secondary'}" data-modal-idx="${i}"><kbd>${a.key}</kbd> ${esc(a.label)}</button>`).join('')}
       </div>
-      <div style="text-align:center;margin-top:16px;font-size:0.7rem;color:var(--text-muted)">Press <kbd class="modal-kbd">1</kbd> <kbd class="modal-kbd">2</kbd> <kbd class="modal-kbd">3</kbd> or click</div>
+      <div class="modal-foot">Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Esc</kbd></div>
     `;
-    document.getElementById("modalOverlay").classList.add("show");
 
-    // Keyboard handler for modal
-    this._modalKeyHandler = (e) => {
-      if (!document.getElementById("modalOverlay").classList.contains("show")) return;
-      const action = this._modalActions.find(a => a.key === e.key);
-      if (action) {
-        e.preventDefault();
-        eval(action.action);
-      }
+    const overlay = document.getElementById("modalOverlay");
+    overlay.classList.add("show");
+    overlay.querySelector("[data-modal-idx]").focus();
+    document.getElementById("modal").onclick = (e) => {
+      const btn = e.target.closest("[data-modal-idx]");
+      if (btn) actions[Number(btn.dataset.modalIdx)].run();
     };
-    document.addEventListener("keydown", this._modalKeyHandler);
   },
 
   getNextLessonId() {
     if (!this.currentStage || !this.currentLesson) return null;
     const lessons = this.currentStage.lessons;
     const idx = lessons.findIndex(l => l.id === this.currentLesson.id);
-    if (idx < lessons.length - 1) return lessons[idx + 1].id;
-    return null;
+    return idx > -1 && idx < lessons.length - 1 ? lessons[idx + 1].id : null;
   },
 
   closeModal() {
     document.getElementById("modalOverlay").classList.remove("show");
-    if (this._modalKeyHandler) {
-      document.removeEventListener("keydown", this._modalKeyHandler);
-      this._modalKeyHandler = null;
-    }
+    this._modalActions = null;
   },
 
-  stopTyping() {
-    this.typingActive = false;
-    if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
-  },
-
-  // ── Badges View ──
+  // ── Badges ──
   showBadges() {
-    this.view = "badges";
     this.stopTyping();
     const d = Store.get();
-    const el = document.getElementById("content");
-    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>Badges</span>";
-    el.innerHTML = `
-      <div class="dashboard-title">🏅 Achievements</div>
-      <div class="dashboard-subtitle">${d.badges.length} of ${BADGES.length} unlocked</div>
+    this.setViewChrome("badges", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Badges' }], [['d', 'dashboard']]);
+    const earnedCount = d.badges.length;
+
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">🏅 Achievements</h1>
+        <p class="page-subtitle">${earnedCount} of ${BADGES.length} unlocked · ${pct(earnedCount, BADGES.length)}% complete</p>
+      </div>
+      <div class="progress-track" style="margin-bottom:24px"><div class="progress-fill" style="width:${pct(earnedCount, BADGES.length)}%"></div></div>
       <div class="badges-grid">
         ${BADGES.map(b => {
           const earned = d.badges.includes(b.id);
           return `<div class="badge-card ${earned ? 'earned' : 'locked'}">
             <div class="badge-card-icon">${earned ? b.icon : '🔒'}</div>
-            <div class="badge-card-name">${b.name}</div>
-            <div class="badge-card-desc">${b.desc}</div>
+            <div class="badge-card-name">${esc(b.name)}</div>
+            <div class="badge-card-desc">${esc(b.desc)}</div>
           </div>`;
-        }).join("")}
+        }).join('')}
       </div>
     `;
+    this.indexNavItems();
   },
 
-  // ── History View ──
+  // ── History ──
   showHistory() {
-    this.view = "history";
     this.stopTyping();
     const d = Store.get();
-    const el = document.getElementById("content");
-    document.getElementById("breadcrumb").innerHTML = "Typrr — <span>History</span>";
+    this.setViewChrome("history", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'History' }], [['d', 'dashboard']]);
+    const rows = [...d.history].reverse().slice(0, 60);
 
-    const history = [...d.history].reverse().slice(0, 50);
-
-    el.innerHTML = `
-      <div class="dashboard-title">📜 Practice History</div>
-      <div class="dashboard-subtitle">${d.history.length} total sessions</div>
-      ${history.length === 0 ? '<div style="text-align:center;color:var(--text-muted);padding:60px">No practice sessions yet. Start your first lesson!</div>' : `
-        <div class="history-list">
-          ${history.map(h => {
-            let stage = null, lesson = null;
-            for (const tid of THEME_ORDER) {
-              stage = getStages(tid).find(s => s.id === h.stageId);
-              if (stage) { lesson = stage.lessons.find(l => l.id === h.lessonId); break; }
-            }
-            const themeLabel = h.themeId ? THEMES[h.themeId]?.name : "";
-            const name = h.lessonId === "test" ? `${stage?.title || ""} Test` : lesson?.title || h.lessonId;
-            const stars = "★".repeat(h.stars) + "☆".repeat(5 - h.stars);
-            return `<div class="history-item">
-              <div class="history-date">${new Date(h.date).toLocaleDateString()}</div>
-              <div class="history-lesson">${name}</div>
-              <div class="history-wpm">${h.wpm} wpm</div>
-              <div class="history-accuracy">${h.accuracy}%</div>
-              <div class="history-stars">${stars}</div>
-            </div>`;
-          }).join("")}
-        </div>
-      `}
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">📜 History</h1>
+        <p class="page-subtitle">${d.history.length} sessions recorded${rows.length < d.history.length ? ` · showing latest ${rows.length}` : ''}</p>
+      </div>
+      ${rows.length === 0 ? `<div class="empty">
+        <div class="empty-icon">📜</div>
+        <div class="empty-title">No sessions yet</div>
+        <div class="empty-desc">Press <kbd>n</kbd> to start your first lesson.</div>
+      </div>` : `<div class="panel" style="padding:16px 6px">
+        <table class="history-table">
+          <thead><tr>
+            <th>Date</th><th>Session</th><th>Theme</th>
+            <th class="num">WPM</th><th class="num">Accuracy</th><th class="num">Combo</th><th>Stars</th>
+          </tr></thead>
+          <tbody>
+            ${rows.map(r => {
+              let stage = null, lesson = null;
+              for (const tid of THEME_ORDER) {
+                stage = getStages(tid).find(s => s.id === r.stageId);
+                if (stage) { lesson = stage.lessons.find(l => l.id === r.lessonId); if (lesson || r.lessonId === 'test') break; }
+              }
+              const isTest = r.lessonId === "test";
+              const name = isTest ? `${stage?.title || 'Stage'} test` : (lesson?.title || r.lessonId);
+              const when = new Date(r.date);
+              return `<tr>
+                <td>${when.toLocaleDateString()} <span style="color:var(--text-muted)">${when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></td>
+                <td class="name">${esc(name)} ${isTest ? '<span class="tag test">TEST</span>' : ''}</td>
+                <td><span class="tag">${esc(r.themeId ? (THEMES[r.themeId]?.name || r.themeId) : '—')}</span></td>
+                <td class="num">${r.wpm}</td>
+                <td class="num" style="color:${r.accuracy >= 95 ? 'var(--green)' : r.accuracy >= 85 ? 'var(--text-dim)' : 'var(--red)'}">${r.accuracy}%</td>
+                <td class="num">${r.maxCombo ?? '—'}</td>
+                <td><span class="stars">${starHtml(r.stars)}</span></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>`}
     `;
+    this.indexNavItems();
   },
 };
 
-// Boot
 App.init();
 </script>
 </body>
