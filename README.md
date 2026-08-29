@@ -19,6 +19,7 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 - **Stage tests** — must hit WPM + accuracy targets to unlock the next stage
 - **Stats that mean something** — WPM/accuracy trend charts, 5-session deltas, an 18-week practice heatmap and your most-missed keys
 - **Full keyboard control** — every screen is drivable without a mouse; press `?` for the shortcut sheet
+- **Focus mode** — the sidebar collapses on its own when a session starts, and comes back when you leave
 - **Light and dark themes** — follows your OS by default; grab the pull cord hanging in the header to switch
 - **Progress persistence** — everything saved in `localStorage`
 - **Installable** — add it to your home screen or dock; it runs standalone and works offline
@@ -65,6 +66,7 @@ Press <kbd>?</kbd> anywhere for the full list.
 | `n` | Start the next recommended lesson |
 | `t` / `Shift`+`t` | Cycle content themes |
 | `m` | Pull the cord (dark mode) |
+| `c` | Collapse / expand the sidebar |
 | `1`–`9` | Open the numbered card |
 | `↑` `↓` `←` `→` | Move between cards (grid-aware) |
 | `Space` | Start the typing session |

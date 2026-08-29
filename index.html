@@ -409,6 +409,7 @@ kbd {
 .main {
   flex: 1;
   margin-left: var(--sidebar-w);
+  transition: margin-left 0.25s ease;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -521,16 +522,48 @@ kbd {
   transition: opacity 0.15s;
 }
 .pullcord.hint .pullcord-tip { opacity: 1; }
-.hamburger {
-  display: none;
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: 1px solid var(--border);
   border-radius: var(--radius-xs);
-  color: var(--text);
-  font-size: 1rem;
+  color: var(--text-dim);
   cursor: pointer;
-  padding: 5px 9px;
-  font-family: inherit;
+  padding: 5px 7px;
+  flex-shrink: 0;
+  transition: color 0.12s, border-color 0.12s;
+}
+.sidebar-toggle:hover { border-color: var(--border-strong); color: var(--text); }
+.sidebar-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
+/* The panel divider slides to the edge when the sidebar is away. */
+.sidebar-toggle .panel-fill { fill: currentColor; opacity: 0.28; transition: opacity 0.15s; }
+html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
+
+/* The open drawer covers the toggle, so it needs a way out: tap anywhere. */
+.sidebar-scrim { display: none; }
+@media (max-width: 768px) {
+  .sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    background: var(--scrim);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    border: none;
+    padding: 0;
+  }
+  .sidebar.open + .sidebar-scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* Collapsed sidebar. Scoped to desktop so it never fights the mobile drawer,
+   where .sidebar.open would otherwise lose on specificity. */
+@media (min-width: 769px) {
+  html.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+  html.sidebar-collapsed .main { margin-left: 0; }
 }
 
 /* Content */
@@ -1184,7 +1217,7 @@ kbd {
   .sidebar { transform: translateX(-100%); box-shadow: var(--shadow-lg); }
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; }
-  .hamburger { display: block; }
+
   .content { padding: 22px 16px 18px; }
   .main-header { padding: 0 var(--cord-w) 0 12px; }
   .hintbar, #helpBtn { display: none; }
@@ -1205,12 +1238,14 @@ kbd {
 // Resolve the theme before first paint so there is no flash of the wrong palette.
 // Runs ahead of the app, so it reads the persisted blob directly.
 (function () {
-  var t;
-  try { t = JSON.parse(localStorage.getItem("typrr_data") || "{}").theme; } catch (e) {}
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem("typrr_data") || "{}"); } catch (e) {}
+  var t = saved.theme;
   if (t !== "light" && t !== "dark") {
     t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
   document.documentElement.dataset.theme = t;
+  if (saved.sidebarCollapsed) document.documentElement.classList.add("sidebar-collapsed");
 
   // Same reason the favicon is inlined: a lone index.html should open clean.
   if (location.protocol.startsWith("http")) {
@@ -1266,10 +1301,17 @@ kbd {
 
     <div class="sidebar-footer" id="viewNav" role="group" aria-label="Views"></div>
   </aside>
+  <button class="sidebar-scrim" id="sidebarScrim" type="button" tabindex="-1" aria-label="Close navigation"></button>
 
   <div class="main">
     <header class="main-header">
-      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="sidebar" aria-label="Hide sidebar" title="Toggle sidebar (c)">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="2.2" y="3.2" width="15.6" height="13.6" rx="2.6"/>
+          <path d="M8 3.2V16.8"/>
+          <rect class="panel-fill" x="2.2" y="3.2" width="5.8" height="13.6" rx="2.6" stroke="none"/>
+        </svg>
+      </button>
       <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
       <div class="header-right">
         <div class="streak-chip" id="streakBadge" hidden>🔥 <span id="streakCount">0</span><span>day streak</span></div>
@@ -1691,6 +1733,7 @@ const Store = {
       practicedLate: false,
       practicedEarly: false,
       theme: null,      // null = follow the OS; "light" | "dark" = explicit choice
+      sidebarCollapsed: false,
     };
   },
 
@@ -2182,7 +2225,13 @@ const App = {
       .map(([k, t]) => `<span><kbd>${esc(k)}</kbd> ${esc(t)}</span>`).join('');
 
     document.getElementById("sidebar").classList.remove("open");
-    document.getElementById("hamburger").setAttribute("aria-expanded", "false");
+    // Restore only what the app collapsed for a session; an explicit
+    // preference survives leaving the typing view.
+    if (viewId !== "typing" && this.autoCollapsed) {
+      this.autoCollapsed = false;
+      this.setSidebar(false);
+    }
+    this.syncSidebarToggle();
     this.indexNavItems();
   },
 
@@ -2259,6 +2308,40 @@ const App = {
   cycleTheme(step) {
     const i = THEME_ORDER.indexOf(this.currentTheme);
     this.switchTheme(THEME_ORDER[(i + step + THEME_ORDER.length) % THEME_ORDER.length]);
+  },
+
+  // ── Sidebar ──
+  // Desktop collapses the rail; phones slide the same panel as a drawer.
+  // One control, one mental model, two mechanics.
+  isMobile() { return window.matchMedia("(max-width: 768px)").matches; },
+
+  sidebarHidden() {
+    return this.isMobile()
+      ? !document.getElementById("sidebar").classList.contains("open")
+      : document.documentElement.classList.contains("sidebar-collapsed");
+  },
+
+  setSidebar(hidden, persist) {
+    if (this.isMobile()) {
+      document.getElementById("sidebar").classList.toggle("open", !hidden);
+    } else {
+      document.documentElement.classList.toggle("sidebar-collapsed", hidden);
+      if (persist) { Store.get().sidebarCollapsed = hidden; Store.save(); }
+    }
+    this.syncSidebarToggle();
+  },
+
+  toggleSidebar() {
+    const hidden = !this.sidebarHidden();
+    this.autoCollapsed = false;   // an explicit choice outranks the session
+    this.setSidebar(hidden, true);
+  },
+
+  syncSidebarToggle() {
+    const shown = !this.sidebarHidden();
+    const btn = document.getElementById("sidebarToggle");
+    btn.setAttribute("aria-expanded", String(shown));
+    btn.setAttribute("aria-label", shown ? "Hide sidebar" : "Show sidebar");
   },
 
   // ── Dark mode ──
@@ -2771,6 +2854,7 @@ const App = {
     const prompt = document.getElementById("focusPrompt");
     if (!prompt) return;
     prompt.remove();
+    if (!this.sidebarHidden()) { this.autoCollapsed = true; this.setSidebar(true); }
     document.getElementById("typingArea").classList.add("active");
     document.getElementById("hiddenInput").focus();
     this.showCountdown(() => {
@@ -2815,10 +2899,8 @@ const App = {
     document.getElementById("viewNav").addEventListener("click", run);
     document.getElementById("breadcrumb").addEventListener("click", run);
     document.getElementById("helpBtn").addEventListener("click", () => this.toggleHelp(true));
-    document.getElementById("hamburger").addEventListener("click", (e) => {
-      const open = document.getElementById("sidebar").classList.toggle("open");
-      e.currentTarget.setAttribute("aria-expanded", String(open));
-    });
+    document.getElementById("sidebarToggle").addEventListener("click", () => this.toggleSidebar());
+    document.getElementById("sidebarScrim").addEventListener("click", () => this.setSidebar(true));
   },
 
   dispatch(act, arg, arg2) {
@@ -2863,7 +2945,11 @@ const App = {
 
       if (this.view === "typing") {
         if (e.key === "Escape") { e.preventDefault(); this.back(); return; }
-        if (!this.typingActive && !this.startTime && (e.key === " " || e.key === "Enter")) {
+        // Only while the focus prompt is still up: once the countdown runs the
+        // user is practising and every key belongs to the lesson.
+        const notStarted = document.getElementById("focusPrompt") !== null;
+        if (notStarted && e.key === "c") { e.preventDefault(); this.toggleSidebar(); return; }
+        if (notStarted && (e.key === " " || e.key === "Enter")) {
           e.preventDefault();
           this.startFocus();
         }
@@ -2873,9 +2959,17 @@ const App = {
       const tag = document.activeElement && document.activeElement.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
 
+      // An open drawer is the innermost layer: Escape dismisses it, not the view.
+      if (e.key === "Escape" && this.isMobile() && !this.sidebarHidden()) {
+        e.preventDefault();
+        this.setSidebar(true);
+        return;
+      }
+
       switch (e.key) {
         case "?": e.preventDefault(); this.toggleHelp(true); return;
         case "m": e.preventDefault(); PullCord.yank(); return;
+        case "c": e.preventDefault(); this.toggleSidebar(); return;
         case "Escape": e.preventDefault(); this.back(); return;
         case "n": e.preventDefault(); this.startNext(); return;
         case "t": e.preventDefault(); this.cycleTheme(e.shiftKey ? -1 : 1); return;
@@ -2943,7 +3037,8 @@ const App = {
           ['Navigate', [
             [['d'], 'Dashboard'], [['s'], 'Stats'], [['b'], 'Badges'], [['h'], 'History'],
             [['t'], 'Next theme'], [['Shift', 't'], 'Previous theme'],
-            [['m'], 'Pull the cord (dark mode)'], [['Esc'], 'Go back'],
+            [['m'], 'Pull the cord (dark mode)'], [['c'], 'Collapse the sidebar'],
+            [['Esc'], 'Go back'],
           ]],
           ['Act', [
             [['n'], 'Start next recommended lesson'],
@@ -2954,6 +3049,7 @@ const App = {
           ]],
           ['While typing', [
             [['Space'], 'Start the session'],
+            [['c'], 'Collapse the sidebar — before the session starts'],
             [['⌫'], 'Fix the previous character'],
             [['Esc'], 'Leave and return to the stage'],
           ]],

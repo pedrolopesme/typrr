@@ -101,6 +101,17 @@ Resolution order, applied by an inline script in `<head>` before first paint so 
 
 The toggle only ever writes an explicit value, so a user who never touches it keeps following their OS.
 
+## Sidebar
+
+One control, two mechanics, chosen by viewport:
+
+- **Desktop** (`min-width: 769px`) collapses the rail: `html.sidebar-collapsed` slides it out and drops the main margin to zero. The collapse rule is scoped to desktop on purpose — unscoped, `html.sidebar-collapsed .sidebar` (0,2,1) would outrank `.sidebar.open` (0,2,0) and the phone drawer could never open.
+- **Phones** slide the same panel as a drawer over a scrim. The open drawer covers the toggle, so the scrim is the way out: tap anywhere, or press `Esc`, which dismisses the drawer before it navigates back.
+
+The collapsed state is persisted and re-applied by the pre-paint head script, alongside the theme, so a collapsed sidebar never flashes open on load.
+
+**Auto-collapse is transient.** A session start collapses the rail and flags it; leaving the typing view restores only what the app itself collapsed. An explicit collapse is persisted and survives the session untouched. The reflow lands behind the countdown overlay, so it is never seen.
+
 ## Brand Mark
 
 The logo is a gradient "T" whose darkest ink is `#081b4e`, so it would vanish on the dark surface. It therefore keeps a **light ground in both themes** — a white rounded tile — rather than being recoloured per theme. The same tile is the favicon, the app icon and the apple-touch icon, so the mark is identical everywhere it appears.
