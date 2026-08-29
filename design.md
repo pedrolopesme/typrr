@@ -32,7 +32,7 @@ Each accent ships as a **text colour** (AA on white) and a **soft tint** for bac
 
 | Token | Hex | Meaning |
 |---|---|---|
-| `--accent` / `--accent-hover` | `#4f46e5` / `#4338ca` | Primary action, focus, active nav, WPM, caret |
+| `--accent` / `--accent-hover` | `#4f46e5` / `#4338ca` | Primary action, focus, active nav, WPM, next-key block |
 | `--accent-soft` | `#eef1ff` | Active-state and next-key backgrounds |
 | `--green` / `--green-soft` | `#047857` / `#e6f7f1` | Correct input, accuracy, cleared stages |
 | `--red` / `--red-soft` | `#d81b48` / `#ffedf1` | Errors, missed keys, failed targets |
@@ -131,6 +131,7 @@ The theme switch is a ceiling cord hanging in its own lane at the far right of t
 | Hover | `--surface` | `--text` | `--border-strong` + `--shadow-md` |
 | Active / selected | `--accent` | `#fff` | `--accent` |
 | Focus visible | unchanged | unchanged | `2px solid --accent`, `2px` offset |
+| Next key | `--accent` | `--on-accent` | none — a filled block, no outline |
 | Correct | `--green-soft` | `--green` | `--green` |
 | Error | `--red-soft` | `--red` | `--red` |
 | Disabled / locked | `--bg-subtle` | `--text-muted` | `--border`, `cursor: not-allowed` |
@@ -148,5 +149,6 @@ The theme switch is a ceiling cord hanging in its own lane at the far right of t
 - `:focus-visible` is styled globally and never removed. A skip link jumps to `#content`.
 - All interactive elements are real `<button>` elements — `<button>` accepts only phrasing content, so inner blocks are `<span>` with an explicit `display`.
 - Colour is never the only signal: icons, text labels and the wavy underline on mistyped characters accompany it.
+- The next key to press is a filled block over the whole glyph rather than a caret beside it, so the target is unambiguous. It is painted with padding cancelled by an equal negative margin, which grows the box without reflowing the line on every keystroke.
 - The dark theme is a real palette, not a CSS filter: contrast ratios are checked per token, not inherited from an inversion.
 - `prefers-reduced-motion: reduce` disables every animation and transition.
