@@ -87,6 +87,8 @@ Some surfaces are translucent or sit on top of an accent, so they cannot be deri
 | `--char-pending` | `#a3adbb` | Not-yet-typed characters |
 | `--earned-tint` | `#fffdf5` | Top of the earned-badge gradient |
 | `--heat-1`…`--heat-4` | indigo ramp | Practice heatmap steps |
+| `--cord-ink` | `rgba(127,127,127,0.45)` | Pull-cord rope stroke |
+| `--cord-knob-a` / `--cord-knob-b` / `--cord-knob-line` | white → `#e7e7ec` | Pull-cord knob gradient and rim |
 
 ## Dark Theme
 
@@ -98,6 +100,17 @@ Resolution order, applied by an inline script in `<head>` before first paint so 
 2. Otherwise `prefers-color-scheme`, re-evaluated on every load.
 
 The toggle only ever writes an explicit value, so a user who never touches it keeps following their OS.
+
+## The Pull Cord
+
+The theme switch is a ceiling cord hanging in its own lane at the far right of the header — the last control on the row, after everything else.
+
+- **The rope is a Verlet simulation**, not an animation: 16 points, gravity `1250`, damping `0.94`, 20 constraint passes per frame, `26` units of stretch past rest. It hangs, swings and settles.
+- **It trips mid-pull.** Dragging past `REST + 15` fires the toggle once per grab, the way a real ceiling chain clicks before you let go. A shorter tug does nothing.
+- **Click, `Enter`, `Space` and `m`** all yank the cord: the knob gets a real downward velocity, so every input produces the same physical response.
+- **The loop sleeps.** Once the rope settles the `requestAnimationFrame` loop stops; interaction wakes it. A typing app must not hold a frame loop behind the typing engine.
+- **Layout invariant:** `--cord-w` must equal the SVG `viewBox` width. The knob is an HTML button positioned in viewBox units, so any scaling of the SVG would drift it away from the rendered rope end.
+- `prefers-reduced-motion: reduce` starts the rope at rest and skips the drop-in entrance.
 
 ## Spacing, Radii, Elevation
 

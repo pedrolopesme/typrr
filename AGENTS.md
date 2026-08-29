@@ -52,6 +52,7 @@ THEME_ORDER = ["general", "go", "pt"]
 
 - **CSS variables for all colors.** Reference `design.md` tokens. Never hardcode a colour outside the `:root` / `html[data-theme="dark"]` blocks — a literal in a component rule silently breaks dark mode. Translucent and on-accent surfaces have their own tokens (`--veil`, `--scrim`, `--on-accent`, `--heat-*`) precisely so they can invert.
 - **Dark mode is a token swap.** Add the light value to `:root` and the dark value to `html[data-theme="dark"]`; never write a second component rule for dark. The inline `<head>` script resolves the theme before first paint — keep it dependency-free and in sync with `App.resolvedTheme()`.
+- **The pull cord owns `--cord-w`.** That token is both the header's right padding and the cord container's width, and it must stay equal to the SVG `viewBox` width (76) — the knob is an HTML button positioned in viewBox units, so scaling the SVG desyncs it from the rope.
 - **Three typographic voices.** `--font-display` (slab serif) for titles, `--mono` uppercase for labels, `--font-sans` for body. Do not introduce a fourth.
 - **White-first.** Surfaces are `--surface` on `--bg`; separation comes from `--border`, not fills. Saturated accents encode meaning only.
 - **`var(--font-sans)`** for UI text, **`var(--mono)`** for code, typing text, metrics and `<kbd>`.
@@ -111,23 +112,24 @@ The `check` function receives a stats object from `Store.get()`.
 |Section|Line|Purpose|
 |---|---|---|
 |CSS `:root`|12|Light design tokens|
-|Dark theme tokens|88|`html[data-theme="dark"]` overrides — values only|
-|CSS components|207-1116|All styling, grouped by `/* ── Section ── */` banners|
-|Pre-paint theme script|1118|Resolves `data-theme` before first paint|
-|Shell markup|1131-1216|Sidebar, header, hint bar, modals, toast|
-|`THEMES` data|1221|Content database|
-|`BADGES`|1557|Achievement definitions|
-|`Store`|1578|localStorage layer|
-|`KB_ROWS` / `FINGER_MAP` / `FINGERS`|1618|Keyboard geometry and finger coding|
-|`lineChart()` / `heatmap()`|1666 / 1705|Inline SVG data-viz helpers|
-|`VIEWS`|1735|View registry + their shortcut keys|
-|`App`|1745|All game logic|
-|`App.init()`|1768|Entry point|
-|`App.setViewChrome()`|1876|Breadcrumb, hint bar, nav indexing|
-|`App.applyTheme()` / `toggleTheme()`|1983|Dark mode resolution and persistence|
-|`App.renderSidebar()`|1913|Sidebar themes + stages|
-|`App.showDashboard()`|2047|Dashboard + continue CTA|
-|`App.showPerformance()`|2141|Stats view|
-|`App.beginTyping()`|2390|Typing engine setup|
-|`App.setupGlobalKeys()`|2553|Global keyboard router|
-|`App.showResults()`|2883|Results modal|
+|Dark theme tokens|93|`html[data-theme="dark"]` overrides — values only|
+|CSS components|217-1172|All styling, grouped by `/* ── Section ── */` banners|
+|Pre-paint theme script|1174|Resolves `data-theme` before first paint|
+|Shell markup|1187-1275|Sidebar, header, pull cord, modals, toast|
+|`THEMES` data|1280|Content database|
+|`BADGES`|1616|Achievement definitions|
+|`Store`|1637|localStorage layer|
+|`KB_ROWS` / `FINGER_MAP` / `FINGERS`|1677|Keyboard geometry and finger coding|
+|`lineChart()` / `heatmap()`|1725 / 1764|Inline SVG data-viz helpers|
+|`VIEWS`|1794|View registry + their shortcut keys|
+|`PullCord`|1806|Verlet rope theme switch|
+|`App`|1996|All game logic|
+|`App.init()`|2019|Entry point|
+|`App.setViewChrome()`|2128|Breadcrumb, hint bar, nav indexing|
+|`App.applyTheme()` / `toggleTheme()`|2235|Dark mode resolution and persistence|
+|`App.renderSidebar()`|2165|Sidebar themes + stages|
+|`App.showDashboard()`|2295|Dashboard + continue CTA|
+|`App.showPerformance()`|2389|Stats view|
+|`App.beginTyping()`|2638|Typing engine setup|
+|`App.setupGlobalKeys()`|2800|Global keyboard router|
+|`App.showResults()`|3130|Results modal|

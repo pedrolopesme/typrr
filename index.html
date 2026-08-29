@@ -82,6 +82,11 @@
   --font-display: 'American Typewriter', 'Rockwell', 'Bookman Old Style', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   --sidebar-w: 272px;
+  --cord-w: 76px;
+  --cord-ink: rgba(127, 127, 127, 0.45);
+  --cord-knob-a: #ffffff;
+  --cord-knob-b: #e7e7ec;
+  --cord-knob-line: rgba(0, 0, 0, 0.12);
 }
 
 /* ── Dark theme ── inverted ink, same meanings, brighter accents ── */
@@ -144,6 +149,11 @@ html[data-theme="dark"] {
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
   --shadow-md: 0 4px 14px rgba(0,0,0,0.45);
   --shadow-lg: 0 18px 44px rgba(0,0,0,0.6);
+
+  --cord-ink: rgba(168, 178, 196, 0.38);
+  --cord-knob-a: #f4f5f9;
+  --cord-knob-b: #c5cad6;
+  --cord-knob-line: rgba(0, 0, 0, 0.3);
 }
 
 html { font-size: 16px; }
@@ -373,7 +383,7 @@ kbd {
   min-height: 100vh;
 }
 .main-header {
-  padding: 0 28px;
+  padding: 0 var(--cord-w) 0 28px;
   height: 58px;
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -395,6 +405,7 @@ kbd {
 .breadcrumb .sep { color: var(--border-strong); }
 .breadcrumb .current { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .header-right { display: flex; align-items: center; gap: 10px; }
+.streak-chip[hidden] { display: none; }
 .streak-chip {
   display: flex;
   align-items: center;
@@ -422,19 +433,63 @@ kbd {
   transition: all 0.12s;
 }
 .ghost-btn:hover { border-color: var(--border-strong); color: var(--text); }
-.icon {
-  width: 15px; height: 15px;
+/* ── Pull cord ── the theme switch, hanging in its own lane at the far right ── */
+.pullcord {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: var(--cord-w);
+  height: 340px;
+  z-index: 60;
+  pointer-events: none;
+}
+.pullcord-rope { display: block; width: 100%; height: 100%; overflow: visible; }
+.pullcord-rope path {
   fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
+  stroke: var(--cord-ink);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  flex-shrink: 0;
+  vector-effect: non-scaling-stroke;
 }
-.icon-moon { fill: currentColor; stroke: none; }
-#themeBtn .icon-moon { display: none; }
-html[data-theme="dark"] #themeBtn .icon-sun { display: none; }
-html[data-theme="dark"] #themeBtn .icon-moon { display: block; }
+.pullcord-knob {
+  position: absolute;
+  left: 0; top: 0;
+  width: 19px; height: 19px;
+  padding: 0;
+  border: 1px solid var(--cord-knob-line);
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--cord-knob-a), var(--cord-knob-b));
+  box-shadow: 0 1.4px 3px rgba(0,0,0,0.32);
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+  will-change: transform;
+}
+.pullcord-knob:active { cursor: grabbing; }
+.pullcord-knob::after {
+  /* generous hit target without inflating the visual knob */
+  content: '';
+  position: absolute;
+  inset: -11px;
+  border-radius: 50%;
+}
+.pullcord-tip {
+  position: absolute;
+  right: 8px; top: 0;
+  white-space: nowrap;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.3px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.pullcord.hint .pullcord-tip { opacity: 1; }
 .hamburger {
   display: none;
   background: none;
@@ -1101,8 +1156,8 @@ html[data-theme="dark"] #themeBtn .icon-moon { display: block; }
   .main { margin-left: 0; }
   .hamburger { display: block; }
   .content { padding: 22px 16px 18px; }
-  .main-header { padding: 0 16px; }
-  .hintbar { display: none; }
+  .main-header { padding: 0 var(--cord-w) 0 12px; }
+  .hintbar, #helpBtn { display: none; }
   .typing-text { font-size: 1.05rem; }
   .typing-area { padding: 20px; }
   .kb-key { min-width: 30px; height: 34px; font-size: 0.66rem; }
@@ -1180,17 +1235,20 @@ html[data-theme="dark"] #themeBtn .icon-moon { display: block; }
       <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
       <div class="header-right">
         <div class="streak-chip" id="streakBadge" hidden>🔥 <span id="streakCount">0</span><span>day streak</span></div>
-        <button class="ghost-btn" id="themeBtn" type="button" aria-pressed="false" title="Toggle dark mode (m)">
-          <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.6M12 19v2.6M4.2 12H1.6M22.4 12h-2.6M6.1 6.1 4.3 4.3M19.7 19.7l-1.8-1.8M17.9 6.1l1.8-1.8M4.3 19.7l1.8-1.8"/></svg>
-          <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg>
-          <span id="themeLabel">Dark</span>
-        </button>
         <button class="ghost-btn" id="helpBtn" aria-label="Keyboard shortcuts"><kbd>?</kbd> Shortcuts</button>
       </div>
     </header>
     <main class="content" id="content" tabindex="-1"></main>
     <footer class="hintbar" id="hintbar" aria-hidden="true"></footer>
   </div>
+</div>
+
+<div class="pullcord" id="pullcord">
+  <svg class="pullcord-rope" viewBox="0 0 76 340" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+    <path id="pullcordPath" d=""></path>
+  </svg>
+  <span class="pullcord-tip" id="pullcordTip" aria-hidden="true">pull for dark</span>
+  <button class="pullcord-knob" id="pullcordKnob" type="button" role="switch" aria-checked="false" aria-label="Dark mode"></button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -1741,6 +1799,198 @@ const VIEWS = [
 ];
 
 // ═══════════════════════════════════════════
+// PULL CORD — the theme switch
+// A Verlet rope: it hangs, swings and settles. Pulling past the detent
+// fires mid-pull, the way a real ceiling chain clicks before you let go.
+// ═══════════════════════════════════════════
+const PullCord = {
+  ANCHOR_X: 42, ANCHOR_Y: 0,   // viewBox coords, 76 wide
+  SEGMENTS: 16,
+  REST: 88,                    // knob hangs ~30px below the 58px header
+  GRAVITY: 1250,
+  DAMPING: 0.94,
+  ITERATIONS: 20,
+  STRETCH_MAX: 26,
+  DETENT: 15,                  // pull this far past rest to trip the switch
+  DT: 1 / 60,
+  SLEEP_EPS: 0.05,
+
+  points: [],
+  dragging: false,
+  tripped: false,
+  moved: 0,
+  raf: null,
+  still: 0,
+  onToggle: null,
+
+  init(onToggle) {
+    this.onToggle = onToggle;
+    this.el = document.getElementById("pullcord");
+    this.path = document.getElementById("pullcordPath");
+    this.knob = document.getElementById("pullcordKnob");
+    this.tip = document.getElementById("pullcordTip");
+    this.segLen = this.REST / this.SEGMENTS;
+    this.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Entrance: the rope starts collapsed at the anchor and falls into place.
+    // With reduced motion it simply starts at rest.
+    // The entrance grows the segment length instead of compressing the rope.
+    // Laying points closer than segLen would make the sequential solver fling
+    // each one past its neighbour, and the rope folds into a stable zig-zag.
+    // Growing keeps every constraint satisfied from the first frame.
+    this.growth = this.reduced ? 1 : 0.2;
+    this.points = Array.from({ length: this.SEGMENTS + 1 }, (_, i) => {
+      const y = i * this.segLen * this.growth;
+      return { x: this.ANCHOR_X, y, px: this.ANCHOR_X, py: y };
+    });
+    this.render();
+
+    this.knob.addEventListener("pointerdown", (e) => this.grab(e));
+    this.knob.addEventListener("pointermove", (e) => this.drag(e));
+    this.knob.addEventListener("pointerup", (e) => this.release(e));
+    this.knob.addEventListener("pointercancel", () => this.release());
+    // Click covers mouse, Enter and Space; a real drag already toggled.
+    this.knob.addEventListener("click", () => { if (this.moved < 5) this.yank(); });
+    this.knob.addEventListener("pointerenter", () => this.el.classList.add("hint"));
+    this.knob.addEventListener("pointerleave", () => this.el.classList.remove("hint"));
+    this.knob.addEventListener("focus", () => this.el.classList.add("hint"));
+    this.knob.addEventListener("blur", () => this.el.classList.remove("hint"));
+
+    if (!this.reduced) this.wake();
+  },
+
+  setState(dark) {
+    this.knob.setAttribute("aria-checked", String(dark));
+    this.tip.textContent = dark ? "pull for light" : "pull for dark";
+  },
+
+  // Pointer position in viewBox coordinates.
+  toLocal(e) {
+    const r = this.el.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  },
+
+  grab(e) {
+    this.knob.setPointerCapture(e.pointerId);
+    this.dragging = true;
+    this.tripped = false;
+    this.moved = 0;
+    this.origin = this.toLocal(e);
+    this.wake();
+  },
+
+  drag(e) {
+    if (!this.dragging) return;
+    const local = this.toLocal(e);
+    this.moved = Math.max(this.moved, Math.hypot(local.x - this.origin.x, local.y - this.origin.y));
+
+    // Clamp the knob to the rope's maximum stretch from the anchor.
+    let dx = local.x - this.ANCHOR_X;
+    let dy = local.y - this.ANCHOR_Y;
+    const dist = Math.hypot(dx, dy) || 0.0001;
+    const max = this.REST + this.STRETCH_MAX;
+    if (dist > max) { dx = (dx / dist) * max; dy = (dy / dist) * max; }
+
+    const tip = this.points[this.points.length - 1];
+    tip.x = this.ANCHOR_X + dx;
+    tip.y = this.ANCHOR_Y + dy;
+
+    // Trip once per grab, mid-pull, like a real chain.
+    if (!this.tripped && Math.hypot(dx, dy) >= this.REST + this.DETENT) {
+      this.tripped = true;
+      this.onToggle();
+    }
+  },
+
+  release(e) {
+    if (!this.dragging) return;
+    this.dragging = false;
+    if (e) this.knob.releasePointerCapture(e.pointerId);
+    // Hand the knob back to physics with the velocity it already had.
+    this.wake();
+  },
+
+  // Programmatic pull: used by click, Enter/Space and the m shortcut.
+  yank() {
+    const tip = this.points[this.points.length - 1];
+    tip.py = tip.y - 26;   // Verlet velocity is the gap to the previous frame
+    this.onToggle();
+    this.wake();
+  },
+
+  wake() {
+    this.still = 0;
+    if (this.raf == null) this.raf = requestAnimationFrame(() => this.frame());
+  },
+
+  frame() {
+    this.raf = null;
+    const moving = this.step();
+    this.render();
+    // Stop the loop once the rope settles; a typing app must not burn a
+    // rAF forever behind the typing engine.
+    if (this.dragging || moving) {
+      this.raf = requestAnimationFrame(() => this.frame());
+    }
+  },
+
+  step() {
+    const pts = this.points;
+    const last = pts.length - 1;
+    const g = this.GRAVITY * this.DT * this.DT;
+    const segLen = this.segLen * this.growth;
+    let maxSpeed = 0;
+
+    for (let i = 1; i < pts.length; i++) {
+      if (this.dragging && i === last) continue;   // the pointer owns the knob
+      const pt = pts[i];
+      const vx = (pt.x - pt.px) * this.DAMPING;
+      const vy = (pt.y - pt.py) * this.DAMPING;
+      pt.px = pt.x; pt.py = pt.y;
+      pt.x += vx;
+      pt.y += vy + g;
+      maxSpeed = Math.max(maxSpeed, Math.abs(vx), Math.abs(vy));
+    }
+
+    for (let k = 0; k < this.ITERATIONS; k++) {
+      pts[0].x = this.ANCHOR_X;
+      pts[0].y = this.ANCHOR_Y;
+      for (let i = 0; i < last; i++) {
+        const a = pts[i], b = pts[i + 1];
+        const aFixed = i === 0;
+        const bFixed = this.dragging && i + 1 === last;
+        if (aFixed && bFixed) continue;
+        let dx = b.x - a.x, dy = b.y - a.y;
+        let dist = Math.hypot(dx, dy);
+        if (dist < 1e-4) { dx = 0; dy = dist = 1e-4; }   // separate straight down
+        const diff = (dist - segLen) / dist;
+        const share = aFixed || bFixed ? 1 : 0.5;
+        if (!aFixed) { a.x += dx * diff * share; a.y += dy * diff * share; }
+        if (!bFixed) { b.x -= dx * diff * share; b.y -= dy * diff * share; }
+      }
+    }
+
+    if (this.growth < 1) this.growth = Math.min(1, this.growth + 0.028);
+    this.still = maxSpeed < this.SLEEP_EPS ? this.still + 1 : 0;
+    return this.growth < 1 || this.still < 12;
+  },
+
+  render() {
+    const pts = this.points;
+    let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+    for (let i = 1; i < pts.length; i++) d += ` L ${pts[i].x.toFixed(2)} ${pts[i].y.toFixed(2)}`;
+    this.path.setAttribute("d", d);
+
+    const tip = pts[pts.length - 1];
+    const r = this.knob.offsetWidth / 2;
+    this.knob.style.transform = `translate(${(tip.x - r).toFixed(2)}px, ${(tip.y - r).toFixed(2)}px)`;
+    // Right-anchored so a wide label never clips off the viewport edge;
+    // it only tracks the knob vertically.
+    this.tip.style.transform = `translateY(${(tip.y + 14).toFixed(2)}px)`;
+  },
+};
+
+// ═══════════════════════════════════════════
 // GAME ENGINE
 // ═══════════════════════════════════════════
 const App = {
@@ -1768,6 +2018,7 @@ const App = {
 
   init() {
     Store.load();
+    PullCord.init(() => this.toggleTheme());
     this.applyTheme();
     this.updateStreak();
     this.renderViewNav();
@@ -1983,12 +2234,8 @@ const App = {
 
   applyTheme() {
     const theme = this.resolvedTheme();
-    const dark = theme === "dark";
     document.documentElement.dataset.theme = theme;
-    const btn = document.getElementById("themeBtn");
-    btn.setAttribute("aria-pressed", String(dark));
-    btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-    document.getElementById("themeLabel").textContent = dark ? "Light" : "Dark";
+    PullCord.setState(theme === "dark");
   },
 
   toggleTheme() {
@@ -2519,7 +2766,6 @@ const App = {
     document.getElementById("viewNav").addEventListener("click", run);
     document.getElementById("breadcrumb").addEventListener("click", run);
     document.getElementById("helpBtn").addEventListener("click", () => this.toggleHelp(true));
-    document.getElementById("themeBtn").addEventListener("click", () => this.toggleTheme());
     document.getElementById("hamburger").addEventListener("click", (e) => {
       const open = document.getElementById("sidebar").classList.toggle("open");
       e.currentTarget.setAttribute("aria-expanded", String(open));
@@ -2580,7 +2826,7 @@ const App = {
 
       switch (e.key) {
         case "?": e.preventDefault(); this.toggleHelp(true); return;
-        case "m": e.preventDefault(); this.toggleTheme(); return;
+        case "m": e.preventDefault(); PullCord.yank(); return;
         case "Escape": e.preventDefault(); this.back(); return;
         case "n": e.preventDefault(); this.startNext(); return;
         case "t": e.preventDefault(); this.cycleTheme(e.shiftKey ? -1 : 1); return;
@@ -2648,7 +2894,7 @@ const App = {
           ['Navigate', [
             [['d'], 'Dashboard'], [['s'], 'Stats'], [['b'], 'Badges'], [['h'], 'History'],
             [['t'], 'Next theme'], [['Shift', 't'], 'Previous theme'],
-            [['m'], 'Toggle dark mode'], [['Esc'], 'Go back'],
+            [['m'], 'Pull the cord (dark mode)'], [['Esc'], 'Go back'],
           ]],
           ['Act', [
             [['n'], 'Start next recommended lesson'],
