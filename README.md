@@ -19,11 +19,14 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 - **Stage tests** — must hit WPM + accuracy targets to unlock the next stage
 - **Stats that mean something** — WPM/accuracy trend charts, 5-session deltas, an 18-week practice heatmap and your most-missed keys
 - **Full keyboard control** — every screen is drivable without a mouse; press `?` for the shortcut sheet
+- **Light and dark themes** — follows your OS by default, one click or `m` to override
 - **Progress persistence** — everything saved in `localStorage`
 
 ![Typrr Typing](screenshots/typing.png)
 
 ![Typrr Stats](screenshots/stats.png)
+
+![Typrr Dark Mode](screenshots/dark.png)
 
 ## Quick Start
 
@@ -59,7 +62,8 @@ Press <kbd>?</kbd> anywhere for the full list.
 |-----|--------|
 | `d` `s` `b` `h` | Dashboard · Stats · Badges · History |
 | `n` | Start the next recommended lesson |
-| `t` / `Shift`+`t` | Cycle themes |
+| `t` / `Shift`+`t` | Cycle content themes |
+| `m` | Toggle dark mode |
 | `1`–`9` | Open the numbered card |
 | `↑` `↓` `←` `→` | Move between cards (grid-aware) |
 | `Space` | Start the typing session |
@@ -68,7 +72,11 @@ Press <kbd>?</kbd> anywhere for the full list.
 
 ## Design
 
-White-first and low-chrome: hairline-bordered cards on white, with saturated colour reserved for meaning — indigo for progress and focus, green for correct, red for errors, amber for streaks and tests. See [design.md](design.md) for the full token reference.
+White-first and low-chrome: hairline-bordered cards on white, with saturated colour reserved for meaning — indigo for progress and focus, green for correct, red for errors, amber for streaks and tests.
+
+Titles are set in a slab serif (`American Typewriter` → `Rockwell` → Georgia) for the typewriter voice, labels in letterspaced mono small caps, body in the system sans. All faces are already on your machine — no webfonts.
+
+Dark mode is a pure token swap on `html[data-theme="dark"]`, resolved before first paint so it never flashes. See [design.md](design.md) for the full token reference.
 
 ## Project Structure
 

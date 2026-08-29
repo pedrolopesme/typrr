@@ -1,6 +1,6 @@
 # Typrr Design System
 
-White-first, high-contrast, low-chrome. The interface is paper; saturated colour is reserved for meaning — never decoration.
+White-first, high-contrast, low-chrome. The interface is paper; saturated colour is reserved for meaning — never decoration. A dark theme inverts the ink without changing any of those meanings.
 
 ## Principles
 
@@ -8,6 +8,8 @@ White-first, high-contrast, low-chrome. The interface is paper; saturated colour
 2. **Colour carries meaning.** Every saturated hue maps to one concept (progress, success, error, warning, finger). If a colour has no meaning, it does not appear.
 3. **Numbers are tabular.** All metrics use `font-variant-numeric: tabular-nums` so values don't jitter while typing.
 4. **Every action is reachable from the keyboard**, and every focusable element shows where focus is.
+5. **Titles speak in slab-serif.** The display face carries the typewriter voice; labels are letterspaced mono small caps; body copy stays in the neutral system sans.
+6. **No literal colours outside `:root`.** Every component reads a token, which is what makes the dark theme a pure token swap.
 
 ## Neutrals
 
@@ -58,12 +60,44 @@ Applied as a 3px bar across the top of each virtual key and as the hand diagram 
 
 ## Typography
 
-| Role | Font | Usage |
-|---|---|---|
-| UI | `var(--font-sans)` — system stack | Everything except code |
-| Code | `var(--mono)` | Typing area, keyboard, previews, metrics, `<kbd>` |
+Three voices, each with one job.
 
-Weights: 800 for page/stat titles, 650–700 for card and panel titles, 400–550 for body. Titles use negative letter-spacing (`-0.3px` to `-1px`); uppercase labels use `+0.6px` to `+0.9px`.
+| Role | Token | Stack | Usage |
+|---|---|---|---|
+| Display | `--font-display` | `American Typewriter`, `Rockwell`, `Bookman Old Style`, `Iowan Old Style`, Georgia, serif | Brand, page/lesson/modal/card/panel titles, countdown |
+| Label | `--mono` | `SF Mono`, `Cascadia Code`, `Fira Code`, `Consolas`, monospace | Uppercase letterspaced small caps: section titles, stat labels, table headers, eyebrows |
+| Body | `--font-sans` | system stack | Paragraphs, descriptions, buttons, nav |
+| Code | `--mono` | as above | Typing area, keyboard caps, previews, metrics, `<kbd>` |
+
+The display stack is a slab serif on purpose: it is the typewriter in the product. Every face is already on the system — no webfonts, no CDN, no layout shift.
+
+Weights: 700 on display (the slab is heavy enough without 800), 600–650 on labels, 400–550 on body. Display titles sit near `0` tracking; mono labels open up to `+0.5px` to `+1.2px`; numerals stay tabular.
+
+## Inverting Surfaces
+
+Some surfaces are translucent or sit on top of an accent, so they cannot be derived from the flat tokens. They get their own tokens and are redefined per theme:
+
+| Token | Light | Purpose |
+|---|---|---|
+| `--scrim` | `rgba(16,24,40,0.36)` | Modal backdrop |
+| `--veil` / `--veil-solid` | translucent white | Sticky header, hint bar, focus prompt, countdown |
+| `--on-accent` | `#ffffff` | Text and icons sitting on `--accent` |
+| `--on-accent-veil` / `--on-accent-line` | white at 18% / 28% | `<kbd>` chips inside accent-filled buttons |
+| `--accent-cast` / `--accent-cast-strong` | indigo at 25% / 32% | Coloured shadow under the continue banner |
+| `--char-pending` | `#a3adbb` | Not-yet-typed characters |
+| `--earned-tint` | `#fffdf5` | Top of the earned-badge gradient |
+| `--heat-1`…`--heat-4` | indigo ramp | Practice heatmap steps |
+
+## Dark Theme
+
+`html[data-theme="dark"]` redefines the token values only — no component rule is duplicated. Neutrals become a cool ink scale (`#0e1116` → `#eef2f7`), accents brighten for dark backgrounds (`--accent` becomes `#8f8cff`, `--green` `#34d399`, `--red` `#fb7185`), `--on-accent` flips to near-black, and shadows deepen.
+
+Resolution order, applied by an inline script in `<head>` before first paint so nothing flashes:
+
+1. `Store.data.theme` when it is `"light"` or `"dark"` — an explicit user choice always wins.
+2. Otherwise `prefers-color-scheme`, re-evaluated on every load.
+
+The toggle only ever writes an explicit value, so a user who never touches it keeps following their OS.
 
 ## Spacing, Radii, Elevation
 
@@ -101,4 +135,5 @@ Weights: 800 for page/stat titles, 650–700 for card and panel titles, 400–55
 - `:focus-visible` is styled globally and never removed. A skip link jumps to `#content`.
 - All interactive elements are real `<button>` elements — `<button>` accepts only phrasing content, so inner blocks are `<span>` with an explicit `display`.
 - Colour is never the only signal: icons, text labels and the wavy underline on mistyped characters accompany it.
+- The dark theme is a real palette, not a CSS filter: contrast ratios are checked per token, not inherited from an inversion.
 - `prefers-reduced-motion: reduce` disables every animation and transition.
