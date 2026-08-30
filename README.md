@@ -12,7 +12,8 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 
 - **10 general typing stages** — from home row basics to professional speed
 - **Go programming track** — muscle memory for `func`, `if err != nil`, goroutines, and real code
-- **Kit Hub** — browse, enable and disable typing kits organised by category
+- **9 language kits** — Portuguese, English, Spanish, French, Italian, Mandarin (Pinyin), Hindi, Arabic and Bengali
+- **Kit Hub** — browse, install and remove typing kits organised by category
 - **5-minute lessons** — designed for daily practice
 - **Finger guide** — colour-coded keyboard and live hand diagram show which finger to use
 - **Gamification** — XP, levels, streaks, star ratings, 15 achievements

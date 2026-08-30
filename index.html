@@ -1806,10 +1806,418 @@ const THEMES = {
         test: { title: "Mestre em Português", text: "Parabéns por chegar até aqui! Digitar bem em português é uma habilidade valiosa. Com prática diária, você conseguirá escrever e-mails, mensagens e textos com fluência e precisão. Continue praticando!", minWpm: 35, minAccuracy: 92 }
       }
     ]
+  },
+  en: {
+    id: "en", name: "English", icon: "🇬🇧",
+    desc: "English typing — contractions, idioms, business writing and literature",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Contractions & Apostrophes", desc: "Master English contractions and possessives", icon: "Aa",
+        lessons: [
+          { id: "1a", title: "Common Contractions", text: "it's don't can't won't they're we're I'm you're hasn't didn't couldn't shouldn't wouldn't" },
+          { id: "1b", title: "Possessives", text: "John's car Sarah's book the company's policy the children's toys James's house the boss's office" },
+          { id: "1c", title: "Its vs It's", text: "It's raining outside. The dog wagged its tail. It's been a long day. The team celebrated its victory." },
+          { id: "1d", title: "Their/They're/There", text: "They're going there to visit their family. There are many reasons why their plan works. They're ready." },
+          { id: "1e", title: "Speed Contractions", text: "I'd've gone if you'd've called. He'll've finished by then. We'd've been there if we'd've known." }
+        ],
+        test: { title: "Contractions Test", text: "It's been a wonderful journey. They're all going there tomorrow to meet their friends. You're always welcome, don't forget that. I'd've called sooner but I couldn't.", minWpm: 22, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Frequently Confused Words", desc: "Homophones and commonly misspelled English words", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Homophones", text: "to too two your you're there their they're its it's whose who's than then affect effect" },
+          { id: "2b", title: "Spelling Challenges", text: "accommodate definitely separate necessary occasionally recommend privilege embarrassed accommodate" },
+          { id: "2c", title: "British vs American", text: "colour color favourite favorite realise realize theatre theater traveller traveler licence license" },
+          { id: "2d", title: "Double Letters", text: "aggressive commission embarrass occurrence possession occasionally questionnaire success recommend" },
+          { id: "2e", title: "Silent Letters", text: "knife knight know gnat write wrong debt doubt subtle castle listen whistle muscle" }
+        ],
+        test: { title: "Spelling Test", text: "It's definitely necessary to accommodate their recommendations separately. The committee will occasionally review the questionnaire before making their final decision.", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Idioms & Expressions", desc: "Common English idioms and figurative language", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Business Idioms", text: "think outside the box at the end of the day touch base low-hanging fruit move the needle circle back" },
+          { id: "3b", title: "Everyday Idioms", text: "beat around the bush bite the bullet break a leg call it a day hit the sack piece of cake spill the beans" },
+          { id: "3c", title: "Proverbs", text: "actions speak louder than words a stitch in time saves nine birds of a feather flock together" },
+          { id: "3d", title: "Phrasal Verbs", text: "give up look after run into turn down put off bring up come across get along make up take over" },
+          { id: "3e", title: "Mixed Expressions", text: "I'm on the fence about it. Let's get the ball rolling. She really hit it out of the park with that presentation." }
+        ],
+        test: { title: "Idioms Test", text: "Sometimes you need to bite the bullet and think outside the box. At the end of the day, actions speak louder than words. Don't beat around the bush — just get the ball rolling and make it happen.", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 4, title: "Real English Texts", desc: "Professional and literary English writing", icon: "📖",
+        lessons: [
+          { id: "4a", title: "Business Email", text: "Dear Ms. Johnson, Thank you for your inquiry. I am writing to confirm that the proposal has been approved. Please find the attached documents for your review. Should you have any questions, do not hesitate to reach out. Best regards, Michael Chen" },
+          { id: "4b", title: "News Article", text: "The city council approved a new infrastructure bill on Tuesday, allocating £3.2 million for road repairs and public transit improvements across all five boroughs." },
+          { id: "4c", title: "Literature", text: "It was the best of times, it was the worst of times. The sun rose over London as if nothing had changed, yet everything had changed for the small family on Fleet Street." },
+          { id: "4d", title: "Scientific Abstract", text: "This study examines the correlation between screen time and sleep quality among adolescents aged 13 to 18. Results indicate a statistically significant relationship (p < 0.01)." },
+          { id: "4e", title: "Social Media", text: "Just finished an amazing weekend hike through the Lake District. The views from Scafell Pike were absolutely breathtaking. If you haven't been yet, I couldn't recommend it more highly." }
+        ],
+        test: { title: "English Mastery Test", text: "Dear colleagues, it's been an exceptional quarter. The team has gone above and beyond, thinking outside the box and delivering results that speak for themselves. I couldn't be prouder of what we've accomplished together. Here's to continued success in the months ahead.", minWpm: 32, minAccuracy: 90 }
+      }
+    ]
+  },
+  es: {
+    id: "es", name: "Español", icon: "🇪🇸",
+    desc: "Escribe en español — tildes, eñes y textos reales",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Tildes y Caracteres", desc: "Domina los acentos y caracteres especiales", icon: "Á",
+        lessons: [
+          { id: "1a", title: "Vocales Agudas", text: "café mamá papá también después aquí allí así quizás jamás bebés capaz estás está" },
+          { id: "1b", title: "Graves y Esdrújulas", text: "fácil difícil árbol lápiz ángel médico música página teléfono brújula exámenes" },
+          { id: "1c", title: "La Eñe", text: "año mañana señor niño español montaña piña sueño pequeño campaña baño enseñanza" },
+          { id: "1d", title: "Diéresis e Interrogación", text: "pingüino vergüenza antigüedad ¿Cómo estás? ¿Qué tal? ¡Qué bueno! ¡Felicidades! ¡Vamos!" },
+          { id: "1e", title: "Todo Mezclado", text: "¿Qué pasó mañana? ¡Qué difícil fue el exámen! El pingüino comió piña con café en la montaña." }
+        ],
+        test: { title: "Tildes Test", text: "¿Cómo está usted hoy? El exámen de español fue muy fácil después de estudiar. La señora García vive en una pequeña montaña cerca del río. ¡Qué bonito es el año nuevo!", minWpm: 22, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Palabras Comunes", desc: "Las palabras más usadas en español", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Top 30", text: "de que no a la el es y en lo un por me qué se los del las una con su para como más" },
+          { id: "2b", title: "Próximas 30", text: "pero todo ya muy hay vez puede también así dos bien poco mucho gran tan cada día sin este nos" },
+          { id: "2c", title: "Sustantivos", text: "vida tiempo mundo persona casa mujer hombre trabajo ciudad luz amor familia historia país" },
+          { id: "2d", title: "Verbos Comunes", text: "ser estar tener hacer decir ir ver dar saber querer llegar pasar poder venir creer pensar" },
+          { id: "2e", title: "Flujo Rápido", text: "siempre nunca antes después mañana hoy ayer ahora siempre todavía casi apenas solamente" }
+        ],
+        test: { title: "Palabras Test", text: "la vida es muy bonita cuando tienes tiempo para hacer lo que quieres. no siempre es fácil pero cada día es una nueva oportunidad para ser feliz.", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Frases Cotidianas", desc: "Conversaciones del día a día", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Saludos", text: "¡Hola! ¿Cómo estás? Buenos días, buenas tardes, buenas noches. Mucho gusto en conocerte. ¿Qué tal?" },
+          { id: "3b", title: "Preguntas", text: "¿Dónde está el baño? ¿Cuánto cuesta esto? ¿Me puedes ayudar? ¿A qué hora empieza? ¿Cómo te llamas?" },
+          { id: "3c", title: "Cortesía", text: "Por favor, muchas gracias, de nada, con permiso, disculpe, lo siento, no hay problema, está bien." },
+          { id: "3d", title: "Expresiones", text: "¡Qué guay! ¡Qué fuerte! Me da igual. Más o menos. No pasa nada. Claro que sí. Ni de broma." },
+          { id: "3e", title: "Restaurante", text: "Una mesa para dos, por favor. ¿Cuál es el plato del día? La cuenta, por favor. ¿Aceptan tarjeta?" }
+        ],
+        test: { title: "Frases Test", text: "¡Hola! ¿Cómo estás? Buenos días, ¿me puedes ayudar? Quiero ir al museo pero no sé dónde está. Muchas gracias por tu ayuda, eres muy amable. ¡Hasta luego!", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 4, title: "Textos Reales", desc: "Cultura, noticias y comunicación en español", icon: "📖",
+        lessons: [
+          { id: "4a", title: "Noticia", text: "El gobierno anunció hoy nuevas medidas económicas para combatir la inflación. El presidente declaró que los precios comenzarán a estabilizarse en los próximos meses." },
+          { id: "4b", title: "Cultura", text: "La paella valenciana es uno de los platos más emblemáticos de España. Se prepara con arroz, azafrán, verduras frescas y mariscos o carne, según la tradición regional." },
+          { id: "4c", title: "Literatura", text: "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor." },
+          { id: "4d", title: "Correo Formal", text: "Estimado Sr. García, le escribo para confirmar nuestra reunión del próximo jueves a las diez. Por favor, confirme su disponibilidad. Atentamente, Laura Fernández." },
+          { id: "4e", title: "Viajes", text: "Barcelona es una ciudad increíble con playas hermosas, arquitectura modernista y una vida nocturna vibrante. No te pierdas la Sagrada Familia al atardecer." }
+        ],
+        test: { title: "Prueba Final", text: "Aprender español abre puertas en más de veinte países. Con práctica diaria y dedicación, pronto escribirás con fluidez y precisión. Cada palabra que escribes te acerca más a la maestría del idioma.", minWpm: 30, minAccuracy: 90 }
+      }
+    ]
+  },
+  fr: {
+    id: "fr", name: "Français", icon: "🇫🇷",
+    desc: "Tapez en français — accents, ligatures et textes authentiques",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Accents et Cédille", desc: "Maîtrisez tous les accents français", icon: "À",
+        lessons: [
+          { id: "1a", title: "Accent Aigu", text: "café étudié passé préféré école téléphone célèbre épicé liberté égalité santé bébé" },
+          { id: "1b", title: "Accent Grave", text: "très après déjà où là père mère frère fenêtre progrès dès chèque crème lumière" },
+          { id: "1c", title: "Accent Circonflexe", text: "être tête hôpital forêt âge île août goût sûr dîner bientôt fenêtre même" },
+          { id: "1d", title: "Cédille et Tréma", text: "français garçon leçon façon ça reçu déçu Noël naïve maïs coïncidence aiguë" },
+          { id: "1e", title: "Tout Mélangé", text: "Le garçon très digne a été à l'hôpital. C'était une belle leçon de français pour les élèves débutants." }
+        ],
+        test: { title: "Test Accents", text: "Le français est une langue très belle. Après avoir étudié à l'école, le garçon a décidé de devenir médecin. C'est une question de liberté, d'égalité et de fraternité.", minWpm: 22, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Mots Communs", desc: "Les mots les plus fréquents en français", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Top 30", text: "de le la les un une et à des est en du que pour dans pas qui sur avec ne se il elle" },
+          { id: "2b", title: "Próximos 30", text: "tout nous vous mais faire plus aux très bien comme leur sans deux même dont ces après" },
+          { id: "2c", title: "Verbes", text: "être avoir faire dire aller pouvoir savoir vouloir voir venir prendre parler mettre donner" },
+          { id: "2d", title: "Mots de Liaison", text: "cependant néanmoins toutefois également ensuite toutefois puisque lorsque parce que ainsi" },
+          { id: "2e", title: "Adverbes", text: "beaucoup très bien mal peu toujours souvent jamais déjà encore maintenant hier demain ici là" }
+        ],
+        test: { title: "Mots Test", text: "il est très important de bien parler le français. beaucoup de personnes dans le monde apprennent cette belle langue. ce n'est pas toujours facile mais avec la pratique on progresse.", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Phrases Courantes", desc: "Conversations de tous les jours", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Salutations", text: "Bonjour, comment allez-vous ? Bonsoir, enchanté de vous rencontrer. Bonne journée, à bientôt !" },
+          { id: "3b", title: "Questions", text: "Où sont les toilettes ? Combien ça coûte ? À quelle heure commence le film ? Pouvez-vous m'aider ?" },
+          { id: "3c", title: "Politesse", text: "S'il vous plaît, merci beaucoup, de rien, je vous en prie, excusez-moi, pardon, désolé." },
+          { id: "3d", title: "Expressions", text: "C'est la vie. Ça marche. Pas de problème. J'en ai marre. Quelle horreur. C'est génial." },
+          { id: "3e", title: "Au Restaurant", text: "Je voudrais une table pour deux. Qu'est-ce que vous recommandez ? L'addition, s'il vous plaît." }
+        ],
+        test: { title: "Phrases Test", text: "Bonjour, je voudrais réserver une chambre pour ce soir. Combien coûte la nuit avec petit déjeuner ? Merci beaucoup pour votre aide. Excusez-moi, le restaurant est-il ouvert ?", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 4, title: "Textes Authentiques", desc: "Culture, presse et littérature française", icon: "📖",
+        lessons: [
+          { id: "4a", title: "Actualité", text: "Le président a annoncé une réforme du système de retraite qui entrera en vigueur dès le mois de janvier prochain. Les syndicats ont déjà prévu une journée de mobilisation." },
+          { id: "4b", title: "Gastronomie", text: "La cuisine française est inscrite au patrimoine culturel immatériel de l'UNESCO. Le croissant au beurre, le fromage affiné et le bon vin rouge incarnent l'art de vivre à la française." },
+          { id: "4c", title: "Littérature", text: "Aujourd'hui, maman est morte. Ou peut-être hier, je ne sais pas. J'ai reçu un télégramme de l'asile : Mère décédée. Enterrement demain. Sentiments distingués. Cela ne veut rien dire." },
+          { id: "4d", title: "Courrier Formel", text: "Madame, Monsieur, je vous écris pour vous faire part de ma candidature au poste de responsable marketing. Fort de dix années d'expérience, je suis convaincu de pouvoir contribuer à votre succès." },
+          { id: "4e", title: "Voyages", text: "Paris est une ville magique avec ses monuments historiques, ses musées de renommée mondiale et ses charmants cafés en terrasse. La Tour Eiffel illuminée la nuit est un spectacle inoubliable." }
+        ],
+        test: { title: "Examen Final", text: "Félicitations d'avoir terminé ce parcours. Le français est une langue précise et élégante qui demande de la patience. Avec une pratique quotidienne, vous développerez une aisance naturelle à l'écrit comme à l'oral.", minWpm: 30, minAccuracy: 90 }
+      }
+    ]
+  },
+  it: {
+    id: "it", name: "Italiano", icon: "🇮🇹",
+    desc: "Scrivi in italiano — accenti, parole comuni e cultura",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Accenti Italiani", desc: "Padroneggia gli accenti acuti e gravi", icon: "À",
+        lessons: [
+          { id: "1a", title: "Accento Grave", text: "città verità caffè lunedì martedì mercoledì giovedì venerdì perché benché affinché" },
+          { id: "1b", title: "Accento Acuto", text: "perché né sé poté finché poiché trentatré ventitré benché cosicché viceré nonché" },
+          { id: "1c", title: "Altri Accenti", text: "è cioè più può già ciò lì dà là sì tè dì fà nè giù può ciò" },
+          { id: "1d", title: "Monosillabi Accentati", text: "sì no è dà là lì tè sé né già più può ciò giù affinché poiché" },
+          { id: "1e", title: "Tutto Misto", text: "Perché non vieni in città lunedì? Il caffè è buonissimo. La verità è che non posso più aspettare." }
+        ],
+        test: { title: "Test Accenti", text: "Perché tutti amano l'italiano? Perché è una lingua bellissima, piena di musica e di passione. La città di Roma è visitata ogni anno da milioni di turisti provenienti da tutto il mondo.", minWpm: 22, minAccuracy: 88 }
+      },
+      {
+        id: 2, title: "Parole Comuni", desc: "Le parole più usate in italiano", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Top 30", text: "di che a non la il e in un per con ho una del gli suo da più come dei le mi al" },
+          { id: "2b", title: "Próximos 30", text: "sono se ci tutto molto bene così c'è però ora perché questo poi oggi ogni quando" },
+          { id: "2c", title: "Sostantivi", text: "tempo vita mondo casa donna uomo amore lavoro città anno giorno storia famiglia cosa" },
+          { id: "2d", title: "Verbi Comuni", text: "essere avere fare dire andare potere volere sapere vedere venire prendere parlare mettere" },
+          { id: "2e", title: "Espressioni", text: "va bene per favore grazie mille prego mi dispiace non importa chissà magari anzi insomma" }
+        ],
+        test: { title: "Parole Test", text: "la vita è molto bella quando hai tempo per fare le cose che ami. non è sempre facile ma ogni giorno è una nuova possibilità per essere felici.", minWpm: 25, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Frasi Quotidiane", desc: "Conversazioni di tutti i giorni", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Saluti", text: "Buongiorno, come stai? Buonasera, piacere di conoscerti. Arrivederci, a presto! Ciao ciao." },
+          { id: "3b", title: "Domande", text: "Dov'è il bagno? Quanto costa? Puoi aiutarmi? Che ore sono? Come ti chiami? Di dove sei?" },
+          { id: "3c", title: "Cortesia", text: "Per favore, grazie, prego, mi scusi, mi dispiace, non fa niente, va benissimo, certo." },
+          { id: "3d", title: "Espressioni", text: "Che bello! Che peccato! Non importa. Magari fosse vero. Lasciamo stare. Dai, andiamo." },
+          { id: "3e", title: "Al Ristorante", text: "Un tavolo per due, per favore. Vorrei gli spaghetti alla carbonara. Il conto, per cortesia." }
+        ],
+        test: { title: "Frasi Test", text: "Buongiorno, vorrei prenotare una camera per stanotte. Quanto costa a notte? Grazie mille per l'aiuto. Mi scusi, il ristorante è ancora aperto? Buonasera e arrivederci.", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 4, title: "Testi Autentici", desc: "Cultura, notizie e letteratura italiana", icon: "📖",
+        lessons: [
+          { id: "4a", title: "Notizia", text: "Il governo ha stanziato cinquanta miliardi di euro per investimenti nelle infrastrutture del paese. Il piano prevede la modernizzazione delle ferrovie e delle autostrade entro il 2030." },
+          { id: "4b", title: "Cucina", text: "La pasta alla carbonara è uno dei piatti più amati della cucina romana. Si prepara con uova fresche, guanciale croccante, pecorino romano e una generosa macinata di pepe nero." },
+          { id: "4c", title: "Letteratura", text: "Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, ché la diritta via era smarrita. Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte." },
+          { id: "4d", title: "Email Formale", text: "Gentile Dottoressa Rossi, le scrivo per confermare la riunione di giovedì prossimo alle ore quindici. La prego gentilmente di confermare la sua disponibilità. Cordiali saluti, Marco Bianchi." },
+          { id: "4e", title: "Viaggi", text: "Firenze è una città meravigliosa con i suoi musei straordinari, le chiese rinascimentali e i ponti storici sull'Arno. Il David di Michelangelo lascia senza fiato ogni visitatore." }
+        ],
+        test: { title: "Esame Finale", text: "Complimenti per aver completato questo percorso. L'italiano è una lingua musicale e ricca di storia. Con la pratica quotidiana, raggiungerai una padronanza naturale della scrittura. Continua così.", minWpm: 30, minAccuracy: 90 }
+      }
+    ]
+  },
+  zh: {
+    id: "zh", name: "中文 (Pinyin)", icon: "🇨🇳",
+    desc: "Type Chinese Pinyin with tone marks — the gateway to Mandarin",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Pinyin Tones", desc: "Master the four tones and neutral tone", icon: "Ā",
+        lessons: [
+          { id: "1a", title: "First Tone (ˉ)", text: "mā bā pā dā tā gā kā hā zhā chā shā zā cā sā yā wā fā" },
+          { id: "1b", title: "Second Tone (ˊ)", text: "má bá pá dá tá gá ká há zhá chá shá zá cá sá yá wá fá" },
+          { id: "1c", title: "Third Tone (ˇ)", text: "mǎ bǎ pǎ dǎ tǎ gǎ kǎ hǎ zhǎ chǎ shǎ zǎ cǎ sǎ yǎ wǎ fǎ" },
+          { id: "1d", title: "Fourth Tone (ˋ)", text: "mà bà pà dà tà gà kà hà zhà chà shà zà cà sà yà wà fà" },
+          { id: "1e", title: "All Tones Mixed", text: "mā má mǎ mà bā bá bǎ bà zhōng guó měi lì hǎo rén dà xué" }
+        ],
+        test: { title: "Tones Test", text: "nǐhǎo wǒ shì zhōngguó rén wǒ xuéxí hànyǔ hěn gāoxìng rènshi nǐ míngtiān zàijiàn", minWpm: 20, minAccuracy: 85 }
+      },
+      {
+        id: 2, title: "Essential Words", desc: "High-frequency Pinyin vocabulary", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Greetings", text: "nǐhǎo xièxiè zàijiàn duìbuqǐ méi guānxi qǐngwèn bú kèqì" },
+          { id: "2b", title: "People", text: "wǒ nǐ tā wǒmen nǐmen tāmen lǎoshī xuéshēng péngyǒu jiārén" },
+          { id: "2c", title: "Daily Life", text: "chīfàn hēshuǐ shuìjiào gōngzuò shàngxué kànshū xiězì shuōhuà" },
+          { id: "2d", title: "Numbers & Time", text: "yī èr sān sì wǔ liù qī bā jiǔ shí jīntiān míngtiān zuótiān xiànzài" },
+          { id: "2e", title: "Places", text: "zhōngguó běijīng shànghǎi guǎngzhōu chéngshì xuéxiào yīyuàn shāngdiàn" }
+        ],
+        test: { title: "Words Test", text: "nǐhǎo wǒ shì xuéshēng wǒmen jīntiān qù shāngdiàn xièxiè nǐ míngtiān zàijiàn", minWpm: 22, minAccuracy: 85 }
+      },
+      {
+        id: 3, title: "Common Phrases", desc: "Everyday Pinyin sentences", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Greetings", text: "Nǐ hǎo ma? Wǒ hěn hǎo. Jiǔyǎng dàmíng. Zǎoshàng hǎo. Wǎnshàng hǎo. Wǎn'ān." },
+          { id: "3b", title: "Getting Around", text: "Qǐngwèn dìtiězhàn zài nǎlǐ? Wǒ yào qù Tiān'ānmén. Duōshǎo qián? Tài guì le." },
+          { id: "3c", title: "At a Restaurant", text: "Wǒ yào yīwǎn niúròumiàn. Bùyào là de. Mǎidān, xièxiè. Hěn hǎochī." },
+          { id: "3d", title: "Feelings", text: "Wǒ hěn gāoxìng. Wǒ yǒudiǎnr lèi. Wǒ bù shūfu. Wǒ ài nǐ. Wǒ xiǎng nǐ." },
+          { id: "3e", title: "Mixed Practice", text: "Jīntiān tiānqì hěn hǎo. Wǒmen yīqǐ qù gōngyuán ba. Nǐ juéde zěnmeyàng? Hǎo de." }
+        ],
+        test: { title: "Phrases Test", text: "Nǐ hǎo, qǐngwèn zhèlǐ zěnme zǒu? Wǒ xiǎng qù huǒchēzhàn. Xièxiè nǐ de bāngzhù. Hěn gāoxìng rènshi nǐ. Zàijiàn.", minWpm: 24, minAccuracy: 85 }
+      },
+      {
+        id: 4, title: "Extended Texts", desc: "Longer Pinyin passages and conversations", icon: "📖",
+        lessons: [
+          { id: "4a", title: "Self Introduction", text: "Dàjiā hǎo, wǒ jiào Xiǎo Míng. Wǒ shì zhōngguó rén. Wǒ zài běijīng gōngzuò. Wǒ xǐhuān kànshū hé lǚyóu. Hěn gāoxìng rènshi dàjiā." },
+          { id: "4b", title: "Daily Routine", text: "Wǒ měi tiān zǎoshang qī diǎn qǐchuáng. Xiān shuāyá xǐliǎn, ránhòu chī zǎofàn. Bā diǎn bàn zuò dìtiě qù shàngbān. Xiàwǔ liù diǎn xiàbān huíjiā." },
+          { id: "4c", title: "Travel", text: "Wǒ qùnián qùle shànghǎi lǚyóu. Wàitān de yèjǐng hěn piàoliàng. Wǒ hái chīle hěnduō hǎochī de dōngxi, bǐrú shēngjiānbāo hé xiǎolóngbāo." },
+          { id: "4d", title: "Weather", text: "Jīntiān tiānqì zěnmeyàng? Běijīng jīntiān hěn lěng, língxià wǔ dù. Míngtiān kěnéng huì xiàxuě. Nǐ nàlǐ tiānqì rúhé? Jìde duō chuān yīfu." },
+          { id: "4e", title: "Culture", text: "Chūnjié shì zhōngguó zuì zhòngyào de jiérì. Quán jiārén yīqǐ chī tuányuánfàn, fàng yānhuā, gěi háizimen fā hóngbāo. Dàjiā hái huì shuō xīnnián kuàilè." }
+        ],
+        test: { title: "Pinyin Mastery Test", text: "Wǒ xuéxí hànyǔ yǐjīng liǎng nián le. Kāishǐ de shíhou juéde hěn nán, dànshì xiànzài wǒ juéde yuèláiyuè yǒuqù. Měi tiān liànxí pīnyīn ràng wǒ jìnbù hěn kuài.", minWpm: 26, minAccuracy: 85 }
+      }
+    ]
+  },
+  hi: {
+    id: "hi", name: "हिन्दी", icon: "🇮🇳",
+    desc: "Type Hindi in Latin transliteration — the way millions write online",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Greetings & Basics", desc: "Essential words in Latin transliteration", icon: "न",
+        lessons: [
+          { id: "1a", title: "Greetings", text: "namaste namaskar aap kaise hain kya haal hai shubh prabhat shubh ratri phir milenge" },
+          { id: "1b", title: "Polite Words", text: "dhanyavaad shukriya kripya kshama karen maaf karna koi baat nahin aapka swagat hai" },
+          { id: "1c", title: "Family", text: "maa pita bhai bahan beta beti pati patni dada dadi nana nani parivaar rishtedaar" },
+          { id: "1d", title: "Numbers 1-10", text: "ek do teen chaar paanch chheh saat aath nau das gyaraah baarah terah chaudah pandrah" },
+          { id: "1e", title: "Daily Words", text: "paani khana ghar kaam dost kitaab school doctor sabzi dukaan bazaar sadak gaadi" }
+        ],
+        test: { title: "Basics Test", text: "namaste aap kaise hain main theek hoon dhanyavaad poochhne ke liye aapka din shubh ho phir milenge", minWpm: 20, minAccuracy: 85 }
+      },
+      {
+        id: 2, title: "Common Words", desc: "High-frequency vocabulary with retroflex and aspirated consonants", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Retroflex (ṭ ḍ ṇ)", text: "ṭhīk ṭaim ṭikaṭ chhoṭā baḍā moṭā peṭ ḍākṭar ḍabaḍī kyoṇ shreṇī gaṇit pāṇī" },
+          { id: "2b", title: "Aspirated (kh gh th dh)", text: "khānā ghar thā thālī dhan dhanyavaad khushī khel mithā thakā sāthī dhuup" },
+          { id: "2c", title: "Common Verbs", text: "karnā honā jānā khānā pīnā bolnā sunnā dekhnā likhnā paḍhnā sīkhnā samajhnā" },
+          { id: "2d", title: "Question Words", text: "kya kaise kab kahan kyon kaun kitnā kaisā kisko kab se kahān tak kiske liye" },
+          { id: "2e", title: "Adjectives", text: "achchhā burā baḍā chhoṭā lambā ṭhīk garm ṭhaṇḍā nayā purānā mīṭhā sundar" }
+        ],
+        test: { title: "Words Test", text: "kya aap hindī bolte hain thodī thodī mujhe hindī sīkhne mein bahut mazā ā rahā hai har roz thodā thodā abhyaas karnā chāhiye", minWpm: 22, minAccuracy: 85 }
+      },
+      {
+        id: 3, title: "Phrases & Sentences", desc: "Everyday conversations in transliteration", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Common Phrases", text: "kaise hain aap kya kar rahe hain main theek hoon bahut achchhā koi baat nahin" },
+          { id: "3b", title: "At Home", text: "khānā taiyār hai jaldī āo kapde dhul gaye hain bijlī chali gayi paanī band hai" },
+          { id: "3c", title: "Shopping", text: "yeh kitnā kā hai thodā kam karo bahut mahangā hai bas itnā hī chāhiye bill denā" },
+          { id: "3d", title: "Feelings", text: "mujhe bhūkh lagī hai main thak gayā hoon bahut mazā āyā mujhe dar lag rahā hai" },
+          { id: "3e", title: "Mixed Practice", text: "aaj mausam bahut achchhā hai kal ham log ghoomne jā rahe hain tum bhi saath chaloge" }
+        ],
+        test: { title: "Phrases Test", text: "namaste didi aap kaise hain main kal se hindī sīkh rahā hoon thodī mushkil hai lekin bahut mazā ā rahā hai aapki madad ke liye dhanyavaad", minWpm: 24, minAccuracy: 85 }
+      },
+      {
+        id: 4, title: "Extended Texts", desc: "Longer conversations and Indian culture", icon: "📖",
+        lessons: [
+          { id: "4a", title: "About India", text: "bhārat ek vishaal aur vividh desh hai. yahān anek bhāshāen aur sanskritiyān hain. hindī bhārat kī rājabhāshā hai aur lagbhag chālis karod log ise bolte hain." },
+          { id: "4b", title: "Food & Cuisine", text: "bhāratīya khānā duniya bhar mein prasiddh hai. har praant kā apnā vishesh vyanjan hai. chaaval, dal, rotī aur sabzī roz kā bhojan hai. masaledār khānā bahut pasand kiyā jātā hai." },
+          { id: "4c", title: "Festivals", text: "divālī hindūon kā sabse baḍā tyohār hai. is din log apne ghar mein diye jalāte hain aur patākhe phodte hain. holī rañgon kā tyohār hai jisme log ek doosre par rañg daalte hain." },
+          { id: "4d", title: "A Conversation", text: "ek dost doosre se: kal milte hain na? haan zaroor. kahān milna hai? kaunāṭ ples mein. samay kya hai? shaam ko paanch baje. theek hai, main vahān pahunch jaaoongā. achchhā, tab tak ke liye alavidā." },
+          { id: "4e", title: "Travel", text: "dillī bhārat kī rājdhānī hai. yah ek aitihāsik shahar hai jahān purānī imāraten aur nayī imāraten saath milkar ek sundar drishya prastut kartī hain. lāl kilā aur qutub mīnār dekhne yogy hain." }
+        ],
+        test: { title: "Hindi Mastery Test", text: "hindī sīkhnā ek sundar anubhav hai. yah sirf ek bhāshā nahin hai balki ek poore sanskritik vishv kā darvāzā kholatī hai. rozānā abhyās karte raho aur dheere dheere aapko sudhār dikhāī degā.", minWpm: 26, minAccuracy: 85 }
+      }
+    ]
+  },
+  ar: {
+    id: "ar", name: "العربية", icon: "🇸🇦",
+    desc: "Type Arabic in Franco-Arabic — the chat script of the Arab world",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Greetings & Basics", desc: "Essential words in Franco-Arabic transliteration", icon: "س",
+        lessons: [
+          { id: "1a", title: "Greetings", text: "salam marhaba ahlan wa sahlan sabah el kheir masa el kheir tesbah ala kheir" },
+          { id: "1b", title: "Polite Words", text: "shukran afwan min fadlak la shukr ala wajib maalesh law samaht aasef tammam" },
+          { id: "1c", title: "Family", text: "umm ab bint ibn akh ukht zawj zawja jadd jadda aamm aamma khaal khaala ahli" },
+          { id: "1d", title: "Numbers", text: "wahed etnein talata arbaa khamsa sitta sabaa tamania tisa ashara ehdaash etnaash" },
+          { id: "1e", title: "Daily Words", text: "mayya akl beit shoghol sadeeq ketaab madrasa doctor suq tareeq sayyara sharea hara" }
+        ],
+        test: { title: "Basics Test", text: "salam alaikum kifak ana bkhair shukran min fadlak ayna al funduq law samaht maa salama", minWpm: 20, minAccuracy: 85 }
+      },
+      {
+        id: 2, title: "Special Characters", desc: "Franco-Arabic consonant substitutions", icon: "📝",
+        lessons: [
+          { id: "2a", title: "3 = ع", text: "3arabi 3aamil 3ayn 3ala 3umr 3aziz 3ishreen 3aadi 3ashara 3arabi 3eeid 3ilmi" },
+          { id: "2b", title: "7 = ح", text: "7abibi 7ob 7elou 7aal 7aq 7aram 7adeeth 7urriya 7ubz 7arara 7asad 7ilm 7arb" },
+          { id: "2c", title: "2 = ء (hamza)", text: "su2al ra2ees 2al 2intezar 2ayna 2imtihan 2akl 2ustaaz mas2ool 2akhir da2iman" },
+          { id: "2d", title: "kh = خ  gh = غ", text: "khamsa khabar khalas khallas khaleej kheer gharib ghali ghurfa ghazal ghadan gharb" },
+          { id: "2e", title: "sh = ش  th = ث  dh = ذ", text: "sharika shahr sharea shimal shams thaalith thaqeel dheheb dhahab dhikra dhaki" }
+        ],
+        test: { title: "Special Characters Test", text: "7abibi kifak ana 3arabi min al khaleej shukran 3ala 7obak hal 3andak su2al 3an al 3amal", minWpm: 22, minAccuracy: 85 }
+      },
+      {
+        id: 3, title: "Phrases & Sentences", desc: "Everyday Franco-Arabic conversations", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Common Phrases", text: "kifak kifik kif halak yalla bye shu 3am ta3mol ma b3aref inshallah mashallah" },
+          { id: "3b", title: "At Home", text: "al akl jahez ta3al bser3a al kahraba ra7et al mayya ma2too3a al jaw bared kteer" },
+          { id: "3c", title: "Shopping", text: "2addesh haada bkamm hal shee ghali kteer bede haada bas 3atini al fatoora bta3ti" },
+          { id: "3d", title: "Feelings", text: "ana jee3an ana ta3ban ana mabsout kteer btajannin 3am be7lam feek wa7ashteni" },
+          { id: "3e", title: "Mixed Practice", text: "yalla nrouh 3al mat3am kamaan sa3a 7ata nshoufak inta wa ana sawa tayeb 3ala 7ad" }
+        ],
+        test: { title: "Phrases Test", text: "marhaba kifak ana mabsout inni 3am bta3allam 3arabi al yom al jaw 7elou kteer shukran 3ala koll shee ma3 salama", minWpm: 24, minAccuracy: 85 }
+      },
+      {
+        id: 4, title: "Extended Texts", desc: "Longer conversations and Arab culture", icon: "📖",
+        lessons: [
+          { id: "4a", title: "About Arabic", text: "al lugha al 3arabiya hiya lughat al quran wa ahammiyatuha jaleela. nuTa'a biha fi akthar min 22 baladan 3arabi. lugha jameela wa ghaniya bil shi3r wa adab." },
+          { id: "4b", title: "Food & Cuisine", text: "al ma2koolat al 3arabiya mash-hoora fi kull al 3aalam. al hummus wa falafel wa tabbouleh wa shawarma min ash-har al atbaq. al qahwa al 3arabiya mashroob assasi fi al deyafa." },
+          { id: "4c", title: "Ramadan & Eid", text: "ramadan huwa shahr assiyam 3ind al muslimeen. yusoom al muslimoon min al fajr 7atta al maghrib. ba3da ramadan ya2ti eid al fitr. wa feehu yazoor al ahlu wa asdiqa2 ba3dahum al ba3d." },
+          { id: "4d", title: "A Conversation", text: "sadeeq lisadeeq: shu ra2yak niltiqi bukra? akeed, yalla. wayn bidna niltiqi? bil mat3am al jadeed. ayya wa2t? assaa3a 7amsa al 3asr. tamam, ra7 koon honaak. tayeb, illa al leqa2." },
+          { id: "4e", title: "Travel", text: "dubai madeena 3asreya wa jameela fi al emarat. feeha abraaj 3aaliya wa aswaq kabira. burj khalifa a3la burj fi al 3aalam. al madina amana wa nadifa wa mustaqbaliha mushriq." }
+        ],
+        test: { title: "Arabic Mastery Test", text: "mabrouk 3ala itmam hadha al maseer. al 3arabiya lugha jameela wa ta3allumuha yaftah abwaban li 3aalam min al thaqafa wa al tareekh. istamirr fi al tadreeb kulla yom.", minWpm: 26, minAccuracy: 85 }
+      }
+    ]
+  },
+  bn: {
+    id: "bn", name: "বাংলা", icon: "🇧🇩",
+    desc: "Type Bengali in Latin transliteration — the script of Rabindranath",
+    category: "languages",
+    stages: [
+      {
+        id: 1, title: "Greetings & Basics", desc: "Essential words in Latin transliteration", icon: "ন",
+        lessons: [
+          { id: "1a", title: "Greetings", text: "nomoskar assalamu alaikum shagotom kemon achen bhalo achi apnar naam ki" },
+          { id: "1b", title: "Polite Words", text: "dhonnobad kripaya maph korben kichu mone korben na shagotom janai abar dekha hobe" },
+          { id: "1c", title: "Family", text: "maa baba bhai bon chele meye shami stri dadu dida nana nani poribar attio" },
+          { id: "1d", title: "Numbers 1-10", text: "ek dui tin char paach chhoy saat aat noy dosh egaro baro tero chouddo ponero" },
+          { id: "1e", title: "Daily Words", text: "pani khabar bari kaj bondhu boi school doctor bajar rasta gari dokan shobji" }
+        ],
+        test: { title: "Basics Test", text: "nomoskar apnar naam ki ami bhalo achi dhonnobad apnake dekhe khub bhalo laglo abar dekha hobe", minWpm: 20, minAccuracy: 85 }
+      },
+      {
+        id: 2, title: "Common Words", desc: "High-frequency vocabulary with retroflex and aspirated consonants", icon: "📝",
+        lessons: [
+          { id: "2a", title: "Retroflex (ṭ ḍ ṇ)", text: "ṭhik ṭaka ṭebil choṭo boḍo moṭa peṭ ḍaktar ḍim ṇam roṅ peṇ anuṣṭhan" },
+          { id: "2b", title: "Aspirated (kh gh th dh)", text: "khub ghor khobor khali thaka thanda dhan dhonnobad khushi khelo mitha dhaka" },
+          { id: "2c", title: "Common Verbs", text: "kora hoya jaoa khaoaoa paoa bola shona dekha lekha pora shekha bojha" },
+          { id: "2d", title: "Question Words", text: "ki kikore kokhon kothay keno ke koto kemon kake kotha theke kar jonne kisher" },
+          { id: "2e", title: "Adjectives", text: "bhalo kharap boro choto lomba tik gorom thanda notun purano mishti shundor" }
+        ],
+        test: { title: "Words Test", text: "apni ki bangla bolte paren ami ektu ektu pari bangla shekha khub mojar proti din ektu kore onushilon kora dorkar", minWpm: 22, minAccuracy: 85 }
+      },
+      {
+        id: 3, title: "Phrases & Sentences", desc: "Everyday conversations in transliteration", icon: "💬",
+        lessons: [
+          { id: "3a", title: "Common Phrases", text: "kemon achen apni ki korchhen ami bhalo achi khub bhalo kichu mone korben na" },
+          { id: "3b", title: "At Home", text: "khabar toiri taratari asho kapor dhuye geche bijli chole geche pani bondho" },
+          { id: "3c", title: "Shopping", text: "eta koto dam ektu kom koren khub dami shudhu etotukui lagbe bill din to" },
+          { id: "3d", title: "Feelings", text: "amar khide peyeche ami klanto hoye gechi khub moja laglo amar bhoy lagche" },
+          { id: "3e", title: "Mixed Practice", text: "ajker abohaoa khub bhalo kalke amra ghurte jachchi temni o songe jabe naki" }
+        ],
+        test: { title: "Phrases Test", text: "nomoskar apu kemon achen ami kal theke bangla shikhchhi ektu kothin kintu khub moja hochche apnar shahajjer jonne dhonnobad", minWpm: 24, minAccuracy: 85 }
+      },
+      {
+        id: 4, title: "Extended Texts", desc: "Longer conversations and Bengali culture", icon: "📖",
+        lessons: [
+          { id: "4a", title: "About Bengal", text: "bangladesh dakshin eshiar ekta shundor desh. ekhane onek nodi ar shobuj dhan khet ache. bangla holo desher matribhasha ar amader ekush feburari antorjatik matribhasha dibosh." },
+          { id: "4b", title: "Food & Cuisine", text: "deshi khabar sara bishe prasiddha. bhaat dal mach mangsho shobji amader nitidiner khabar. pitha paes mishti doi holo banglar onyotom prothom khaddo. ilish mach bangali der prio." },
+          { id: "4c", title: "Festivals", text: "pohela boishakh bangla noboborsher prothom din. ei din amra notun kapod pore mishti khai. durga puja hindu der boro utsob. eid musolman der sroeshto utsob. shobai mile anondo kore." },
+          { id: "4d", title: "A Conversation", text: "ekjon bondhu arekjon bondhuke: kalke dekha hobe naki? ha nichei. kothay dekha hobe? kafeete. koytar shomoy? bikel paach tay. tik ache, ami okhane pouchhabo. achha tahole, abar dekha hobe." },
+          { id: "4e", title: "Travel", text: "dhaka bangladesher rajdhani. eta ek itihasik shohor jekhane purono imarat ar natun imarat ekshathe ek shundor drishyo uposthapito kore. lalbagh kella ar ahsan monjil dekhbar moto." }
+        ],
+        test: { title: "Bangla Mastery Test", text: "bangla shekha ek shundor oviggota. e shudhu ekta bhasha noe borong ekti puro sanskritik bishwer dorja khule dey. protidin onushilon korte thakun ar dhire dhire apni unnoti dekhte paben.", minWpm: 26, minAccuracy: 85 }
+      }
+    ]
   }
 };
 
-const THEME_ORDER = ["general", "go", "pt"];
+const THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"];
 function getStages(themeId) { return THEMES[themeId]?.stages || []; }
 
 const KIT_CATEGORIES = [

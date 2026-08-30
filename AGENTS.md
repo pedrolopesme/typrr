@@ -44,15 +44,16 @@ Makefile              ← `make serve` to run local HTTP server
 Content is organized into typing kits, each with sequential stages:
 
 ```js
-THEMES = { general: { stages: [...] }, go: { stages: [...] }, pt: { stages: [...] } }
-THEME_ORDER = ["general", "go", "pt"]
+THEMES = { general, go, pt, en, es, fr, it, zh, hi, ar, bn }   // 11 kits
+THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"]
 ```
 
 - Each stage has `id` (int), `lessons[]`, and optional `test`.
 - Lesson IDs are strings like `"1a"`, `"2c"`.
-- Progress is global: `completedLessons["1a"]` works across kits.
--
-The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enabledKits` tracks which kits appear in the sidebar; the hub toggles them. At least one kit must stay enabled.
+- Progress is global: `completedLessons["1a"]` works across kits, and `clearedStages` holds bare integers — so stage 1 of one kit and stage 1 of another share an entry. Existing kits all rely on this.
+- Non-Latin languages (`zh`, `hi`, `ar`, `bn`) are practised in Latin transliteration, because the app targets a QWERTY layout: Pinyin with tone marks, ISO-style diacritics for Hindi/Bengali, and Franco-Arabic digit substitutions (`3`=ع, `7`=ح, `2`=ء) for Arabic.
+
+The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enabledKits` tracks which kits appear in the sidebar; the hub installs and removes them. At least one kit must stay installed — the Remove button is disabled on the last one.
 
 ## UI Conventions
 
