@@ -2220,6 +2220,12 @@ const THEMES = {
 const THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"];
 function getStages(themeId) { return THEMES[themeId]?.stages || []; }
 
+// Stage ids (1..N) and lesson ids ("1a".."8e") repeat across every kit, so
+// progress MUST be keyed by kit or finishing "1a" once marks it done in all 11.
+const LEGACY_KITS = ["general", "go", "pt"];
+function lessonKey(kitId, lessonId) { return kitId + ":" + lessonId; }
+function stageKey(kitId, stageId) { return kitId + ":" + stageId; }
+
 const KIT_CATEGORIES = [
   { id: "general",     name: "General",     icon: "⌨️" },
   { id: "programming", name: "Programming", icon: "💻" },
@@ -2256,11 +2262,12 @@ const Store = {
 
   defaults() {
     return {
+      schema: 2,
       xp: 0, level: 1,
       streak: 0, lastPractice: null,
-      completedLessons: {},  // lessonId -> { bestWpm, bestAccuracy, stars, attempts }
-      clearedStages: [],     // stage ids
-      history: [],           // { date, lessonId, stageId, wpm, accuracy, xp, stars }
+      completedLessons: {},  // "kitId:lessonId" -> { bestWpm, bestAccuracy, stars, attempts }
+      clearedStages: [],     // "kitId:stageId" strings
+      history: [],           // { date, themeId, lessonId, stageId, wpm, accuracy, xp, stars }
       badges: [],
       totalLessons: 0,
       bestWpm: 0,
@@ -2272,10 +2279,55 @@ const Store = {
     };
   },
 
+  // Schema 1 keyed progress by bare stage/lesson id, which leaked across kits.
+  // history records themeId, so which kit each completion belongs to is
+  // recoverable; anything older than the history falls back to the three kits
+  // that existed then, never to a newly added one.
+  migrate(d) {
+    if (d.schema >= 2) return d;
+
+    const kitsFor = (match, fallback) => {
+      const seen = new Set();
+      for (const h of d.history || []) if (h.themeId && match(h)) seen.add(h.themeId);
+      if (seen.size) return [...seen].filter(tid => THEMES[tid]);
+      return LEGACY_KITS.filter(fallback);
+    };
+
+    const lessons = {};
+    for (const [id, rec] of Object.entries(d.completedLessons || {})) {
+      if (id.includes(":")) { lessons[id] = rec; continue; }
+      for (const tid of kitsFor(h => h.lessonId === id,
+        tid => getStages(tid).some(s => s.lessons.some(l => l.id === id)))) {
+        lessons[lessonKey(tid, id)] = rec;
+      }
+    }
+    d.completedLessons = lessons;
+
+    const stages = [];
+    for (const entry of d.clearedStages || []) {
+      if (typeof entry === "string" && entry.includes(":")) { stages.push(entry); continue; }
+      const sid = Number(entry);
+      for (const tid of kitsFor(h => h.stageId === sid && h.lessonId === "test",
+        tid => getStages(tid).some(s => s.id === sid))) {
+        const key = stageKey(tid, sid);
+        if (!stages.includes(key)) stages.push(key);
+      }
+    }
+    d.clearedStages = stages;
+
+    d.schema = 2;
+    return d;
+  },
+
   load() {
     try {
       const raw = localStorage.getItem(this.KEY);
-      this.data = raw ? { ...this.defaults(), ...JSON.parse(raw) } : this.defaults();
+      if (!raw) { this.data = this.defaults(); return this.data; }
+      const saved = JSON.parse(raw);
+      const merged = { ...this.defaults(), ...saved };
+      // defaults() carries the current schema, so take the real one from disk.
+      merged.schema = saved.schema || 1;
+      this.data = this.migrate(merged);
     } catch { this.data = this.defaults(); }
     return this.data;
   },
@@ -2793,9 +2845,9 @@ const App = {
     for (const tid of enabled) {
       const t = THEMES[tid];
       const stages = t.stages;
-      const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
+      const cleared = stages.filter(s => d.clearedStages.includes(stageKey(tid, s.id))).length;
       const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
-      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
       html += `<button class="nav-item ${tid === this.currentTheme ? 'active' : ''}" data-act="theme" data-arg="${tid}" ${tid === this.currentTheme ? 'aria-current="true"' : ''}>
         <span class="nav-item-icon">${t.icon}</span>
         <span class="nav-item-text">
@@ -2808,11 +2860,11 @@ const App = {
     const stages = getStages(this.currentTheme);
     html += `<div class="nav-section-title">${esc(THEMES[this.currentTheme].name)}</div>`;
     for (const stage of stages) {
-      const cleared = d.clearedStages.includes(stage.id);
-      const prevCleared = stage.id === 1 || d.clearedStages.includes(stage.id - 1);
+      const cleared = d.clearedStages.includes(stageKey(this.currentTheme, stage.id));
+      const prevCleared = stage.id === 1 || d.clearedStages.includes(stageKey(this.currentTheme, stage.id - 1));
       const locked = !prevCleared && !cleared;
       const count = stage.lessons.length;
-      const doneCount = stage.lessons.filter(l => d.completedLessons[l.id]).length;
+      const doneCount = stage.lessons.filter(l => d.completedLessons[lessonKey(this.currentTheme, l.id)]).length;
 
       let badge = '';
       if (cleared) badge = `<span class="nav-item-badge badge-done">✓</span>`;
@@ -2944,10 +2996,10 @@ const App = {
     const d = Store.get();
     const stages = getStages(this.currentTheme);
     for (const stage of stages) {
-      if (d.clearedStages.includes(stage.id)) continue;
-      const prevCleared = stage.id === 1 || d.clearedStages.includes(stage.id - 1);
+      if (d.clearedStages.includes(stageKey(this.currentTheme, stage.id))) continue;
+      const prevCleared = stage.id === 1 || d.clearedStages.includes(stageKey(this.currentTheme, stage.id - 1));
       if (!prevCleared) break;
-      const pending = stage.lessons.find(l => !d.completedLessons[l.id]);
+      const pending = stage.lessons.find(l => !d.completedLessons[lessonKey(this.currentTheme, l.id)]);
       if (pending) return { stage, lesson: pending, isTest: false };
       if (stage.test) return { stage, lesson: null, isTest: true };
     }
@@ -3020,7 +3072,7 @@ const App = {
         </div>
         <div class="stat-card" style="--tone:var(--amber-fill)">
           <div class="stat-card-label">Stages cleared</div>
-          <div class="stat-card-value">${d.clearedStages.filter(id => stages.some(s => s.id === id)).length}<span class="unit">/${stages.length}</span></div>
+          <div class="stat-card-value">${stages.filter(s => d.clearedStages.includes(stageKey(this.currentTheme, s.id))).length}<span class="unit">/${stages.length}</span></div>
           <div class="stat-card-foot">${esc(theme.name)}</div>
         </div>
       </div>
@@ -3031,10 +3083,10 @@ const App = {
       <div class="section-title">${esc(theme.name)} stages <span class="count">${stages.length}</span></div>
       <div class="card-grid">
         ${stages.map(s => {
-          const cleared = d.clearedStages.includes(s.id);
-          const prevCleared = s.id === 1 || d.clearedStages.includes(s.id - 1);
+          const cleared = d.clearedStages.includes(stageKey(this.currentTheme, s.id));
+          const prevCleared = s.id === 1 || d.clearedStages.includes(stageKey(this.currentTheme, s.id - 1));
           const locked = !prevCleared && !cleared;
-          const done = s.lessons.filter(l => d.completedLessons[l.id]).length;
+          const done = s.lessons.filter(l => d.completedLessons[lessonKey(this.currentTheme, l.id)]).length;
           const p = cleared ? 100 : pct(done, s.lessons.length);
           return `<button class="card ${cleared ? 'done' : ''}" data-act="stage" data-arg="${s.id}" ${locked ? 'disabled' : 'data-nav'}>
             <span class="card-corner-key"></span>
@@ -3119,9 +3171,9 @@ const App = {
     const themeRows = THEME_ORDER.map(tid => {
       const t = THEMES[tid];
       const stages = getStages(tid);
-      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+      const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
       const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
-      const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
+      const cleared = stages.filter(s => d.clearedStages.includes(stageKey(tid, s.id))).length;
       const p = pct(done, total);
       return `<div class="themerow">
         <span class="themerow-icon">${t.icon}</span>
@@ -3206,8 +3258,8 @@ const App = {
     const d = Store.get();
     const stage = getStages(this.currentTheme).find(s => s.id === stageId);
     if (!stage) return;
-    const prevCleared = stageId === 1 || d.clearedStages.includes(stageId - 1);
-    if (!prevCleared && !d.clearedStages.includes(stageId)) return;
+    const prevCleared = stageId === 1 || d.clearedStages.includes(stageKey(this.currentTheme, stageId - 1));
+    if (!prevCleared && !d.clearedStages.includes(stageKey(this.currentTheme, stageId))) return;
 
     this.stopTyping();
     this.currentStage = stage;
@@ -3215,9 +3267,9 @@ const App = {
       [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: THEMES[this.currentTheme].name, act: 'view', arg: 'dashboard' }, { label: stage.title }],
       [['1-9', 'start lesson'], ['↑↓←→', 'move'], ['Enter', 'open']]);
 
-    const cleared = d.clearedStages.includes(stageId);
-    const allDone = stage.lessons.every(l => d.completedLessons[l.id]);
-    const doneCount = stage.lessons.filter(l => d.completedLessons[l.id]).length;
+    const cleared = d.clearedStages.includes(stageKey(this.currentTheme, stageId));
+    const allDone = stage.lessons.every(l => d.completedLessons[lessonKey(this.currentTheme, l.id)]);
+    const doneCount = stage.lessons.filter(l => d.completedLessons[lessonKey(this.currentTheme, l.id)]).length;
 
     document.getElementById("content").innerHTML = `
       <div class="page-head">
@@ -3233,7 +3285,7 @@ const App = {
         </div>
         <div class="stat-card" style="--tone:var(--gold-fill)">
           <div class="stat-card-label">Stars</div>
-          <div class="stat-card-value">${stage.lessons.reduce((s, l) => s + (d.completedLessons[l.id]?.stars || 0), 0)}<span class="unit">/${stage.lessons.length * 5}</span></div>
+          <div class="stat-card-value">${stage.lessons.reduce((s, l) => s + (d.completedLessons[lessonKey(this.currentTheme, l.id)]?.stars || 0), 0)}<span class="unit">/${stage.lessons.length * 5}</span></div>
           <div class="stat-card-foot">best per lesson</div>
         </div>
         <div class="stat-card" style="--tone:${cleared ? 'var(--green)' : 'var(--amber-fill)'}">
@@ -3246,7 +3298,7 @@ const App = {
       <div class="section-title">Lessons <span class="count">${stage.lessons.length}</span></div>
       <div class="card-grid">
         ${stage.lessons.map((lesson, i) => {
-          const cl = d.completedLessons[lesson.id];
+          const cl = d.completedLessons[lessonKey(this.currentTheme, lesson.id)];
           return `<button class="card ${cl ? 'done' : ''}" data-act="lesson" data-arg="${stageId}" data-arg2="${lesson.id}" data-nav>
             <span class="card-corner-key"></span>
             <span class="card-head">
@@ -3795,11 +3847,13 @@ const App = {
     let passed = true;
     if (this.isTest) {
       passed = wpm >= stage.test.minWpm && accuracy >= stage.test.minAccuracy;
-      if (passed && !d.clearedStages.includes(stageId)) d.clearedStages.push(stageId);
+      const sKey = stageKey(this.currentTheme, stageId);
+      if (passed && !d.clearedStages.includes(sKey)) d.clearedStages.push(sKey);
     } else {
       d.totalLessons++;
-      const existing = d.completedLessons[lessonId];
-      d.completedLessons[lessonId] = {
+      const lKey = lessonKey(this.currentTheme, lessonId);
+      const existing = d.completedLessons[lKey];
+      d.completedLessons[lKey] = {
         bestWpm: Math.max(wpm, existing?.bestWpm || 0),
         bestAccuracy: Math.max(accuracy, existing?.bestAccuracy || 0),
         stars: Math.max(stars, existing?.stars || 0),
@@ -3989,7 +4043,7 @@ const App = {
         const t = THEMES[tid];
         const stages = t.stages;
         const total = lessonsOf(t);
-        const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+        const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
         const on = enabled.has(tid);
         const pct = total ? Math.round((done / total) * 100) : 0;
         const locked = on && enabled.size === 1;
@@ -4053,14 +4107,14 @@ const App = {
     const cat = KIT_CATEGORIES.find(c => c.id === t.category);
 
     const totalLessons = stages.reduce((sum, s) => sum + s.lessons.length, 0);
-    const doneLessons = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
-    const clearedStages = stages.filter(s => d.clearedStages.includes(s.id)).length;
+    const doneLessons = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
+    const clearedStages = stages.filter(s => d.clearedStages.includes(stageKey(tid, s.id))).length;
     const pct = totalLessons ? Math.round((doneLessons / totalLessons) * 100) : 0;
     const sample = stages[0]?.lessons[0];
 
     const stagesList = stages.map(s => {
-      const lessonDone = s.lessons.filter(l => d.completedLessons[l.id]).length;
-      const cleared = d.clearedStages.includes(s.id);
+      const lessonDone = s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length;
+      const cleared = d.clearedStages.includes(stageKey(tid, s.id));
       return `<div class="kd-stage ${cleared ? 'cleared' : ''}">
         <div class="kd-stage-head">
           <span class="kd-stage-num">${s.id}</span>
@@ -4071,8 +4125,8 @@ const App = {
           <div class="kd-stage-count">${lessonDone}/${s.lessons.length}${cleared ? ' ✓' : ''}</div>
         </div>
         <div class="kd-lessons">
-          ${s.lessons.map(l => `<span class="kd-lesson ${d.completedLessons[l.id] ? 'done' : ''}">
-            <span class="kd-lesson-id">${esc(l.id)}</span>${esc(l.title)}${d.completedLessons[l.id] ? ' ✓' : ''}
+          ${s.lessons.map(l => `<span class="kd-lesson ${d.completedLessons[lessonKey(tid, l.id)] ? 'done' : ''}">
+            <span class="kd-lesson-id">${esc(l.id)}</span>${esc(l.title)}${d.completedLessons[lessonKey(tid, l.id)] ? ' ✓' : ''}
           </span>`).join('')}
         </div>
         ${s.test ? `<div class="kd-test">🧪 Stage test — ${esc(s.test.title)}: needs <b>${s.test.minWpm} wpm</b> at <b>${s.test.minAccuracy}%</b> accuracy</div>` : ''}

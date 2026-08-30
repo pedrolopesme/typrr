@@ -31,13 +31,14 @@ Makefile              ← `make serve` to run local HTTP server
 |---|---|---|
 |`xp`, `level`|number|Gamification progression|
 |`streak`, `lastPractice`|number, string|Daily streak tracking|
-|`completedLessons`|`{lessonId: {bestWpm, bestAccuracy, stars, attempts}}`|Per-lesson progress|
-|`clearedStages`|`number[]`|Stage IDs that passed the test|
+|`completedLessons`|`{"kitId:lessonId": {bestWpm, bestAccuracy, stars, attempts}}`|Per-lesson progress, scoped per kit|
+|`clearedStages`|`string[]`|`"kitId:stageId"` entries that passed the test|
 |`history`|`Array<{date, themeId, lessonId, stageId, wpm, accuracy, xp, stars, maxCombo, totalChars, errorCount}>`|Session log|
 |`errorKeys`|`{key: count}`|Drives the "keys you miss most" panel|
 |`badges`|`string[]`|Earned badge IDs|
 |`theme`|`"light"｜"dark"｜null`|Explicit colour-scheme choice; `null` follows the OS|
 |`enabledKits`|`string[]`|Kit IDs visible in the sidebar; managed by the Kit Hub|
+|`schema`|number|Storage version; `Store.migrate()` runs when it is below 2|
 
 ## Typing Kit System
 
@@ -50,7 +51,7 @@ THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", 
 
 - Each stage has `id` (int), `lessons[]`, and optional `test`.
 - Lesson IDs are strings like `"1a"`, `"2c"`.
-- Progress is global: `completedLessons["1a"]` works across kits, and `clearedStages` holds bare integers — so stage 1 of one kit and stage 1 of another share an entry. Existing kits all rely on this.
+- Progress is **kit-scoped**: `completedLessons` is keyed `"kitId:lessonId"` and `clearedStages` holds `"kitId:stageId"` strings. Always go through `lessonKey()` / `stageKey()` — stage ids (`1..N`) and lesson ids (`"1a"`) repeat in every kit, so a bare id marks all 11 at once. `Store.migrate()` lifts schema-1 data using `history.themeId`, falling back to `LEGACY_KITS` when history is too short.
 - Non-Latin languages (`zh`, `hi`, `ar`, `bn`) are practised in Latin transliteration, because the app targets a QWERTY layout: Pinyin with tone marks, ISO-style diacritics for Hindi/Bengali, and Franco-Arabic digit substitutions (`3`=ع, `7`=ح, `2`=ء) for Arabic.
 
 The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enabledKits` tracks which kits appear in the sidebar; the hub installs and removes them. At least one kit must stay installed — the Remove button is disabled on the last one.
