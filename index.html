@@ -822,7 +822,24 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .themerow-name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
 .themerow-meta { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .themerow-track { display: block; width: 110px; height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
-.themerow-pct { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-dim); min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+/* ── Kit Hub ── */
+.hub-category { margin-bottom: 28px; }
+.hub-category-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.hub-category-icon { font-size: 1.2rem; }
+.hub-category-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.hub-card { display: flex; align-items: flex-start; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); text-align: left; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+.hub-card:hover { border-color: var(--border-strong); }
+.hub-card.enabled { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.hub-card-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+.hub-card-body { flex: 1; min-width: 0; }
+.hub-card-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.hub-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+.hub-card-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); margin-top: 6px; }
+.hub-card-toggle { flex-shrink: 0; width: 40px; height: 22px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface-sunken); position: relative; transition: background 0.2s, border-color 0.2s; cursor: pointer; }
+.hub-card-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--text-dim); transition: transform 0.2s, background 0.2s; }
+.hub-card.enabled .hub-card-toggle { background: var(--accent); border-color: var(--accent); }
+.hub-card.enabled .hub-card-toggle::after { transform: translateX(18px); background: var(--surface); }
 
 /* ── Typing view ── */
 .lesson-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -1361,6 +1378,7 @@ const THEMES = {
   general: {
     id: "general", name: "General Typing", icon: "⌨️",
     desc: "Master touch typing from zero to professional speed",
+    category: "general",
     stages: [
       {
         id: 1, title: "Home Row Basics", desc: "Master the foundation: a s d f j k l ;",
@@ -1487,6 +1505,7 @@ const THEMES = {
   go: {
     id: "go", name: "Go Programming", icon: "🐹",
     desc: "Build muscle memory for fluent Go development — types, error handling, concurrency",
+    category: "programming",
     stages: [
       {
         id: 1, title: "Go Keywords & Basics", desc: "Core Go keywords and simple declarations",
@@ -1589,6 +1608,7 @@ const THEMES = {
   pt: {
     id: "pt", name: "Português", icon: "🇧🇷",
     desc: "Digite em português brasileiro — acentos, frases e textos reais",
+    category: "languages",
     stages: [
       {
         id: 1, title: "Acentos e Ç", desc: "Domine os acentos brasileiros no teclado",
@@ -1693,6 +1713,15 @@ const THEMES = {
 const THEME_ORDER = ["general", "go", "pt"];
 function getStages(themeId) { return THEMES[themeId]?.stages || []; }
 
+const KIT_CATEGORIES = [
+  { id: "general",     name: "General",     icon: "⌨️" },
+  { id: "programming", name: "Programming", icon: "💻" },
+  { id: "languages",   name: "Languages",   icon: "🌍" },
+];
+function getKitsByCategory(catId) {
+  return THEME_ORDER.filter(tid => THEMES[tid].category === catId);
+}
+
 const BADGES = [
   { id: "first_lesson", icon: "🌟", name: "First Step", desc: "Complete your first lesson", check: s => s.totalLessons >= 1 },
   { id: "five_lessons", icon: "📚", name: "Studious", desc: "Complete 5 lessons", check: s => s.totalLessons >= 5 },
@@ -1732,8 +1761,7 @@ const Store = {
       errorKeys: {},    // key -> error count
       practicedLate: false,
       practicedEarly: false,
-      theme: null,      // null = follow the OS; "light" | "dark" = explicit choice
-      sidebarCollapsed: false,
+      enabledKits: ["general", "go", "pt"],  // kits visible in sidebar
     };
   },
 
@@ -1877,6 +1905,7 @@ const VIEWS = [
   { id: 'performance', key: 's', icon: '📊', label: 'Stats' },
   { id: 'badges',      key: 'b', icon: '🏅', label: 'Badges' },
   { id: 'history',     key: 'h', icon: '📜', label: 'History' },
+  { id: 'kits',        key: 'k', icon: '🧩', label: 'Kit Hub' },
 ];
 
 // ═══════════════════════════════════════════
@@ -2253,7 +2282,8 @@ const App = {
     const d = Store.get();
     let html = `<div class="nav-section-title">Typing Kits <kbd>t</kbd></div>`;
 
-    for (const tid of THEME_ORDER) {
+    const enabled = d.enabledKits || THEME_ORDER;
+    for (const tid of enabled) {
       const t = THEMES[tid];
       const stages = t.stages;
       const cleared = stages.filter(s => d.clearedStages.includes(s.id)).length;
@@ -2306,8 +2336,9 @@ const App = {
   },
 
   cycleTheme(step) {
-    const i = THEME_ORDER.indexOf(this.currentTheme);
-    this.switchTheme(THEME_ORDER[(i + step + THEME_ORDER.length) % THEME_ORDER.length]);
+    const enabled = Store.get().enabledKits || THEME_ORDER;
+    const i = enabled.indexOf(this.currentTheme);
+    this.switchTheme(enabled[(i + step + enabled.length) % enabled.length]);
   },
 
   // ── Sidebar ──
@@ -2907,6 +2938,7 @@ const App = {
     switch (act) {
       case "view": this.showView(arg); break;
       case "theme": this.switchTheme(arg); break;
+      case "kit": this.toggleKit(arg); break;
       case "stage": this.openStage(Number(arg)); break;
       case "lesson": this.startLesson(Number(arg), arg2); break;
       case "test": this.startTest(Number(arg)); break;
@@ -2919,7 +2951,7 @@ const App = {
     if (id === "dashboard") this.showDashboard();
     else if (id === "performance") this.showPerformance();
     else if (id === "badges") this.showBadges();
-    else if (id === "history") this.showHistory();
+    else if (id === "kits") this.showKitHub();
   },
 
   back() {
@@ -3035,7 +3067,7 @@ const App = {
         </div>
         ${[
           ['Navigate', [
-            [['d'], 'Dashboard'], [['s'], 'Stats'], [['b'], 'Badges'], [['h'], 'History'],
+            [['k'], 'Kit Hub'],
             [['t'], 'Next kit'], [['Shift', 't'], 'Previous kit'],
             [['m'], 'Pull the cord (dark mode)'], [['c'], 'Collapse the sidebar'],
             [['Esc'], 'Go back'],
@@ -3428,6 +3460,63 @@ const App = {
       </div>`}
     `;
     this.indexNavItems();
+  },
+
+  // ── Kit Hub ──
+  showKitHub() {
+    this.stopTyping();
+    const d = Store.get();
+    const enabled = new Set(d.enabledKits || THEME_ORDER);
+    this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Kit Hub' }], [['d', 'dashboard']]);
+
+    const catBlocks = KIT_CATEGORIES.map(cat => {
+      const kits = getKitsByCategory(cat.id);
+      if (!kits.length) return '';
+      const cards = kits.map(tid => {
+        const t = THEMES[tid];
+        const stages = t.stages;
+        const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+        const on = enabled.has(tid);
+        return `<button class="hub-card ${on ? 'enabled' : ''}" data-act="kit" data-arg="${tid}">
+          <span class="hub-card-icon">${t.icon}</span>
+          <span class="hub-card-body">
+            <span class="hub-card-name">${esc(t.name)}</span>
+            <span class="hub-card-desc">${esc(t.desc)}</span>
+            <span class="hub-card-meta">${stages.length} stages · ${total} lessons</span>
+          </span>
+          <span class="hub-card-toggle" aria-label="${on ? 'Disable' : 'Enable'} ${esc(t.name)}"></span>
+        </button>`;
+      }).join('');
+      return `<div class="hub-category">
+        <div class="hub-category-head"><span class="hub-category-icon">${cat.icon}</span><span class="hub-category-name">${esc(cat.name)}</span></div>
+        <div class="hub-grid">${cards}</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <h1 class="page-title">🧩 Kit Hub</h1>
+        <p class="page-subtitle">Enable the typing kits you want to practice. They appear in your sidebar.</p>
+      </div>
+      ${catBlocks}
+    `;
+    this.indexNavItems();
+  },
+
+  toggleKit(tid) {
+    const d = Store.get();
+    if (!d.enabledKits) d.enabledKits = [...THEME_ORDER];
+    const i = d.enabledKits.indexOf(tid);
+    if (i >= 0) {
+      if (d.enabledKits.length <= 1) return;
+      d.enabledKits.splice(i, 1);
+      if (this.currentTheme === tid) this.currentTheme = d.enabledKits[0];
+    } else {
+      d.enabledKits.push(tid);
+    }
+    Store.save();
+    this.renderSidebar();
+    this.showKitHub();
   },
 };
 

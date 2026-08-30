@@ -12,7 +12,7 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 
 - **10 general typing stages** — from home row basics to professional speed
 - **Go programming track** — muscle memory for `func`, `if err != nil`, goroutines, and real code
-- **Portuguese track** — acentos, cedilha and dead-key input
+- **Kit Hub** — browse, enable and disable typing kits organised by category
 - **5-minute lessons** — designed for daily practice
 - **Finger guide** — colour-coded keyboard and live hand diagram show which finger to use
 - **Gamification** — XP, levels, streaks, star ratings, 15 achievements
@@ -62,7 +62,7 @@ Press <kbd>?</kbd> anywhere for the full list.
 
 | Key | Action |
 |-----|--------|
-| `d` `s` `b` `h` | Dashboard · Stats · Badges · History |
+| `k` | Kit Hub |
 | `n` | Start the next recommended lesson |
 | `t` / `Shift`+`t` | Cycle typing kits |
 | `m` | Pull the cord (dark mode) |

@@ -37,7 +37,7 @@ Makefile              ← `make serve` to run local HTTP server
 |`errorKeys`|`{key: count}`|Drives the "keys you miss most" panel|
 |`badges`|`string[]`|Earned badge IDs|
 |`theme`|`"light"｜"dark"｜null`|Explicit colour-scheme choice; `null` follows the OS|
-|`sidebarCollapsed`|boolean|Explicit collapse preference; session auto-collapse is transient and never written|
+|`enabledKits`|`string[]`|Kit IDs visible in the sidebar; managed by the Kit Hub|
 
 ## Typing Kit System
 
@@ -51,7 +51,8 @@ THEME_ORDER = ["general", "go", "pt"]
 - Each stage has `id` (int), `lessons[]`, and optional `test`.
 - Lesson IDs are strings like `"1a"`, `"2c"`.
 - Progress is global: `completedLessons["1a"]` works across kits.
-- `clearedStages` uses integer stage IDs, scoped by current kit.
+-
+The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enabledKits` tracks which kits appear in the sidebar; the hub toggles them. At least one kit must stay enabled.
 
 ## UI Conventions
 
