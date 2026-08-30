@@ -316,6 +316,29 @@ kbd {
   padding: 14px 8px 6px;
   font-weight: 700;
 }
+.kit-hub-btn {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+.kit-hub-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.kit-hub-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -828,18 +851,47 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .hub-category-icon { font-size: 1.2rem; }
 .hub-category-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
 .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.hub-card { display: flex; align-items: flex-start; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); text-align: left; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
-.hub-card:hover { border-color: var(--border-strong); }
-.hub-card.enabled { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.hub-card-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 2px; }
+.hub-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); text-align: left; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; overflow: hidden; }
+.hub-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.hub-card.enabled { border-color: var(--accent); background: var(--surface-sunken); }
+.hub-card-detail { display: flex; align-items: flex-start; gap: 14px; background: transparent; border: none; padding: 0; cursor: pointer; text-align: left; flex: 1; min-width: 0; }
+.hub-card-detail:focus-visible { outline: none; }
+.hub-card-icon { font-size: 1.8rem; flex-shrink: 0; }
 .hub-card-body { flex: 1; min-width: 0; }
-.hub-card-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
-.hub-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+.hub-card-name { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; }
+.hub-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 .hub-card-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); margin-top: 6px; }
-.hub-card-toggle { flex-shrink: 0; width: 40px; height: 22px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface-sunken); position: relative; transition: background 0.2s, border-color 0.2s; cursor: pointer; }
-.hub-card-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--text-dim); transition: transform 0.2s, background 0.2s; }
-.hub-card.enabled .hub-card-toggle { background: var(--accent); border-color: var(--accent); }
-.hub-card.enabled .hub-card-toggle::after { transform: translateX(18px); background: var(--surface); }
+.hub-card-action { padding: 6px 12px; font-family: var(--mono); font-size: 0.7rem; font-weight: 600; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: var(--radius-xs); cursor: pointer; transition: background 0.15s, color 0.15s; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; }
+.hub-card-action:hover { background: var(--accent); color: var(--on-accent); }
+.hub-card.enabled .hub-card-action { background: var(--accent); color: var(--on-accent); }
+
+/* Kit Detail */
+.kit-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+.kit-detail-header { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 280px; }
+.kit-detail-icon { font-size: 2.4rem; flex-shrink: 0; }
+.kit-detail-title-group { flex: 1; }
+.kit-detail-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin: 0 0 6px 0; }
+.kit-detail-desc { font-size: 0.9rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+.kit-detail-action { padding: 8px 16px; font-family: var(--mono); font-size: 0.72rem; font-weight: 600; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: var(--radius-xs); cursor: pointer; transition: background 0.15s, color 0.15s; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.kit-detail-action:hover { background: var(--accent); color: var(--on-accent); }
+.kit-detail-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kit-detail-stat { padding: 12px; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: var(--radius-xs); text-align: center; }
+.kit-detail-stat-label { display: block; font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.kit-detail-stat-value { display: block; font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.kit-detail-stages { display: flex; flex-direction: column; gap: 16px; }
+.kit-detail-stage { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--surface); }
+.kit-detail-stage-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.kit-detail-stage-num { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--accent); flex-shrink: 0; min-width: 28px; }
+.kit-detail-stage-info { flex: 1; }
+.kit-detail-stage-title { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
+.kit-detail-stage-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.kit-detail-stage-progress { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); flex-shrink: 0; }
+.kit-detail-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.kit-detail-lesson { padding: 8px 10px; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: var(--radius-xs); font-size: 0.75rem; display: flex; align-items: center; gap: 6px; transition: background 0.15s, border-color 0.15s; }
+.kit-detail-lesson.done { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface-sunken)); }
+.kit-detail-lesson-id { font-family: var(--mono); font-weight: 600; color: var(--text-dim); }
+.kit-detail-lesson-title { flex: 1; color: var(--text); }
+.kit-detail-lesson-badge { color: var(--green); font-weight: 700; }
 
 /* ── Typing view ── */
 .lesson-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -2281,6 +2333,7 @@ const App = {
   renderSidebar() {
     const d = Store.get();
     let html = `<div class="nav-section-title">Typing Kits <kbd>t</kbd></div>`;
+    html += `<button class="kit-hub-btn" data-act="view" data-arg="kits" title="Browse and manage typing kits">🧩 Kit Hub</button>`;
 
     const enabled = d.enabledKits || THEME_ORDER;
     for (const tid of enabled) {
@@ -2938,7 +2991,8 @@ const App = {
     switch (act) {
       case "view": this.showView(arg); break;
       case "theme": this.switchTheme(arg); break;
-      case "kit": this.toggleKit(arg); break;
+      case "kit-detail": this.showKitDetail(arg); break;
+      case "kit-toggle": this.toggleKit(arg); break;
       case "stage": this.openStage(Number(arg)); break;
       case "lesson": this.startLesson(Number(arg), arg2); break;
       case "test": this.startTest(Number(arg)); break;
@@ -3477,15 +3531,17 @@ const App = {
         const stages = t.stages;
         const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
         const on = enabled.has(tid);
-        return `<button class="hub-card ${on ? 'enabled' : ''}" data-act="kit" data-arg="${tid}">
-          <span class="hub-card-icon">${t.icon}</span>
-          <span class="hub-card-body">
-            <span class="hub-card-name">${esc(t.name)}</span>
-            <span class="hub-card-desc">${esc(t.desc)}</span>
-            <span class="hub-card-meta">${stages.length} stages · ${total} lessons</span>
-          </span>
-          <span class="hub-card-toggle" aria-label="${on ? 'Disable' : 'Enable'} ${esc(t.name)}"></span>
-        </button>`;
+        return `<div class="hub-card ${on ? 'enabled' : ''}" data-nav>
+          <button class="hub-card-detail" data-act="kit-detail" data-arg="${tid}">
+            <span class="hub-card-icon">${t.icon}</span>
+            <span class="hub-card-body">
+              <span class="hub-card-name">${esc(t.name)}</span>
+              <span class="hub-card-desc">${esc(t.desc)}</span>
+              <span class="hub-card-meta">${stages.length} stages · ${total} lessons</span>
+            </span>
+          </button>
+          <button class="hub-card-action" data-act="kit-toggle" data-arg="${tid}">${on ? '✓ Installed' : '⬇ Download'}</button>
+        </div>`;
       }).join('');
       return `<div class="hub-category">
         <div class="hub-category-head"><span class="hub-category-icon">${cat.icon}</span><span class="hub-category-name">${esc(cat.name)}</span></div>
@@ -3496,9 +3552,77 @@ const App = {
     document.getElementById("content").innerHTML = `
       <div class="page-head">
         <h1 class="page-title">🧩 Kit Hub</h1>
-        <p class="page-subtitle">Enable the typing kits you want to practice. They appear in your sidebar.</p>
+        <p class="page-subtitle">Discover and install typing kits. Customize your practice with different themes and difficulty levels.</p>
       </div>
       ${catBlocks}
+    `;
+    this.indexNavItems();
+  },
+
+  showKitDetail(tid) {
+    this.stopTyping();
+    const t = THEMES[tid];
+    if (!t) return this.showKitHub();
+    const stages = t.stages;
+    const d = Store.get();
+    const enabled = d.enabledKits || THEME_ORDER;
+    const isEnabled = enabled.includes(tid);
+
+    const stagesList = stages.map((s, i) => {
+      const completed = d.completedLessons;
+      const lessonDone = s.lessons.filter(l => completed[l.id]).length;
+      return `<div class="kit-detail-stage" data-nav>
+        <div class="kit-detail-stage-head">
+          <span class="kit-detail-stage-num">${i + 1}</span>
+          <div class="kit-detail-stage-info">
+            <div class="kit-detail-stage-title">${esc(s.title)}</div>
+            <div class="kit-detail-stage-desc">${esc(s.desc)}</div>
+          </div>
+          <div class="kit-detail-stage-progress">${lessonDone}/${s.lessons.length}</div>
+        </div>
+        <div class="kit-detail-lessons">
+          ${s.lessons.map(l => {
+            const isDone = completed[l.id];
+            return `<div class="kit-detail-lesson ${isDone ? 'done' : ''}">
+              <span class="kit-detail-lesson-id">${esc(l.id)}</span>
+              <span class="kit-detail-lesson-title">${esc(l.title)}</span>
+              ${isDone ? '<span class="kit-detail-lesson-badge">✓</span>' : ''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+
+    this.setViewChrome("kit-detail", [
+      { label: 'Typrr', act: 'view', arg: 'dashboard' },
+      { label: 'Kit Hub', act: 'view', arg: 'kits' },
+      { label: t.name }
+    ], [['d', 'dashboard'], ['k', 'kits']]);
+
+    document.getElementById("content").innerHTML = `
+      <div class="kit-detail-head">
+        <div class="kit-detail-header">
+          <span class="kit-detail-icon">${t.icon}</span>
+          <div class="kit-detail-title-group">
+            <h1 class="kit-detail-title">${esc(t.name)}</h1>
+            <p class="kit-detail-desc">${esc(t.desc)}</p>
+          </div>
+        </div>
+        <button class="kit-detail-action" data-act="kit-toggle" data-arg="${tid}">${isEnabled ? '✓ Installed' : '⬇ Download'}</button>
+      </div>
+      <div class="kit-detail-stats">
+        <div class="kit-detail-stat">
+          <span class="kit-detail-stat-label">Stages</span>
+          <span class="kit-detail-stat-value">${stages.length}</span>
+        </div>
+        <div class="kit-detail-stat">
+          <span class="kit-detail-stat-label">Lessons</span>
+          <span class="kit-detail-stat-value">${stages.reduce((s, st) => s + st.lessons.length, 0)}</span>
+        </div>
+      </div>
+      <div class="kit-detail-stages">
+        ${stagesList}
+      </div>
     `;
     this.indexNavItems();
   },
