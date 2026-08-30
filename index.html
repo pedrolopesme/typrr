@@ -317,25 +317,29 @@ kbd {
 }
 .kit-hub-btn {
   width: 100%;
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background: var(--accent);
   color: var(--on-accent);
   border: none;
   border-radius: var(--radius-xs);
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 .kit-hub-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.15);
 }
 .kit-hub-btn:active {
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .nav-item {
@@ -3520,7 +3524,7 @@ const App = {
     this.stopTyping();
     const d = Store.get();
     const enabled = new Set(d.enabledKits || THEME_ORDER);
-    this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Kit Hub' }], [['d', 'dashboard']]);
+    this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Kit Hub' }], []);
 
     const catBlocks = KIT_CATEGORIES.map(cat => {
       const kits = getKitsByCategory(cat.id);
