@@ -849,52 +849,96 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .themerow-meta { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .themerow-track { display: block; width: 110px; height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
 /* ── Kit Hub ── */
-.hub-category { margin-bottom: 28px; }
-.hub-category-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.hub-category-icon { font-size: 1.2rem; }
-.hub-category-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
-.hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.hub-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); text-align: left; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; overflow: hidden; }
-.hub-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.hub-card.enabled { border-color: var(--accent); background: var(--surface-sunken); }
-.hub-card-detail { display: flex; align-items: flex-start; gap: 14px; background: transparent; border: none; padding: 0; cursor: pointer; text-align: left; flex: 1; min-width: 0; }
-.hub-card-detail:focus-visible { outline: none; }
-.hub-card-icon { font-size: 1.8rem; flex-shrink: 0; }
-.hub-card-body { flex: 1; min-width: 0; }
-.hub-card-name { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; }
-.hub-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
-.hub-card-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--text-dim); margin-top: 6px; }
-.hub-card-action { padding: 6px 12px; font-family: var(--mono); font-size: 0.7rem; font-weight: 600; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: var(--radius-xs); cursor: pointer; transition: background 0.15s, color 0.15s; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; }
-.hub-card-action:hover { background: var(--accent); color: var(--on-accent); }
-.hub-card.enabled .hub-card-action { background: var(--accent); color: var(--on-accent); }
+.hub-hero {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+  padding: 22px 24px; margin-bottom: 28px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.hub-hero-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 10px; }
+.hub-hero-sub { font-size: 0.86rem; color: var(--text-dim); margin: 7px 0 0; max-width: 54ch; line-height: 1.5; }
+.hub-hero-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.hub-hero-stat { min-width: 78px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: center; box-shadow: var(--shadow-xs); }
+.hub-hero-stat b { display: block; font-family: var(--font-display); font-size: 1.2rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.hub-hero-stat span { display: block; font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-top: 3px; }
 
-/* Kit Detail */
-.kit-detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
-.kit-detail-header { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 280px; }
-.kit-detail-icon { font-size: 2.4rem; flex-shrink: 0; }
-.kit-detail-title-group { flex: 1; }
-.kit-detail-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin: 0 0 6px 0; }
-.kit-detail-desc { font-size: 0.9rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
-.kit-detail-action { padding: 8px 16px; font-family: var(--mono); font-size: 0.72rem; font-weight: 600; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: var(--radius-xs); cursor: pointer; transition: background 0.15s, color 0.15s; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-.kit-detail-action:hover { background: var(--accent); color: var(--on-accent); }
-.kit-detail-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.kit-detail-stat { padding: 12px; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: var(--radius-xs); text-align: center; }
-.kit-detail-stat-label { display: block; font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
-.kit-detail-stat-value { display: block; font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--accent); }
-.kit-detail-stages { display: flex; flex-direction: column; gap: 16px; }
-.kit-detail-stage { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--surface); }
-.kit-detail-stage-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-.kit-detail-stage-num { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--accent); flex-shrink: 0; min-width: 28px; }
-.kit-detail-stage-info { flex: 1; }
-.kit-detail-stage-title { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
-.kit-detail-stage-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-.kit-detail-stage-progress { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); flex-shrink: 0; }
-.kit-detail-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-.kit-detail-lesson { padding: 8px 10px; background: var(--surface-sunken); border: 1px solid var(--border); border-radius: var(--radius-xs); font-size: 0.75rem; display: flex; align-items: center; gap: 6px; transition: background 0.15s, border-color 0.15s; }
-.kit-detail-lesson.done { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface-sunken)); }
-.kit-detail-lesson-id { font-family: var(--mono); font-weight: 600; color: var(--text-dim); }
-.kit-detail-lesson-title { flex: 1; color: var(--text); }
-.kit-detail-lesson-badge { color: var(--green); font-weight: 700; }
+.hub-category { margin-bottom: 30px; }
+.hub-category-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.hub-category-icon { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; font-size: 1rem; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-xs); }
+.hub-category-name { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; margin: 0; }
+.hub-category-count { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); padding: 3px 9px; border: 1px solid var(--border); border-radius: 999px; }
+.hub-category-rule { flex: 1; height: 1px; background: var(--border); }
+
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 14px; }
+.hub-card { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s; }
+.hub-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.hub-card:focus-within { border-color: var(--accent); }
+.hub-card.enabled { border-color: var(--accent); }
+.hub-card-detail { position: relative; display: block; width: 100%; flex: 1; padding: 0 0 14px; background: transparent; border: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.hub-card-cover { display: flex; align-items: center; gap: 12px; padding: 16px 16px 13px; background: linear-gradient(180deg, var(--accent-soft), transparent); }
+.hub-card-icon { display: grid; place-items: center; width: 46px; height: 46px; flex-shrink: 0; font-size: 1.55rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-xs); }
+.hub-card-heading { display: block; min-width: 0; }
+.hub-card-name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
+.hub-card-flag { display: block; font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-top: 4px; }
+.hub-card.enabled .hub-card-flag { color: var(--green); }
+.hub-card-desc { display: block; padding: 0 16px; font-size: 0.79rem; color: var(--text-muted); line-height: 1.45; }
+.hub-card-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 0; }
+.hub-chip { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.4px; color: var(--text-dim); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; font-variant-numeric: tabular-nums; }
+.hub-card-bar { display: block; height: 5px; margin: 13px 16px 0; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; }
+.hub-card-bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.hub-card-action { padding: 11px 16px; font-family: var(--mono); font-size: 0.67rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; border: none; border-top: 1px solid var(--border); background: var(--accent); color: var(--on-accent); cursor: pointer; transition: background 0.15s, color 0.15s, filter 0.15s; }
+.hub-card-action:hover:not(:disabled) { filter: brightness(1.12); }
+.hub-card.enabled .hub-card-action { background: var(--surface-alt); color: var(--text-dim); }
+.hub-card.enabled .hub-card-action:hover:not(:disabled) { background: var(--red-soft); color: var(--red); filter: none; }
+.hub-card-action:disabled, .kd-action:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+
+/* ── Kit detail ── */
+.kd-hero { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; padding: 22px 24px; margin-bottom: 20px; background: var(--accent-soft); border: 1px solid var(--border); border-radius: var(--radius); }
+.kd-hero-icon { display: grid; place-items: center; width: 64px; height: 64px; flex-shrink: 0; font-size: 2.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-xs); }
+.kd-hero-body { flex: 1; min-width: 220px; }
+.kd-hero-cat { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+.kd-hero-title { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; margin: 5px 0 0; }
+.kd-hero-desc { font-size: 0.88rem; color: var(--text-dim); margin: 7px 0 0; line-height: 1.5; max-width: 62ch; }
+.kd-hero-side { display: flex; flex-direction: column; gap: 8px; min-width: 172px; }
+.kd-action { padding: 11px 18px; font-family: var(--mono); font-size: 0.69rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; border: 1px solid transparent; border-radius: var(--radius-xs); background: var(--accent); color: var(--on-accent); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s, filter 0.15s; }
+.kd-action:hover:not(:disabled) { filter: brightness(1.12); }
+.kd-action.installed { background: var(--surface); color: var(--text-dim); border-color: var(--border); }
+.kd-action.installed:hover:not(:disabled) { background: var(--red-soft); color: var(--red); border-color: var(--red); filter: none; }
+.kd-practice { padding: 10px 18px; font-family: var(--mono); font-size: 0.69rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; border: 1px solid var(--border-strong); border-radius: var(--radius-xs); background: var(--surface); color: var(--text); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+.kd-practice:hover { border-color: var(--accent); color: var(--accent); }
+
+.kd-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.kd-stat { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.kd-stat-label { display: block; font-family: var(--mono); font-size: 0.59rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); }
+.kd-stat-value { display: block; font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin-top: 5px; font-variant-numeric: tabular-nums; }
+.kd-progress { margin-bottom: 26px; }
+.kd-progress-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); margin-bottom: 7px; }
+.kd-progress-track { height: 8px; background: var(--surface-sunken); border-radius: 4px; overflow: hidden; }
+.kd-progress-fill { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+
+.kd-section-title { font-family: var(--mono); font-size: 0.63rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 0 0 10px; }
+.kd-sample { padding: 15px 18px; margin-bottom: 26px; background: var(--surface-alt); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); }
+.kd-sample-label { font-family: var(--mono); font-size: 0.59rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); }
+.kd-sample-text { font-family: var(--mono); font-size: 0.82rem; line-height: 1.7; color: var(--text); margin-top: 9px; white-space: pre-wrap; word-break: break-word; }
+
+.kd-stages { display: flex; flex-direction: column; gap: 12px; }
+.kd-stage { padding: 16px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--border); border-radius: var(--radius-sm); transition: border-color 0.15s; }
+.kd-stage:hover { border-color: var(--border-strong); }
+.kd-stage.cleared { border-left-color: var(--green); }
+.kd-stage-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.kd-stage-num { display: grid; place-items: center; width: 30px; height: 30px; flex-shrink: 0; font-family: var(--mono); font-size: 0.74rem; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: var(--radius-xs); }
+.kd-stage-info { flex: 1; min-width: 0; }
+.kd-stage-title { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; }
+.kd-stage-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.kd-stage-count { font-family: var(--mono); font-size: 0.67rem; color: var(--text-dim); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.kd-lessons { display: flex; flex-wrap: wrap; gap: 6px; }
+.kd-lesson { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 999px; font-size: 0.73rem; color: var(--text-dim); }
+.kd-lesson.done { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.kd-lesson-id { font-family: var(--mono); font-size: 0.61rem; opacity: 0.75; }
+.kd-test { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px; background: var(--amber-soft); border: 1px dashed var(--amber); border-radius: var(--radius-xs); font-size: 0.74rem; color: var(--amber); }
+.kd-test b { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
 /* ── Typing view ── */
 .lesson-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -3060,6 +3104,7 @@ const App = {
         case "c": e.preventDefault(); this.toggleSidebar(); return;
         case "Escape": e.preventDefault(); this.back(); return;
         case "n": e.preventDefault(); this.startNext(); return;
+        case "k": e.preventDefault(); this.showKitHub(); return;
         case "t": e.preventDefault(); this.cycleTheme(e.shiftKey ? -1 : 1); return;
         case "T": e.preventDefault(); this.cycleTheme(-1); return;
         case "ArrowRight": case "ArrowDown": e.preventDefault(); this.moveFocus(e.key === "ArrowDown" ? "down" : "next"); return;
@@ -3525,36 +3570,64 @@ const App = {
     const enabled = new Set(d.enabledKits || THEME_ORDER);
     this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Kit Hub' }], []);
 
+    const lessonsOf = (t) => t.stages.reduce((sum, s) => sum + s.lessons.length, 0);
+    const totalStages = THEME_ORDER.reduce((sum, tid) => sum + THEMES[tid].stages.length, 0);
+    const totalLessons = THEME_ORDER.reduce((sum, tid) => sum + lessonsOf(THEMES[tid]), 0);
+
     const catBlocks = KIT_CATEGORIES.map(cat => {
       const kits = getKitsByCategory(cat.id);
       if (!kits.length) return '';
       const cards = kits.map(tid => {
         const t = THEMES[tid];
         const stages = t.stages;
-        const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+        const total = lessonsOf(t);
+        const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
         const on = enabled.has(tid);
-        return `<div class="hub-card ${on ? 'enabled' : ''}" data-nav>
-          <button class="hub-card-detail" data-act="kit-detail" data-arg="${tid}">
-            <span class="hub-card-icon">${t.icon}</span>
-            <span class="hub-card-body">
-              <span class="hub-card-name">${esc(t.name)}</span>
-              <span class="hub-card-desc">${esc(t.desc)}</span>
-              <span class="hub-card-meta">${stages.length} stages · ${total} lessons</span>
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        const locked = on && enabled.size === 1;
+        return `<div class="hub-card ${on ? 'enabled' : ''}">
+          <button class="hub-card-detail" data-act="kit-detail" data-arg="${tid}" data-nav>
+            <span class="card-corner-key"></span>
+            <span class="hub-card-cover">
+              <span class="hub-card-icon">${t.icon}</span>
+              <span class="hub-card-heading">
+                <span class="hub-card-name">${esc(t.name)}</span>
+                <span class="hub-card-flag">${on ? '✓ Installed' : 'Not installed'}</span>
+              </span>
             </span>
+            <span class="hub-card-desc">${esc(t.desc)}</span>
+            <span class="hub-card-chips">
+              <span class="hub-chip">${stages.length} stages</span>
+              <span class="hub-chip">${total} lessons</span>
+              ${on ? `<span class="hub-chip">${pct}% done</span>` : ''}
+            </span>
+            ${on ? `<span class="hub-card-bar"><i style="width:${pct}%"></i></span>` : ''}
           </button>
-          <button class="hub-card-action" data-act="kit-toggle" data-arg="${tid}">${on ? '✓ Installed' : '⬇ Download'}</button>
+          <button class="hub-card-action" data-act="kit-toggle" data-arg="${tid}"${locked ? ' disabled title="Keep at least one kit installed"' : ''}>${on ? '✕ Remove' : '⬇ Download'}</button>
         </div>`;
       }).join('');
-      return `<div class="hub-category">
-        <div class="hub-category-head"><span class="hub-category-icon">${cat.icon}</span><span class="hub-category-name">${esc(cat.name)}</span></div>
+      return `<section class="hub-category">
+        <div class="hub-category-head">
+          <span class="hub-category-icon">${cat.icon}</span>
+          <h2 class="hub-category-name">${esc(cat.name)}</h2>
+          <span class="hub-category-count">${kits.length} kit${kits.length === 1 ? '' : 's'}</span>
+          <span class="hub-category-rule"></span>
+        </div>
         <div class="hub-grid">${cards}</div>
-      </div>`;
+      </section>`;
     }).join('');
 
     document.getElementById("content").innerHTML = `
-      <div class="page-head">
-        <h1 class="page-title">🧩 Kit Hub</h1>
-        <p class="page-subtitle">Discover and install typing kits. Customize your practice with different themes and difficulty levels.</p>
+      <div class="hub-hero">
+        <div>
+          <h1 class="hub-hero-title">🧩 Kit Hub</h1>
+          <p class="hub-hero-sub">Browse the catalogue and install the typing kits you want to practise. Installed kits show up in your sidebar and in the <kbd>t</kbd> rotation.</p>
+        </div>
+        <div class="hub-hero-stats">
+          <div class="hub-hero-stat"><b>${enabled.size}/${THEME_ORDER.length}</b><span>Installed</span></div>
+          <div class="hub-hero-stat"><b>${totalStages}</b><span>Stages</span></div>
+          <div class="hub-hero-stat"><b>${totalLessons}</b><span>Lessons</span></div>
+        </div>
       </div>
       ${catBlocks}
     `;
@@ -3569,29 +3642,32 @@ const App = {
     const d = Store.get();
     const enabled = d.enabledKits || THEME_ORDER;
     const isEnabled = enabled.includes(tid);
+    const cat = KIT_CATEGORIES.find(c => c.id === t.category);
 
-    const stagesList = stages.map((s, i) => {
-      const completed = d.completedLessons;
-      const lessonDone = s.lessons.filter(l => completed[l.id]).length;
-      return `<div class="kit-detail-stage" data-nav>
-        <div class="kit-detail-stage-head">
-          <span class="kit-detail-stage-num">${i + 1}</span>
-          <div class="kit-detail-stage-info">
-            <div class="kit-detail-stage-title">${esc(s.title)}</div>
-            <div class="kit-detail-stage-desc">${esc(s.desc)}</div>
+    const totalLessons = stages.reduce((sum, s) => sum + s.lessons.length, 0);
+    const doneLessons = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[l.id]).length, 0);
+    const clearedStages = stages.filter(s => d.clearedStages.includes(s.id)).length;
+    const pct = totalLessons ? Math.round((doneLessons / totalLessons) * 100) : 0;
+    const sample = stages[0]?.lessons[0];
+
+    const stagesList = stages.map(s => {
+      const lessonDone = s.lessons.filter(l => d.completedLessons[l.id]).length;
+      const cleared = d.clearedStages.includes(s.id);
+      return `<div class="kd-stage ${cleared ? 'cleared' : ''}">
+        <div class="kd-stage-head">
+          <span class="kd-stage-num">${s.id}</span>
+          <div class="kd-stage-info">
+            <div class="kd-stage-title">${esc(s.title)}</div>
+            <div class="kd-stage-desc">${esc(s.desc)}</div>
           </div>
-          <div class="kit-detail-stage-progress">${lessonDone}/${s.lessons.length}</div>
+          <div class="kd-stage-count">${lessonDone}/${s.lessons.length}${cleared ? ' ✓' : ''}</div>
         </div>
-        <div class="kit-detail-lessons">
-          ${s.lessons.map(l => {
-            const isDone = completed[l.id];
-            return `<div class="kit-detail-lesson ${isDone ? 'done' : ''}">
-              <span class="kit-detail-lesson-id">${esc(l.id)}</span>
-              <span class="kit-detail-lesson-title">${esc(l.title)}</span>
-              ${isDone ? '<span class="kit-detail-lesson-badge">✓</span>' : ''}
-            </div>`;
-          }).join('')}
+        <div class="kd-lessons">
+          ${s.lessons.map(l => `<span class="kd-lesson ${d.completedLessons[l.id] ? 'done' : ''}">
+            <span class="kd-lesson-id">${esc(l.id)}</span>${esc(l.title)}${d.completedLessons[l.id] ? ' ✓' : ''}
+          </span>`).join('')}
         </div>
+        ${s.test ? `<div class="kd-test">🧪 Stage test — ${esc(s.test.title)}: needs <b>${s.test.minWpm} wpm</b> at <b>${s.test.minAccuracy}%</b> accuracy</div>` : ''}
       </div>`;
     }).join('');
 
@@ -3602,29 +3678,38 @@ const App = {
     ], [['d', 'dashboard'], ['k', 'kits']]);
 
     document.getElementById("content").innerHTML = `
-      <div class="kit-detail-head">
-        <div class="kit-detail-header">
-          <span class="kit-detail-icon">${t.icon}</span>
-          <div class="kit-detail-title-group">
-            <h1 class="kit-detail-title">${esc(t.name)}</h1>
-            <p class="kit-detail-desc">${esc(t.desc)}</p>
-          </div>
+      <div class="kd-hero">
+        <span class="kd-hero-icon">${t.icon}</span>
+        <div class="kd-hero-body">
+          <div class="kd-hero-cat">${cat ? esc(cat.icon + ' ' + cat.name) : 'Typing kit'}</div>
+          <h1 class="kd-hero-title">${esc(t.name)}</h1>
+          <p class="kd-hero-desc">${esc(t.desc)}</p>
         </div>
-        <button class="kit-detail-action" data-act="kit-toggle" data-arg="${tid}">${isEnabled ? '✓ Installed' : '⬇ Download'}</button>
-      </div>
-      <div class="kit-detail-stats">
-        <div class="kit-detail-stat">
-          <span class="kit-detail-stat-label">Stages</span>
-          <span class="kit-detail-stat-value">${stages.length}</span>
-        </div>
-        <div class="kit-detail-stat">
-          <span class="kit-detail-stat-label">Lessons</span>
-          <span class="kit-detail-stat-value">${stages.reduce((s, st) => s + st.lessons.length, 0)}</span>
+        <div class="kd-hero-side">
+          <button class="kd-action ${isEnabled ? 'installed' : ''}" data-act="kit-toggle" data-arg="${tid}"${isEnabled && enabled.length === 1 ? ' disabled title="Keep at least one kit installed"' : ''}>${isEnabled ? '✕ Remove kit' : '⬇ Download kit'}</button>
+          ${isEnabled ? `<button class="kd-practice" data-act="theme" data-arg="${tid}">▶ Practise this kit</button>` : ''}
         </div>
       </div>
-      <div class="kit-detail-stages">
-        ${stagesList}
+
+      <div class="kd-stats">
+        <div class="kd-stat"><span class="kd-stat-label">Stages</span><span class="kd-stat-value">${stages.length}</span></div>
+        <div class="kd-stat"><span class="kd-stat-label">Lessons</span><span class="kd-stat-value">${totalLessons}</span></div>
+        <div class="kd-stat"><span class="kd-stat-label">Completed</span><span class="kd-stat-value">${doneLessons}</span></div>
+        <div class="kd-stat"><span class="kd-stat-label">Tests passed</span><span class="kd-stat-value">${clearedStages}</span></div>
       </div>
+
+      <div class="kd-progress">
+        <div class="kd-progress-head"><span>Your progress</span><span>${pct}%</span></div>
+        <div class="kd-progress-track"><span class="kd-progress-fill" style="width:${pct}%"></span></div>
+      </div>
+
+      ${sample ? `<div class="kd-sample">
+        <div class="kd-sample-label">Sample exercise — ${esc(stages[0].title)} · ${esc(sample.title)}</div>
+        <div class="kd-sample-text">${esc(sample.text)}</div>
+      </div>` : ''}
+
+      <h2 class="kd-section-title">${stages.length} stages in this kit</h2>
+      <div class="kd-stages">${stagesList}</div>
     `;
     this.indexNavItems();
   },
@@ -3642,7 +3727,9 @@ const App = {
     }
     Store.save();
     this.renderSidebar();
-    this.showKitHub();
+    // Stay where the user is: the hub grid or that kit's own page.
+    if (this.view === "kit-detail") this.showKitDetail(tid);
+    else this.showKitHub();
   },
 };
 
