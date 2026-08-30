@@ -1637,7 +1637,7 @@ const THEMES = {
   go: {
     id: "go", name: "Go Programming", icon: "🐹",
     desc: "Build muscle memory for fluent Go development — types, error handling, concurrency",
-    category: "programming",
+    category: "tech",
     stages: [
       {
         id: 1, title: "Go Keywords & Basics", desc: "Core Go keywords and simple declarations",
@@ -1734,6 +1734,446 @@ const THEMES = {
           { id: "8e", title: "Full Program", text: "package main import (\"encoding/json\" \"log\" \"net/http\" \"os\") type Config struct { Port string Debug bool } func main() { cfg := Config{Port: \"8080\", Debug: false} mux := http.NewServeMux() mux.HandleFunc(\"/health\", func(w http.ResponseWriter, r *http.Request) { json.NewEncoder(w).Encode(map[string]string{\"status\": \"ok\"}) }) log.Fatal(http.ListenAndServe(\":\"+cfg.Port, mux)) }" },
         ],
         test: { title: "Go Mastery Test", text: "func processAll(ctx context.Context, items []Item) ([]Result, error) { ctx, cancel := context.WithTimeout(ctx, 30*time.Second) defer cancel() results := make([]Result, 0, len(items)) ch := make(chan Result, len(items)) for _, item := range items { go func(it Item) { ch <- process(ctx, it) }(item) } for range items { select { case r := <-ch: results = append(results, r) case <-ctx.Done(): return nil, ctx.Err() } } return results, nil }", minWpm: 35, minAccuracy: 92 }
+      }
+    ]
+  },
+  htmlcss: {
+    id: "htmlcss", name: "HTML & CSS", icon: "🎨",
+    desc: "Type real HTML tags, CSS selectors and layout declarations",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "HTML Elements", desc: "Semantic HTML5 tags and document structure", icon: "🏷️",
+        lessons: [
+          { id: "1a", title: "Document Shell", text: "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <title>Page Title</title> </head> <body> <header></header> <main></main> <footer></footer> </body> </html>" },
+          { id: "1b", title: "Semantic Tags", text: "<header> <nav> <main> <section> <article> <aside> <footer> <figure> <figcaption> <details> <summary> <time> <mark>" },
+          { id: "1c", title: "Text & Lists", text: "<h1>Heading One</h1> <h2>Heading Two</h2> <p>Paragraph text with <strong>bold</strong>, <em>italic</em>, <a href=\"#\">links</a> and <code>code</code>.</p> <ul> <li>Item</li> </ul> <ol> <li>First</li> </ol>" },
+          { id: "1d", title: "Forms & Inputs", text: "<form method=\"POST\" action=\"/submit\"> <label for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\" required> <label for=\"email\">Email</label> <input type=\"email\" id=\"email\" placeholder=\"you@example.com\"> <select name=\"role\"><option value=\"admin\">Admin</option></select> <button type=\"submit\">Send</button> </form>" },
+          { id: "1e", title: "Media & Tables", text: "<img src=\"photo.jpg\" alt=\"Description\" width=\"800\" height=\"600\" loading=\"lazy\"> <table> <thead> <tr> <th>Name</th> <th>Age</th> </tr> </thead> <tbody> <tr> <td>Alice</td> <td>30</td> </tr> </tbody> </table>" }
+        ],
+        test: { title: "HTML Test", text: "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"> <title>Test</title> </head> <body> <header> <nav> <a href=\"/\">Home</a> <a href=\"/about\">About</a> </nav> </header> <main> <article> <h1>Welcome</h1> <p>This is a test page.</p> </article> </main> <footer> <p>© 2025</p> </footer> </body> </html>", minWpm: 30, minAccuracy: 92 }
+      },
+      {
+        id: 2, title: "CSS Selectors", desc: "Selectors, combinators, pseudo-classes and specificity", icon: "🎯",
+        lessons: [
+          { id: "2a", title: "Basic Selectors", text: "h1 { } .class-name { } #unique-id { } * { } div p { } a, button { } [data-theme=\"dark\"] { } [href^=\"https\"] { }" },
+          { id: "2b", title: "Combinators", text: "article > p { margin-bottom: 1rem; } h2 + p { font-weight: 600; } h2 ~ p { color: var(--text-dim); } nav a:hover { text-decoration: underline; }" },
+          { id: "2c", title: "Pseudo-classes", text: "button:hover { background: var(--accent); } input:focus { outline: 2px solid var(--accent); } li:first-child { margin-top: 0; } li:last-child { margin-bottom: 0; } tr:nth-child(even) { background: var(--surface-alt); } a:visited { color: var(--violet); }" },
+          { id: "2d", title: "Pseudo-elements", text: "::before { content: '\"' attr(data-label) '\"'; } ::after { content: ''; display: block; clear: both; } ::selection { background: var(--accent); color: var(--on-accent); } ::placeholder { color: var(--text-muted); }" },
+          { id: "2e", title: "Specificity Wars", text: "#sidebar .nav-item { color: var(--text); } html[data-theme=\"dark\"] .card { background: var(--surface); } .card-grid > .card:not(.done) { opacity: 0.7; } button:disabled, [aria-disabled=\"true\"] { cursor: not-allowed; }" }
+        ],
+        test: { title: "CSS Selectors Test", text: "nav > a.active { font-weight: 700; } .card-grid .card:hover { transform: translateY(-2px); } tr:nth-child(odd) { background: var(--bg-subtle); } button:focus-visible { outline: 2px solid var(--accent); }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 3, title: "Properties & Layout", desc: "Typography, colour, box model, flexbox and grid", icon: "📐",
+        lessons: [
+          { id: "3a", title: "Typography", text: "font-family: var(--font-sans); font-size: 1rem; font-weight: 600; line-height: 1.6; letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" },
+          { id: "3b", title: "Box Model", text: "padding: 16px 24px; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: clamp(320px, 80vw, 1200px); max-width: 100%; box-sizing: border-box;" },
+          { id: "3c", title: "Flexbox", text: "display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; flex: 1 1 300px; .sidebar { flex-shrink: 0; width: var(--sidebar-w); } .content { flex: 1; min-width: 0; }" },
+          { id: "3d", title: "CSS Grid", text: "display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; grid-template-rows: auto 1fr auto; grid-template-areas: \"header header\" \"nav main\" \"footer footer\"; place-items: center;" },
+          { id: "3e", title: "Transitions & Animations", text: "transition: transform 0.2s ease, opacity 0.15s, background 0.15s; animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }" }
+        ],
+        test: { title: "Layout Test", text: "display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px; max-width: 1200px; margin: 0 auto; border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font-sans); color: var(--text); background: var(--surface);", minWpm: 28, minAccuracy: 90 }
+      }
+    ]
+  },
+  javascript: {
+    id: "javascript", name: "JavaScript", icon: "🟨",
+    desc: "Type JavaScript syntax, async patterns, DOM and modern ES features",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Basics", desc: "Variables, functions, objects, arrays and destructuring", icon: "📜",
+        lessons: [
+          { id: "1a", title: "Variables & Types", text: "const name = \"Alice\"; let age = 30; var legacy = true; const PI = 3.14159; let items = null; const isReady = undefined; let count = 0n; const id = Symbol('id');" },
+          { id: "1b", title: "Arrow Functions", text: "const add = (a, b) => a + b; const greet = name => `Hello, ${name}`; const square = x => x * x; items.map(item => ({ id: item.id, label: item.name })); fetch(url).then(res => res.json()).catch(err => console.error(err));" },
+          { id: "1c", title: "Object & Array Syntax", text: "const user = { name, email, role: 'admin', active: true }; const { name: userName, role } = user; const [first, second, ...rest] = items; const merged = { ...defaults, ...overrides }; const copy = [...original, newItem];" },
+          { id: "1d", title: "Template Literals", text: "const html = `<div class=\"card ${active ? 'active' : ''}\"><h2>${title}</h2><p>${description.slice(0, 100)}</p><span>${count} items</span></div>`; const url = `/api/users/${userId}/posts?page=${page}&limit=${limit}`;" },
+          { id: "1e", title: "Optional Chaining", text: "const city = user?.address?.city ?? 'Unknown'; const firstPost = posts?.[0]?.title; const result = handler?.handle?.(event) ?? fallback(); if (items?.length) processAll(items); config?.debug && console.log(state);" }
+        ],
+        test: { title: "JS Syntax Test", text: "const processUsers = (users, minAge = 18) => users.filter(u => u.age >= minAge).map(({ name, email }) => ({ name, email: email?.toLowerCase() ?? 'no-email' }));", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Async JavaScript", desc: "Promises, async/await, fetch and error handling", icon: "⏳",
+        lessons: [
+          { id: "2a", title: "Promises", text: "const promise = new Promise((resolve, reject) => { if (success) resolve(data); else reject(new Error('Failed')); }); Promise.all([fetchA(), fetchB()]).then(([a, b]) => merge(a, b)).catch(handleError).finally(() => loading = false);" },
+          { id: "2b", title: "Async / Await", text: "async function loadUser(id) { const response = await fetch(`/api/users/${id}`); if (!response.ok) throw new Error(`HTTP ${response.status}`); const data = await response.json(); return data; }" },
+          { id: "2c", title: "Error Handling", text: "async function init() { try { const config = await loadConfig(); const data = await fetchData(config); await render(data); } catch (err) { if (err instanceof NetworkError) showOfflineMessage(); else console.error('Initialisation failed:', err); throw err; } }" },
+          { id: "2d", title: "Fetch API", text: "const response = await fetch('/api/data', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload), signal: controller.signal }); if (!response.ok) throw response.status;" },
+          { id: "2e", title: "Debounce & Throttle", text: "function debounce(fn, ms) { let timer; return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); }; } function throttle(fn, ms) { let last = 0; return (...args) => { const now = Date.now(); if (now - last >= ms) { last = now; fn(...args); } } }" }
+        ],
+        test: { title: "Async Test", text: "async function fetchAll(urls) { const results = await Promise.allSettled(urls.map(url => fetch(url).then(r => r.json()))); for (const result of results) { if (result.status === 'fulfilled') process(result.value); else logError(result.reason); } }", minWpm: 30, minAccuracy: 90 }
+      },
+      {
+        id: 3, title: "DOM & Events", desc: "DOM manipulation, events, and browser APIs", icon: "🌐",
+        lessons: [
+          { id: "3a", title: "DOM Queries", text: "const el = document.getElementById('main'); const cards = document.querySelectorAll('.card[data-nav]'); const parent = el.closest('section'); const btn = e.target.closest('[data-act]'); const visible = [...items].filter(el => !el.disabled);" },
+          { id: "3b", title: "Event Handling", text: "element.addEventListener('click', (e) => { e.preventDefault(); const { act, arg } = e.currentTarget.dataset; dispatch(act, arg); }); window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });" },
+          { id: "3c", title: "Class & Style", text: "el.classList.toggle('active', condition); el.classList.add('show'); el.classList.remove('hidden'); el.style.setProperty('--progress', `${pct}%`); const styles = getComputedStyle(el); const width = parseInt(styles.getPropertyValue('--sidebar-w'));" },
+          { id: "3d", title: "DOM Creation", text: "const card = document.createElement('button'); card.className = cleaned ? 'card done' : 'card'; card.dataset.act = 'stage'; card.dataset.arg = stage.id; card.innerHTML = `<span class=\"card-badge\">${stage.id}</span><span class=\"card-title\">${esc(stage.title)}</span>`; grid.appendChild(card);" },
+          { id: "3e", title: "Intersection Observer", text: "const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.2, rootMargin: '40px' });" }
+        ],
+        test: { title: "DOM Test", text: "document.getElementById('nav').addEventListener('click', (e) => { const btn = e.target.closest('[data-act]'); if (!btn) return; e.preventDefault(); const { act, arg } = btn.dataset; if (act === 'view') showView(arg); else if (act === 'theme') switchTheme(arg); });", minWpm: 30, minAccuracy: 88 }
+      }
+    ]
+  },
+  typescript: {
+    id: "typescript", name: "TypeScript", icon: "🔷",
+    desc: "TypeScript types, interfaces, generics and utility types",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Basic Types", desc: "Primitive types, unions, literals and type inference", icon: "🔤",
+        lessons: [
+          { id: "1a", title: "Type Annotations", text: "let name: string = \"Alice\"; let age: number = 30; let active: boolean = true; let items: string[] = []; let tuple: [string, number] = [\"ok\", 200]; let maybe: string | null = null; let anything: unknown;" },
+          { id: "1b", title: "Union & Literal Types", text: "type Status = \"idle\" | \"loading\" | \"success\" | \"error\"; type HttpMethod = \"GET\" | \"POST\" | \"PUT\" | \"DELETE\"; type Alignment = \"left\" | \"center\" | \"right\"; function setTheme(theme: \"light\" | \"dark\"): void { document.documentElement.dataset.theme = theme; }" },
+          { id: "1c", title: "Interface Basics", text: "interface User { name: string; email: string; age?: number; role: \"admin\" | \"user\"; createdAt: Date; } const user: User = { name: \"Alice\", email: \"alice@example.com\", role: \"admin\", createdAt: new Date() };" },
+          { id: "1d", title: "Functions & Signatures", text: "type ClickHandler = (e: MouseEvent) => void; type Comparator<T> = (a: T, b: T) => number; function fetchJSON<T>(url: string): Promise<T> { return fetch(url).then(r => r.json()); } function assertNever(x: never): never { throw new Error(`Unexpected: ${x}`); }" },
+          { id: "1e", title: "Type Guards", text: "function isUser(obj: unknown): obj is User { return typeof obj === \"object\" && obj !== null && \"name\" in obj && \"email\" in obj; } if (isUser(data)) { console.log(data.name); } typeof x === \"string\" && x.toUpperCase();" }
+        ],
+        test: { title: "TS Types Test", text: "type AppState = { status: Status; user: User | null; items: Item[]; }; function reducer(state: AppState, action: Action): AppState { switch (action.type) { case 'login': return { ...state, status: 'loading' }; case 'success': return { ...state, status: 'success', user: action.payload }; default: return assertNever(action); } }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Generics & Utility Types", desc: "Generic functions, constraints, and built-in helpers", icon: "🧬",
+        lessons: [
+          { id: "2a", title: "Generic Functions", text: "function identity<T>(value: T): T { return value; } function first<T>(items: T[]): T | undefined { return items[0]; } function pluck<T, K extends keyof T>(items: T[], key: K): T[K][] { return items.map(item => item[key]); }" },
+          { id: "2b", title: "Generic Interfaces", text: "interface Repository<T> { getAll(): Promise<T[]>; getById(id: string): Promise<T | null>; save(item: T): Promise<T>; delete(id: string): Promise<void>; } class UserRepo implements Repository<User> { async getAll() { return db.query('SELECT * FROM users'); } }" },
+          { id: "2c", title: "Partial & Required", text: "type PartialUser = Partial<User>; type RequiredUser = Required<User>; function updateUser(id: string, patch: Partial<User>): Promise<User> { return db.update('users', id, patch); } type Config = Required<{ host?: string; port?: number }>;" },
+          { id: "2d", title: "Pick & Omit", text: "type UserSummary = Pick<User, 'name' | 'email'>; type WithoutDates = Omit<User, 'createdAt' | 'updatedAt'>; type PublicUser = Omit<User, 'passwordHash'> & { displayName: string }; type ApiPayload<T> = Pick<T, { [K in keyof T]: T[K] extends Function ? never : K }[keyof T]>" },
+          { id: "2e", title: "Record & Mapped Types", text: "type Cache = Record<string, unknown>; type ThemeTokens = Record<'bg' | 'surface' | 'text', string>; type ReadonlyUser = { readonly [K in keyof User]: User[K] }; type Nullable<T> = { [K in keyof T]: T[K] | null }; type EventMap = Record<string, (...args: any[]) => void>;" }
+        ],
+        test: { title: "Generics Test", text: "function groupBy<T, K extends keyof T>(items: T[], key: K): Record<string, T[]> { return items.reduce((acc, item) => { const group = String(item[key]); acc[group] = acc[group] || []; acc[group].push(item); return acc; }, {} as Record<string, T[]>); }", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Patterns & Enums", desc: "Discriminated unions, const assertions and advanced inference", icon: "🏗️",
+        lessons: [
+          { id: "3a", title: "Discriminated Unions", text: "type ApiResult<T> = { status: 'success'; data: T } | { status: 'error'; error: Error; code: number } | { status: 'pending' }; function handleResult<T>(r: ApiResult<T>) { switch (r.status) { case 'success': return r.data; case 'error': throw r.error; case 'pending': throw new Error('Not ready'); } }" },
+          { id: "3b", title: "Const Assertions", text: "const VIEWS = [ { id: 'dashboard', key: 'd', icon: '🏠', label: 'Dashboard' }, { id: 'performance', key: 's', icon: '📊', label: 'Stats' }, ] as const; type ViewId = typeof VIEWS[number]['id']; const COLORS = ['red','green','blue'] as const; type Color = typeof COLORS[number];" },
+          { id: "3c", title: "Conditional Types", text: "type IsString<T> = T extends string ? true : false; type ElementType<T> = T extends (infer U)[] ? U : T; type ReturnOf<T> = T extends (...args: any[]) => infer R ? R : never; type NonNullable<T> = T extends null | undefined ? never : T;" },
+          { id: "3d", title: "Template Literal Types", text: "type EventName = `on${Capitalize<string>}`; type CSSProp = `${'margin' | 'padding'}${'' | 'Top' | 'Right' | 'Bottom' | 'Left'}`; type HexColor = `#${string}`; type KebabToCamel<S extends string> = S extends `${infer A}-${infer B}` ? `${A}${Capitalize<KebabToCamel<B>>}` : S;" },
+          { id: "3e", title: "Declaration Merging", text: "interface Window { appConfig: AppConfig; __VERSION__: string; } declare global { interface Array<T> { last(): T | undefined; } } export {}; type DeepReadonly<T> = { readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K] };" }
+        ],
+        test: { title: "TS Patterns Test", text: "type Action = { type: 'increment' } | { type: 'decrement' } | { type: 'set'; payload: number }; function reducer(state: number, action: Action): number { switch (action.type) { case 'increment': return state + 1; case 'decrement': return state - 1; case 'set': return action.payload; } }", minWpm: 30, minAccuracy: 88 }
+      }
+    ]
+  },
+  java: {
+    id: "java", name: "Java", icon: "☕",
+    desc: "Java syntax, OOP, generics and the standard library",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Classes", desc: "Class structure, visibility, types and control flow", icon: "📦",
+        lessons: [
+          { id: "1a", title: "Class & Fields", text: "public class User { private String name; private String email; private int age; private boolean active; private LocalDateTime createdAt; public User(String name, String email) { this.name = name; this.email = email; this.createdAt = LocalDateTime.now(); } }" },
+          { id: "1b", title: "Getters & Setters", text: "public String getName() { return name; } public void setName(String name) { this.name = name; } public String getEmail() { return email; } public boolean isActive() { return active; } public void setActive(boolean active) { this.active = active; }" },
+          { id: "1c", title: "Control Flow", text: "if (user == null) { throw new IllegalArgumentException(\"User cannot be null\"); } for (int i = 0; i < items.size(); i++) { Item item = items.get(i); process(item); } switch (status) { case OK: return \"Success\"; case NOT_FOUND: return \"Missing\"; default: return \"Unknown\"; }" },
+          { id: "1d", title: "Collections", text: "List<String> names = new ArrayList<>(); names.add(\"Alice\"); Map<String, User> users = new HashMap<>(); users.put(id, user); Set<String> unique = new HashSet<>(names); for (Map.Entry<String, User> entry : users.entrySet()) { String key = entry.getKey(); User value = entry.getValue(); }" },
+          { id: "1e", title: "Streams", text: "List<String> active = users.stream().filter(User::isActive).map(User::getName).sorted().collect(Collectors.toList()); long count = items.stream().filter(i -> i.getPrice() > 100).count(); Optional<User> found = users.stream().filter(u -> u.getEmail().equals(email)).findFirst();" }
+        ],
+        test: { title: "Java Basics Test", text: "public class UserService { private final Map<String, User> users = new HashMap<>(); public Optional<User> findByEmail(String email) { return users.values().stream().filter(u -> u.getEmail().equals(email)).findFirst(); } public List<User> getActiveUsers() { return users.values().stream().filter(User::isActive).collect(Collectors.toList()); } }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "OOP & Patterns", desc: "Inheritance, interfaces, records and builders", icon: "🏛️",
+        lessons: [
+          { id: "2a", title: "Inheritance", text: "public abstract class Entity { protected String id; protected LocalDateTime createdAt; public String getId() { return id; } } public class Product extends Entity { private String name; private BigDecimal price; public Product(String name, BigDecimal price) { this.name = name; this.price = price; } }" },
+          { id: "2b", title: "Interfaces", text: "public interface Repository<T> { Optional<T> findById(String id); List<T> findAll(); T save(T entity); void delete(String id); } public class UserRepository implements Repository<User> { private final DataSource dataSource; @Override public Optional<User> findById(String id) { return Optional.ofNullable(dataSource.get(id)); } }" },
+          { id: "2c", title: "Records", text: "public record Point(int x, int y) {} public record UserDTO(String name, String email, int age) {} public record ApiResponse<T>(int status, T data, String message) { public boolean isSuccess() { return status >= 200 && status < 300; } }" },
+          { id: "2d", title: "Builder Pattern", text: "public class Config { private String host; private int port; private boolean debug; private Config() {} public static class Builder { private String host = \"localhost\"; private int port = 8080; private boolean debug = false; public Builder host(String host) { this.host = host; return this; } public Builder port(int port) { this.port = port; return this; } public Config build() { Config c = new Config(); c.host = this.host; c.port = this.port; c.debug = this.debug; return c; } } }" },
+          { id: "2e", title: "Sealed Classes", text: "public sealed interface Result<T> permits Success, Failure {} public record Success<T>(T data) implements Result<T> {} public record Failure<T>(String error) implements Result<T> {} public String handle(Result<?> result) { return switch (result) { case Success<?> s -> \"OK: \" + s.data(); case Failure<?> f -> \"Error: \" + f.error(); }; }" }
+        ],
+        test: { title: "OOP Test", text: "public sealed interface Shape permits Circle, Rectangle, Triangle {} public record Circle(double radius) implements Shape {} public record Rectangle(double width, double height) implements Shape {} public double area(Shape shape) { return switch (shape) { case Circle c -> Math.PI * c.radius() * c.radius(); case Rectangle r -> r.width() * r.height(); case Triangle t -> 0.5 * t.base() * t.height(); }; }", minWpm: 26, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Real Java Code", desc: "Typical service, controller and test code", icon: "⚙️",
+        lessons: [
+          { id: "3a", title: "Spring Controller", text: "@RestController @RequestMapping(\"/api/users\") public class UserController { private final UserService userService; @GetMapping public List<UserDTO> getAll() { return userService.findAll().stream().map(UserDTO::from).toList(); } @PostMapping public UserDTO create(@Valid @RequestBody CreateUserRequest req) { return UserDTO.from(userService.create(req)); } }" },
+          { id: "3b", title: "JPA Repository", text: "@Entity @Table(name = \"users\") public class UserEntity { @Id @GeneratedValue private Long id; @Column(nullable = false) private String name; @Column(unique = true) private String email; @OneToMany(mappedBy = \"user\", cascade = ALL) private List<OrderEntity> orders; }" },
+          { id: "3c", title: "Service Layer", text: "@Service @Transactional public class OrderService { private final OrderRepository orderRepo; private final UserService userService; public Order createOrder(String userId, List<OrderItem> items) { User user = userService.findById(userId).orElseThrow(() -> new NotFoundException(\"User not found\")); Order order = new Order(user, items); return orderRepo.save(order); } }" },
+          { id: "3d", title: "Error Handling", text: "@ControllerAdvice public class GlobalExceptionHandler { @ExceptionHandler(NotFoundException.class) public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) { return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse(ex.getMessage())); } @ExceptionHandler(Exception.class) public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) { return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ErrorResponse(\"Internal error\")); } }" },
+          { id: "3e", title: "Test Code", text: "@SpringBootTest class UserServiceTest { @MockBean private UserRepository userRepository; @Autowired private UserService userService; @Test void shouldFindUserByEmail() { User user = new User(\"Alice\", \"alice@test.com\"); when(userRepository.findByEmail(\"alice@test.com\")).thenReturn(Optional.of(user)); Optional<User> found = userService.findByEmail(\"alice@test.com\"); assertThat(found).isPresent(); assertThat(found.get().getName()).isEqualTo(\"Alice\"); } }" }
+        ],
+        test: { title: "Java Mastery Test", text: "@Service public class TransferService { private final AccountRepository accounts; @Transactional public void transfer(String fromId, String toId, BigDecimal amount) { Account from = accounts.findById(fromId).orElseThrow(); Account to = accounts.findById(toId).orElseThrow(); if (from.getBalance().compareTo(amount) < 0) throw new InsufficientFundsException(); from.debit(amount); to.credit(amount); accounts.saveAll(List.of(from, to)); } }", minWpm: 30, minAccuracy: 90 }
+      }
+    ]
+  },
+  csharp: {
+    id: "csharp", name: "C#", icon: "🟣",
+    desc: "C# syntax, LINQ, async/await and the .NET ecosystem",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Types", desc: "Classes, properties, records and pattern matching", icon: "📦",
+        lessons: [
+          { id: "1a", title: "Class & Properties", text: "public class User { public string Name { get; set; } public string Email { get; init; } public int Age { get; private set; } private readonly List<Order> orders = new(); public IReadOnlyList<Order> Orders => orders.AsReadOnly(); public User(string name, string email) { Name = name; Email = email; } }" },
+          { id: "1b", title: "Records", text: "public record UserDTO(string Name, string Email, int Age); public record Address(string Street, string City, string Postcode); public record OrderSummary(int Id, decimal Total, DateTime Placed) { public string Display => $\"#{Id} - {Total:C}\"; }" },
+          { id: "1c", title: "Pattern Matching", text: "string description = shape switch { Circle { Radius: > 10 } c => $\"Large circle (r={c.Radius})\", Circle c => $\"Circle (r={c.Radius})\", Rectangle { Width: var w, Height: var h } when w == h => $\"Square ({w})\", Rectangle r => $\"Rectangle ({r.Width}x{r.Height})\", _ => \"Unknown shape\" };" },
+          { id: "1d", title: "Null Handling", text: "string? maybe = GetOptional(); string result = maybe ?? \"default\"; int? count = items?.Count; string name = user?.Profile?.DisplayName ?? \"Anonymous\"; if (obj is not null and string s) Console.WriteLine(s.ToUpper()); ArgumentNullException.ThrowIfNull(config, nameof(config));" },
+          { id: "1e", title: "Collection Expressions", text: "List<string> names = [\"Alice\", \"Bob\", \"Charlie\"]; string[] more = [..names, \"Diana\"]; int[] primes = [2, 3, 5, 7, 11, 13]; var lookup = new Dictionary<string, int> { [\"one\"] = 1, [\"two\"] = 2 }; List<int> filtered = [..items.Where(i => i > 0).Select(i => i * 2)];" }
+        ],
+        test: { title: "C# Types Test", text: "public record ApiResponse<T>(int Status, T? Data, string? Error) { public bool IsSuccess => Status is >= 200 and < 300; public string Summary => this switch { { IsSuccess: true, Data: not null } => $\"OK - {Data}\", { IsSuccess: false, Error: var e } => $\"Failed - {e}\", _ => \"Unknown\" }; }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "LINQ & Collections", desc: "LINQ queries, lambdas and functional patterns", icon: "🔗",
+        lessons: [
+          { id: "2a", title: "LINQ Basics", text: "var active = users.Where(u => u.IsActive).OrderBy(u => u.Name).Select(u => u.Email).ToList(); var grouped = orders.GroupBy(o => o.Status).Select(g => new { Status = g.Key, Count = g.Count(), Total = g.Sum(o => o.Total) }); var exists = users.Any(u => u.Email == email);" },
+          { id: "2b", title: "LINQ Joins", text: "var enriched = from u in users join o in orders on u.Id equals o.UserId into userOrders from uo in userOrders.DefaultIfEmpty() select new { u.Name, OrderId = uo?.Id, uo?.Total }; var result = users.Join(orders, u => u.Id, o => o.UserId, (u, o) => new { u.Name, Order = o });" },
+          { id: "2c", title: "Extension Methods", text: "public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source) where T : class { return source.Where(x => x is not null)!; } public static T? FirstOrNull<T>(this IEnumerable<T> source, Func<T, bool> predicate) where T : struct { foreach (var item in source) if (predicate(item)) return item; return null; }" },
+          { id: "2d", title: "Delegates & Lambdas", text: "Func<int, int, int> add = (a, b) => a + b; Action<string> log = message => Console.WriteLine($\"[{DateTime.Now:HH:mm:ss}] {message}\"); Predicate<User> isAdmin = u => u.Role == \"admin\"; var sorted = items.OrderBy(i => i.Name).ThenByDescending(i => i.Date);" },
+          { id: "2e", title: "Span & Performance", text: "Span<char> buffer = stackalloc char[256]; ReadOnlySpan<char> slice = input.AsSpan().Slice(0, 100); foreach (ref var item in CollectionsMarshal.AsSpan(list)) { item.Count++; } string[] parts = line.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);" }
+        ],
+        test: { title: "LINQ Test", text: "var summary = orders.Where(o => o.Placed >= DateTime.Today.AddMonths(-1)).GroupBy(o => o.Status).Select(g => new { Status = g.Key, Revenue = g.Sum(o => o.Total), Average = g.Average(o => o.Total), Count = g.Count() }).OrderByDescending(s => s.Revenue).ToList();", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Async & Web", desc: "async/await, HttpClient and minimal APIs", icon: "⚡",
+        lessons: [
+          { id: "3a", title: "Async Basics", text: "public async Task<User?> GetUserAsync(string id) { await Task.Delay(100); var response = await httpClient.GetAsync($\"/users/{id}\"); response.EnsureSuccessStatusCode(); return await response.Content.ReadFromJsonAsync<User>(); }" },
+          { id: "3b", title: "Task Patterns", text: "var tasks = urls.Select(url => DownloadAsync(url)).ToList(); var results = await Task.WhenAll(tasks); using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); try { await ProcessWithTimeoutAsync(cts.Token); } catch (OperationCanceledException) { Console.WriteLine(\"Timed out\"); }" },
+          { id: "3c", title: "HttpClient", text: "using var client = new HttpClient { BaseAddress = new Uri(\"https://api.example.com\"), Timeout = TimeSpan.FromSeconds(30) }; client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(\"Bearer\", token); client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(\"application/json\"));" },
+          { id: "3d", title: "Minimal API", text: "var app = WebApplication.CreateBuilder(args).Build(); app.MapGet(\"/api/users/{id}\", async (string id, UserService svc) => { var user = await svc.FindAsync(id); return user is null ? Results.NotFound() : Results.Ok(UserDTO.From(user)); }); app.MapPost(\"/api/users\", async (CreateUserRequest req, UserService svc) => { var user = await svc.CreateAsync(req); return Results.Created($\"/api/users/{user.Id}\", UserDTO.From(user)); }); app.Run();" },
+          { id: "3e", title: "Middleware", text: "app.Use(async (context, next) => { var sw = Stopwatch.StartNew(); try { await next(); } finally { sw.Stop(); context.Response.Headers[\"X-Response-Time\"] = $\"{sw.ElapsedMilliseconds}ms\"; } }); app.UseExceptionHandler(errorApp => { errorApp.Run(async context => { context.Response.StatusCode = 500; await context.Response.WriteAsJsonAsync(new { error = \"Internal server error\" }); }); });" }
+        ],
+        test: { title: "C# Web Test", text: "public async Task<Result<T>> ExecuteAsync<T>(Func<Task<T>> action) { try { var result = await action(); return Result<T>.Success(result); } catch (HttpRequestException ex) { return Result<T>.Failure($\"Network error: {ex.Message}\"); } catch (OperationCanceledException) { return Result<T>.Failure(\"Request timed out\"); } }", minWpm: 30, minAccuracy: 90 }
+      }
+    ]
+  },
+  c: {
+    id: "c", name: "C", icon: "⚙️",
+    desc: "C syntax, pointers, structs, allocation and system programming",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Pointers", desc: "Basic syntax, arrays, strings and pointer fundamentals", icon: "🔤",
+        lessons: [
+          { id: "1a", title: "Variables & Types", text: "int count = 0; double pi = 3.14159; char c = 'A'; const int MAX = 1024; size_t len = strlen(s); unsigned long addr = 0x7fff5bf0; int8_t byte = 0xff; float temp = 36.5f; bool done = false;" },
+          { id: "1b", title: "Pointers", text: "int *ptr = &count; *ptr = 42; int **dptr = &ptr; void *generic = malloc(1024); int *typed = (int *) generic; char *s = \"hello\"; while (*s) { putchar(*s); s++; } int arr[] = {1, 2, 3}; int *p = arr; *(p + 1) = 99;" },
+          { id: "1c", title: "Arrays & Strings", text: "char buf[256]; snprintf(buf, sizeof(buf), \"%s: %d\", key, val); int nums[10] = {0}; for (int i = 0; i < 10; i++) nums[i] = i * i; char *tok = strtok(line, \",\"); while (tok) { process(tok); tok = strtok(NULL, \",\"); } char dest[128]; strncpy(dest, src, sizeof(dest) - 1);" },
+          { id: "1d", title: "Control Flow", text: "if (ptr == NULL) return -1; for (size_t i = 0; i < n; i++) { sum += arr[i]; } while (node) { visit(node); node = node->next; } switch (err) { case 0: return \"ok\"; case ENOENT: return \"not found\"; case EACCES: return \"permission denied\"; default: return \"unknown error\"; }" },
+          { id: "1e", title: "Functions", text: "static int cmp(const void *a, const void *b) { return *(int *)a - *(int *)b; } void map(int *arr, size_t n, int (*fn)(int)) { for (size_t i = 0; i < n; i++) arr[i] = fn(arr[i]); } int *make_array(size_t n) { return calloc(n, sizeof(int)); }" }
+        ],
+        test: { title: "C Basics Test", text: "char *find_char(const char *s, char c) { while (*s) { if (*s == c) return (char *) s; s++; } return NULL; } int count_occurrences(const char *s, char c) { int count = 0; for (; *s; s++) if (*s == c) count++; return count; }", minWpm: 26, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Structs & Memory", desc: "Structs, unions, allocation and memory layout", icon: "🧱",
+        lessons: [
+          { id: "2a", title: "Structs", text: "typedef struct { int id; char name[64]; double price; bool active; } Product; Product p = { .id = 1, .name = \"Widget\", .price = 9.99, .active = true }; Product *pp = malloc(sizeof(Product)); if (!pp) return NULL; pp->id = 2; snprintf(pp->name, sizeof(pp->name), \"%s\", \"Gadget\");" },
+          { id: "2b", title: "Dynamic Allocation", text: "int *arr = malloc(N * sizeof(int)); if (!arr) { fprintf(stderr, \"malloc failed\\n\"); exit(1); } for (int i = 0; i < N; i++) arr[i] = i; arr = realloc(arr, N * 2 * sizeof(int)); free(arr); arr = NULL; void *buf = aligned_alloc(64, 4096);" },
+          { id: "2c", title: "Linked List", text: "typedef struct Node { int data; struct Node *next; } Node; Node *list_append(Node *head, int val) { Node *n = malloc(sizeof(Node)); n->data = val; n->next = NULL; if (!head) return n; Node *cur = head; while (cur->next) cur = cur->next; cur->next = n; return head; } void list_free(Node *head) { while (head) { Node *n = head; head = head->next; free(n); } }" },
+          { id: "2d", title: "Memory Safety", text: "char *str_dup(const char *s) { size_t len = strlen(s) + 1; char *copy = malloc(len); if (!copy) return NULL; memcpy(copy, s, len); return copy; } void swap(void *a, void *b, size_t size) { unsigned char tmp[size]; memcpy(tmp, a, size); memcpy(a, b, size); memcpy(b, tmp, size); }" },
+          { id: "2e", title: "Unions & Bitfields", text: "typedef union { uint32_t raw; struct { uint8_t r, g, b, a; } rgba; } Color; Color c = { .rgba = { .r = 255, .g = 128, .b = 0, .a = 255 } }; typedef struct { unsigned int flag : 1; unsigned int type : 3; unsigned int count : 12; } Header;" }
+        ],
+        test: { title: "C Memory Test", text: "typedef struct { char *data; size_t len; size_t cap; } Buffer; Buffer *buf_new(size_t cap) { Buffer *b = malloc(sizeof(Buffer)); if (!b) return NULL; b->data = malloc(cap); if (!b->data) { free(b); return NULL; } b->len = 0; b->cap = cap; return b; } void buf_free(Buffer *b) { if (b) { free(b->data); free(b); } }", minWpm: 24, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Real C Patterns", desc: "File I/O, hash tables, networking and system calls", icon: "🔧",
+        lessons: [
+          { id: "3a", title: "File I/O", text: "FILE *fp = fopen(path, \"r\"); if (!fp) { perror(\"fopen\"); return -1; } char line[1024]; while (fgets(line, sizeof(line), fp)) { size_t len = strlen(line); if (len && line[len-1] == '\\n') line[len-1] = '\\0'; process(line); } fclose(fp);" },
+          { id: "3b", title: "Hash Table", text: "typedef struct Entry { char *key; void *val; struct Entry *next; } Entry; typedef struct { size_t cap; size_t len; Entry **buckets; } HashMap; static size_t hash(const char *s, size_t cap) { size_t h = 5381; for (; *s; s++) h = ((h << 5) + h) + *s; return h % cap; }" },
+          { id: "3c", title: "Networking", text: "int sfd = socket(AF_INET, SOCK_STREAM, 0); struct sockaddr_in addr = { .sin_family = AF_INET, .sin_port = htons(port) }; inet_pton(AF_INET, \"127.0.0.1\", &addr.sin_addr); if (connect(sfd, (struct sockaddr *) &addr, sizeof(addr)) < 0) { perror(\"connect\"); return -1; } char buf[4096]; ssize_t n = read(sfd, buf, sizeof(buf));" },
+          { id: "3d", title: "Threads", text: "pthread_t thread; pthread_create(&thread, NULL, worker, arg); pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER; pthread_mutex_lock(&lock); shared_data++; pthread_mutex_unlock(&lock); void *result; pthread_join(thread, &result); pthread_cond_t cond = PTHREAD_COND_INITIALIZER; pthread_cond_signal(&cond); pthread_cond_wait(&cond, &lock);" },
+          { id: "3e", title: "Arena Allocator", text: "typedef struct { char *buf; size_t cap; size_t offset; } Arena; Arena arena_new(size_t cap) { Arena a = { .cap = cap, .offset = 0 }; a.buf = malloc(cap); return a; } void *arena_alloc(Arena *a, size_t n) { if (a->offset + n > a->cap) return NULL; void *p = a->buf + a->offset; a->offset += n; return p; } void arena_free(Arena *a) { free(a->buf); a->buf = NULL; }" }
+        ],
+        test: { title: "C Mastery Test", text: "char *read_file(const char *path, size_t *out_len) { FILE *fp = fopen(path, \"rb\"); if (!fp) return NULL; fseek(fp, 0, SEEK_END); long sz = ftell(fp); rewind(fp); char *buf = malloc(sz + 1); if (!buf) { fclose(fp); return NULL; } fread(buf, 1, sz, fp); buf[sz] = '\\0'; fclose(fp); if (out_len) *out_len = sz; return buf; }", minWpm: 26, minAccuracy: 90 }
+      }
+    ]
+  },
+  swift: {
+    id: "swift", name: "Swift", icon: "🦊",
+    desc: "Swift syntax, optionals, closures, structs and SwiftUI",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Optionals", desc: "Variables, optionals, guard and control flow", icon: "🔤",
+        lessons: [
+          { id: "1a", title: "Variables & Constants", text: "var name = \"Alice\" let maxRetries = 3 var items: [String] = [] let config: [String: Any] = [\"host\": \"localhost\", \"port\": 8080] var count: Int? = nil lazy var expensive = compute() private(set) var balance = 0" },
+          { id: "1b", title: "Optionals", text: "let name: String? = user[\"name\"] as? String let display = name ?? \"Unknown\" if let email = user.email { send(to: email) } guard let token = auth.token else { return .unauthorized } let first = items.first(where: { $0.active })? .name" },
+          { id: "1c", title: "Structs & Enums", text: "struct User: Codable { let id: UUID var name: String var email: String var createdAt: Date mutating func activate() { isActive = true } } enum Status: String { case idle case loading case success case failure(Error) }" },
+          { id: "1d", title: "Protocols", text: "protocol Repository { associatedtype Item func getAll() async throws -> [Item] func save(_ item: Item) async throws } extension Repository { func find(where predicate: (Item) -> Bool) async throws -> Item? { try await getAll().first(where: predicate) } }" },
+          { id: "1e", title: "Error Handling", text: "enum ServiceError: Error { case notFound case unauthorized(String) } func load(_ id: String) async throws -> User { guard let user = try await db.find(id) else { throw ServiceError.notFound } return user } do { let u = try await load(id); print(u.name) } catch { print(error) }" }
+        ],
+        test: { title: "Swift Basics Test", text: "func fetchUsers() async throws -> [User] { let (data, response) = try await URLSession.shared.data(from: url) guard let http = response as? HTTPURLResponse, http.statusCode == 200 else { throw ServiceError.unauthorized(\"bad status\") } return try JSONDecoder().decode([User].self, from: data) }", minWpm: 28, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Closures & Collections", desc: "Higher-order functions, map/filter/reduce", icon: "🔗",
+        lessons: [
+          { id: "2a", title: "Closures", text: "let sorted = users.sorted { $0.name < $1.name } let handler: (Result<User, Error>) -> Void = { result in switch result { case .success(let u): onSuccess(u) case .failure(let e): onError(e) } } let squared = numbers.map { $0 * $0 }" },
+          { id: "2b", title: "Map / Filter / Reduce", text: "let active = users.filter { $0.isActive } let names = users.map(\\.name) let total = orders.reduce(0) { $0 + $1.amount } let grouped = Dictionary(grouping: items, by: \\.category) let emails = users.compactMap { $0.email }" },
+          { id: "2c", title: "Combine Snippets", text: "let cancellable = publisher.sink(receiveCompletion: { completion in if case .failure(let e) = completion { handle(e) } }, receiveValue: { value in process(value) }) $searchText.debounce(for: .milliseconds(300), scheduler: RunLoop.main).sink { query in performSearch(query) }" },
+          { id: "2d", title: "AsyncSequence", text: "for try await line in url.lines { process(line) } let stream = AsyncStream<Int> { continuation in for i in 0..<10 { continuation.yield(i) } continuation.finish() } let first = try await notifications.first { $0.priority == .high }" },
+          { id: "2e", title: "Property Wrappers", text: "@propertyWrapper struct Clamped<T: Comparable> { var wrappedValue: T { didSet { if wrappedValue < min { wrappedValue = min } if wrappedValue > max { wrappedValue = max } } } let min: T; let max: T } struct Slider { @Clamped(min: 0, max: 100) var value: Double = 50 }" }
+        ],
+        test: { title: "Swift Collections Test", text: "func processOrders(_ orders: [Order]) -> [String: Decimal] { return orders.filter { $0.status == .completed }.reduce(into: [:]) { result, order in result[order.category, default: 0] += order.amount } }", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "SwiftUI & Patterns", desc: "Views, state management and real app code", icon: "🖼️",
+        lessons: [
+          { id: "3a", title: "SwiftUI Basics", text: "struct ContentView: View { @State private var searchText = \"\" var body: some View { NavigationStack { List(items.filter { searchText.isEmpty || $0.name.contains(searchText) }) { item in Text(item.name).font(.headline) } .searchable(text: $searchText) .navigationTitle(\"Items\") } } }" },
+          { id: "3b", title: "Observable & Environment", text: "@Observable class AppModel { var user: User? = nil var isAuthenticated = false func login(_ user: User) { self.user = user; isAuthenticated = true } } @Environment(AppModel.self) private var model var body: some View { if model.isAuthenticated { DashboardView() } else { LoginView() } }" },
+          { id: "3c", title: "Task & Concurrency", text: ".task { do { let data = try await viewModel.load() items = data.items } catch { self.error = error } } Task { @MainActor in await fetchData() }.cancel() await withTaskGroup(of: Result.self) { group in urls.forEach { group.addTask { await download($0) } } }" },
+          { id: "3d", title: "Networking Layer", text: "struct APIClient { let base: URL let decoder = JSONDecoder() func request<T: Decodable>(_ path: String, as: T.Type) async throws -> T { var req = URLRequest(url: base.appending(path: path)) req.setValue(token, forHTTPHeaderField: \"Authorization\") let (data, res) = try await URLSession.shared.data(for: req) guard (res as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.badResponse } return try decoder.decode(T.self, from: data) } }" },
+          { id: "3e", title: "Result Builders", text: "@resultBuilder struct ViewBuilder { static func buildBlock<C: View>(_ components: C...) -> some View { ForEach(Array(components.enumerated()), id: \\.offset) { $0.element } } } @ViewBuilder func cardStack(@ViewBuilder content: () -> some View) -> some View { VStack(spacing: 12) { content() } }" }
+        ],
+        test: { title: "SwiftUI Test", text: "struct ProductList: View { @State private var products: [Product] = [] @State private var error: Error? var body: some View { Group { if let error { ErrorView(error: error) } else { List(products) { ProductRow(product: $0) } } }.task { do { products = try await store.fetchAll() } catch { self.error = error } } }", minWpm: 28, minAccuracy: 88 }
+      }
+    ]
+  },
+  kotlin: {
+    id: "kotlin", name: "Kotlin", icon: "🟠",
+    desc: "Kotlin syntax, null safety, coroutines and Android patterns",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Null Safety", desc: "Data classes, scope functions, null handling", icon: "🔤",
+        lessons: [
+          { id: "1a", title: "Data Classes", text: "data class User(val id: String, val name: String, val email: String?, val role: Role = Role.USER) {} enum class Role { USER, ADMIN } val user = User(id = \"1\", name = \"Alice\", email = \"alice@test.com\") val updated = user.copy(name = \"Alice Brown\")" },
+          { id: "1b", title: "Null Safety", text: "val name: String? = user.email fun greet(user: User): String { val display = user.name ?: \"Anonymous\" return \"Hello, $display\" } user?.address?.city?.let { deliverTo(it) } val result = data ?: throw IllegalStateException(\"data is required\")" },
+          { id: "1c", title: "Scope Functions", text: "user.let { u -> println(\"User ${u.id}: ${u.name}\") } config.apply { host = \"localhost\" port = 8080 } val report = orders.filter { it.active }.map { it.summary }.also { log.info(\"${it.size} active orders\") } with(transaction) { begin(); save(data); commit() }" },
+          { id: "1d", title: "Extension Functions", text: "fun String.truncate(max: Int, suffix: String = \"…\"): String = if (length <= max) this else take(max) + suffix fun <T> List<T>.secondOrNull(): T? = if (size >= 2) get(1) else null val List<User>.activeCount get() = count { it.active }" },
+          { id: "1e", title: "Sealed Classes", text: "sealed class Result<out T> { data class Success<T>(val data: T) : Result<T>() data class Failure(val error: Throwable) : Result<Nothing>() } fun <T> Result<T>.getOrThrow(): T = when (this) { is Result.Success -> data is Result.Failure -> throw error }" }
+        ],
+        test: { title: "Kotlin Basics Test", text: "fun <T> Result<T>.fold(onSuccess: (T) -> Unit, onFailure: (Throwable) -> Unit) { when (this) { is Result.Success -> onSuccess(data) is Result.Failure -> onFailure(error) } }", minWpm: 26, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Collections & Lambdas", desc: "Functional operations, sequences and flows", icon: "🔗",
+        lessons: [
+          { id: "2a", title: "Collection Ops", text: "val active = users.filter { it.active }.sortedBy { it.name }.map { it.email } val grouped = orders.groupBy { it.status } val total = items.sumOf { it.price * it.quantity } val (admins, regulars) = users.partition { it.role == Role.ADMIN }" },
+          { id: "2b", title: "Sequences", text: "val result = items.asSequence().filter { it.price > 10 }.map { it.description }.distinct().take(50).toList() val top = users.asSequence().sortedByDescending { it.score }.take(5).map { \"${it.name}: ${it.score}\" }.joinToString(\", \")" },
+          { id: "2c", title: "Inline Functions", text: "inline fun <T> measureTimeMillis(block: () -> T): Pair<T, Long> { val start = System.currentTimeMillis(); val result = block(); return result to (System.currentTimeMillis() - start) } inline fun <reified T> Gson.fromJson(json: String): T = fromJson(json, T::class.java)" },
+          { id: "2d", title: "Delegation", text: "class LazyService { val users by lazy { loadUsers() } val name: String by observable(\"<no name>\") { _, old, new -> println(\"Name changed from $old to $new\") } } class CountingMap<K, V> : MutableMap<K, V> by HashMap() { var reads = 0 }" },
+          { id: "2e", title: "Coroutines Intro", text: "suspend fun loadData(): List<Item> = withContext(Dispatchers.IO) { api.fetchItems().also { db.saveAll(it) } } val job = coroutineScope { launch { fetchA() } async { fetchB() } } viewModelScope.launch { state.value = try { Result.success(repo.load()) } catch (e: Exception) { Result.failure(e) } }" }
+        ],
+        test: { title: "Kotlin Collections Test", text: "suspend fun analyzeOrders(orders: List<Order>): Report { return withContext(Dispatchers.Default) { val byStatus = orders.groupBy { it.status }.mapValues { it.value.sumOf { o -> o.amount } } val top = orders.sortedByDescending { it.amount }.take(10) Report(byStatus, top, orders.size) } }", minWpm: 28, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Android & Compose", desc: "Jetpack Compose, ViewModels and real patterns", icon: "📱",
+        lessons: [
+          { id: "3a", title: "Compose Basics", text: "@Composable fun UserList(users: List<User>, onSelect: (User) -> Unit) { LazyColumn { items(users, key = { it.id }) { user -> UserCard(user = user, onClick = { onSelect(user) }) } } } @Composable fun UserCard(user: User, onClick: () -> Unit) { Card(onClick = onClick) { Column(Modifier.padding(16.dp)) { Text(user.name, style = MaterialTheme.typography.headlineSmall); Text(user.email ?: \"No email\") } } }" },
+          { id: "3b", title: "ViewModel", text: "class UserViewModel(private val repo: UserRepository) : ViewModel() { private val _state = MutableStateFlow(UiState()) val state: StateFlow<UiState> = _state.asStateFlow() fun loadUsers() { viewModelScope.launch { _state.update { it.copy(loading = true) }; try { _state.update { it.copy(users = repo.getAll(), loading = false) } } catch (e: Exception) { _state.update { it.copy(error = e.message, loading = false) } } } } }" },
+          { id: "3c", title: "Retrofit & Moshi", text: "interface ApiService { @GET(\"users\") suspend fun getUsers(): List<User> @POST(\"users\") suspend fun createUser(@Body user: CreateUserRequest): User @DELETE(\"users/{id}\") suspend fun deleteUser(@Path(\"id\") id: String) } val retrofit = Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(MoshiConverterFactory.create()).build()" },
+          { id: "3d", title: "Room Database", text: "@Entity(tableName = \"users\") data class UserEntity(@PrimaryKey val id: String, val name: String, val email: String, val active: Boolean) @Dao interface UserDao { @Query(\"SELECT * FROM users WHERE active = 1\") fun getActive(): Flow<List<UserEntity>> @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun upsertAll(users: List<UserEntity>) }" },
+          { id: "3e", title: "Dependency Injection", text: "@Module @InstallIn(SingletonComponent::class) object NetworkModule { @Provides @Singleton fun provideRetrofit(): Retrofit = Retrofit.Builder().baseUrl(BASE_URL).build() @Provides fun provideApi(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java) } @HiltAndroidApp class MyApp : Application()" }
+        ],
+        test: { title: "Kotlin Android Test", text: "@HiltViewModel class SearchViewModel @Inject constructor(private val api: ApiService) : ViewModel() { private val _query = MutableStateFlow(\"\") val results: StateFlow<List<User>> = _query.debounce(300).filter { it.length >= 2 }.flatMapLatest { flow { emit(api.search(it)) } }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList()) fun search(query: String) { _query.value = query } }", minWpm: 28, minAccuracy: 88 }
+      }
+    ]
+  },
+  python: {
+    id: "python", name: "Python", icon: "🐍",
+    desc: "Python syntax, comprehensions, decorators and data libraries",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Syntax & Collections", desc: "Variables, lists, dicts, comprehensions and f-strings", icon: "🔤",
+        lessons: [
+          { id: "1a", title: "Variables & Types", text: "name = \"Alice\" age = 30 items = [\"a\", \"b\", \"c\"] config = {\"host\": \"localhost\", \"port\": 8080} unique = {1, 2, 3, 3} point = (10, 20) active = True count: int = 0" },
+          { id: "1b", title: "List Comprehensions", text: "squares = [x * x for x in range(10)] active = [u for u in users if u.active] names = [u.name for u in users] pairs = [(a, b) for a in [1,2] for b in [3,4]] mapped = {u.id: u for u in users} evens = {x for x in range(100) if x % 2 == 0}" },
+          { id: "1c", title: "Dicts & Unpacking", text: "params = {**defaults, **overrides} a, b, *rest = items first, *_, last = range(10) def greet(name, age=0): return f\"Hello, {name}!\" user = {\"name\": \"Alice\", \"email\": \"a@test.com\"} print(f\"{user['name']} <{user['email']}>\")" },
+          { id: "1d", title: "Error Handling", text: "try: result = process(data) except ValueError as e: logger.error(\"Bad value\", exc_info=e) raise HTTPException(status_code=400, detail=str(e)) except Exception: logger.exception(\"Unexpected\") raise finally: cleanup()" },
+          { id: "1e", title: "f-strings & Formatting", text: "msg = f\"User {name!r} has {len(items)} items\" price = f\"€{amount:,.2f}\" date = f\"{dt:%Y-%m-%d %H:%M}\" debug = f\"{json.dumps(obj, indent=2)}\" line = f\"{'='*40}\" border = f\"|{title:^38}|\"" }
+        ],
+        test: { title: "Python Basics Test", text: "def process_orders(orders: list[dict]) -> dict[str, float]: return {cat: sum(o['amount'] for o in orders if o['category'] == cat) for cat in {o['category'] for o in orders}}", minWpm: 26, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Functions & Decorators", desc: "Closures, decorators, generators and context managers", icon: "🎀",
+        lessons: [
+          { id: "2a", title: "Closures", text: "def make_multiplier(n): return lambda x: x * n double = make_multiplier(2) triple = make_multiplier(3) assert double(10) == 20 def counter(): count = 0; def inc(): nonlocal count; count += 1; return count; return inc" },
+          { id: "2b", title: "Decorators", text: "def timed(fn): import time; def wrapper(*a, **kw): start = time.perf_counter(); result = fn(*a, **kw); print(f\"{fn.__name__} took {time.perf_counter() - start:.3f}s\"); return result; return wrapper @timed def process(items): return [transform(i) for i in items]" },
+          { id: "2c", title: "Generators", text: "def chunked(items, size): for i in range(0, len(items), size): yield items[i:i + size] def fibonacci(): a, b = 0, 1; while True: yield a; a, b = b, a + b def read_lines(path): with open(path) as f: yield from f" },
+          { id: "2d", title: "Context Managers", text: "from contextlib import contextmanager @contextmanager def transaction(db): try: db.begin(); yield db; db.commit() except Exception: db.rollback(); raise class Timer: def __enter__(self): self.start = time.perf_counter(); return self def __exit__(self, *a): self.elapsed = time.perf_counter() - self.start" },
+          { id: "2e", title: "Typing & Protocols", text: "from typing import Protocol, TypeVar, Generic T = TypeVar('T') class Repository(Protocol[T]): def get_all(self) -> list[T]: ... def save(self, item: T) -> None: ... def find_by_id(id: str, repo: Repository[T]) -> T | None: items = [i for i in repo.get_all() if i.id == id]; return items[0] if items else None" }
+        ],
+        test: { title: "Python Functions Test", text: "@functools.lru_cache(maxsize=256) def expensive(n: int) -> int: \"\"\"Memoised computation.\"\"\" return n if n < 2 else expensive(n - 1) + expensive(n - 2)", minWpm: 26, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Data & Web", desc: "NumPy/Pandas snippets, FastAPI and ORM patterns", icon: "📊",
+        lessons: [
+          { id: "3a", title: "Pandas Snippets", text: "import pandas as pd df = pd.DataFrame(users) active = df[df['active']] by_role = df.groupby('role').agg(count=('id', 'count'), avg_age=('age', 'mean')) top = df.nlargest(10, 'score') df['full_name'] = df['first'] + ' ' + df['last'] merged = df.merge(orders, on='user_id')" },
+          { id: "3b", title: "NumPy Basics", text: "import numpy as np arr = np.array([1, 2, 3, 4, 5]) arr * 2 squared = arr ** 2 mask = arr > 2 filtered = arr[mask] matrix = np.zeros((3, 4)) rand = np.random.randn(1000) mean, std = rand.mean(), rand.std()" },
+          { id: "3c", title: "FastAPI", text: "from fastapi import FastAPI, HTTPException, Depends app = FastAPI() @app.get(\"/users/{id}\") async def get_user(id: str, db = Depends(get_db)): user = await db.users.find_one({\"_id\": id}) if not user: raise HTTPException(404, \"User not found\") return serialize(user) @app.post(\"/users\") async def create_user(body: CreateUser, db = Depends(get_db)): result = await db.users.insert_one(body.dict()): return {\"id\": str(result.inserted_id)}" },
+          { id: "3d", title: "SQLAlchemy ORM", text: "from sqlalchemy import select, and_, or_ from sqlalchemy.orm import Session stmt = select(User).where(User.active == True).order_by(User.name).limit(50) with Session(engine) as session: users = session.execute(stmt).scalars().all() user = session.get(User, id) user.email = new_email; session.commit()" },
+          { id: "3e", title: "Testing", text: "import pytest @pytest.mark.asyncio async def test_create_user(client): response = await client.post(\"/users\", json={\"name\": \"Alice\", \"email\": \"alice@test.com\"}) assert response.status_code == 201 assert response.json()[\"name\"] == \"Alice\" @pytest.fixture def sample_users(): return [User(id=\"1\", name=n) for n in [\"Alice\", \"Bob\"]]" }
+        ],
+        test: { title: "Python Data Test", text: "def top_categories(orders: pd.DataFrame, min_amount: float = 1000) -> pd.DataFrame: return (orders.query(f'amount >= {min_amount}').groupby('category').agg(total=('amount', 'sum'), count=('id', 'nunique')).sort_values('total', ascending=False))", minWpm: 28, minAccuracy: 88 }
+      }
+    ]
+  },
+  sql: {
+    id: "sql", name: "SQL", icon: "🗄️",
+    desc: "SQL queries, joins, aggregates, window functions and DDL",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "SELECT & Filtering", desc: "SELECT, WHERE, ordering and basic predicates", icon: "🔍",
+        lessons: [
+          { id: "1a", title: "Basic SELECT", text: "SELECT id, name, email FROM users WHERE active = true ORDER BY name;" },
+          { id: "1b", title: "Filtering", text: "SELECT * FROM products WHERE price BETWEEN 10 AND 100 AND category IN ('books', 'electronics') AND name ILIKE '%pro%'; SELECT DISTINCT status FROM orders;" },
+          { id: "1c", title: "Sorting & Limits", text: "SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 10; SELECT category, COUNT(*) AS cnt FROM products GROUP BY category HAVING COUNT(*) > 5 ORDER BY cnt DESC;" },
+          { id: "1d", title: "String & Date Functions", text: "SELECT UPPER(name), LENGTH(email), CONCAT(first_name, ' ', last_name) AS full_name FROM users; SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) FROM orders WHERE created_at >= NOW() - INTERVAL '6 months' GROUP BY month ORDER BY month;" },
+          { id: "1e", title: "CASE & COALESCE", text: "SELECT name, CASE WHEN score >= 90 THEN 'A' WHEN score >= 80 THEN 'B' WHEN score >= 70 THEN 'C' ELSE 'F' END AS grade FROM students; SELECT COALESCE(nickname, first_name, 'Anonymous') AS display_name FROM users;" }
+        ],
+        test: { title: "SELECT Test", text: "SELECT category, COUNT(*) AS total, SUM(amount) AS revenue, ROUND(AVG(amount), 2) AS avg_order FROM orders WHERE status = 'completed' AND placed_at >= '2025-01-01' GROUP BY category HAVING COUNT(*) >= 3 ORDER BY revenue DESC LIMIT 5;", minWpm: 26, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "JOINs & Subqueries", desc: "All join types, CTEs and correlated subqueries", icon: "🔗",
+        lessons: [
+          { id: "2a", title: "INNER / LEFT JOIN", text: "SELECT u.name, o.total FROM users u INNER JOIN orders o ON u.id = o.user_id; SELECT u.name, o.total FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE o.id IS NULL;" },
+          { id: "2b", title: "Multi JOIN", text: "SELECT u.name, o.total, p.name AS product FROM users u JOIN orders o ON u.id = o.user_id JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id WHERE o.status = 'completed';" },
+          { id: "2c", title: "CTEs (WITH)", text: "WITH monthly_sales AS (SELECT DATE_TRUNC('month', placed_at) AS month, SUM(amount) AS revenue FROM orders GROUP BY month) SELECT month, revenue, LAG(revenue) OVER (ORDER BY month) AS prev_revenue FROM monthly_sales ORDER BY month;" },
+          { id: "2d", title: "Subqueries", text: "SELECT name, salary FROM employees WHERE salary > (SELECT AVG(salary) FROM employees); SELECT name FROM users WHERE id IN (SELECT DISTINCT user_id FROM orders WHERE total > 500); SELECT e.name, (SELECT COUNT(*) FROM orders WHERE user_id = e.id) AS order_count FROM users e;" },
+          { id: "2e", title: "EXISTS / NOT EXISTS", text: "SELECT name FROM products p WHERE EXISTS (SELECT 1 FROM order_items oi WHERE oi.product_id = p.id); SELECT name FROM users u WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id AND o.placed_at > NOW() - INTERVAL '90 days');" }
+        ],
+        test: { title: "JOINs Test", text: "WITH ranked AS (SELECT u.name, SUM(o.amount) AS total, RANK() OVER (ORDER BY SUM(o.amount) DESC) AS rnk FROM users u JOIN orders o ON u.id = o.user_id WHERE o.status = 'completed' GROUP BY u.id) SELECT name, total FROM ranked WHERE rnk <= 10;", minWpm: 26, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Window Functions & DDL", desc: "Aggregate windows, ranking, schema design and indexes", icon: "📊",
+        lessons: [
+          { id: "3a", title: "Window Functions", text: "SELECT name, department, salary, RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank FROM employees; SELECT month, revenue, SUM(revenue) OVER (ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS rolling_3m FROM monthly_sales;" },
+          { id: "3b", title: "ROW_NUMBER / NTILE", text: "SELECT * FROM (SELECT name, score, ROW_NUMBER() OVER (ORDER BY score DESC) AS row_num FROM students) t WHERE row_num <= 10; SELECT name, amount, NTILE(4) OVER (ORDER BY amount DESC) AS quartile FROM orders;" },
+          { id: "3c", title: "DDL — CREATE TABLE", text: "CREATE TABLE users (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, role VARCHAR(50) DEFAULT 'user', active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ);" },
+          { id: "3d", title: "Indexes & Constraints", text: "CREATE INDEX idx_users_email ON users (email); CREATE INDEX idx_orders_user_date ON orders (user_id, placed_at DESC); CREATE UNIQUE INDEX idx_users_lower_email ON users (LOWER(email)); ALTER TABLE orders ADD CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE; ALTER TABLE products ADD CONSTRAINT chk_price CHECK (price > 0);" },
+          { id: "3e", title: "INSERT / UPDATE / DELETE", text: "INSERT INTO users (name, email) VALUES ('Alice', 'alice@test.com'), ('Bob', 'bob@test.com') ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name; UPDATE products SET price = price * 1.1 WHERE category = 'premium'; DELETE FROM sessions WHERE expires_at < NOW();" }
+        ],
+        test: { title: "SQL Mastery Test", text: "WITH monthly AS (SELECT u.id, u.name, DATE_TRUNC('month', o.placed_at) AS month, SUM(o.amount) AS total FROM users u JOIN orders o ON u.id = o.user_id GROUP BY u.id, u.name, month) SELECT name, month, total, ROUND(AVG(total) OVER (PARTITION BY id ORDER BY month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS rolling_avg FROM monthly ORDER BY name, month;", minWpm: 26, minAccuracy: 88 }
+      }
+    ]
+  },
+  bash: {
+    id: "bash", name: "Bash", icon: "💻",
+    desc: "Bash scripting — pipes, loops, conditionals and real-world commands",
+    category: "tech",
+    stages: [
+      {
+        id: 1, title: "Commands & Pipes", desc: "Essential commands, redirection and pipelines", icon: "🔧",
+        lessons: [
+          { id: "1a", title: "File Operations", text: "ls -la | grep '^d' | wc -l; find . -name '*.log' -mtime +7 -delete; cat file.txt | sort | uniq -c | sort -rn | head -20; du -sh * | sort -rh | head -10; stat --format='%n %s %y' *.txt" },
+          { id: "1b", title: "Text Processing", text: "grep -r 'TODO' src/ --include='*.ts' | cut -d: -f1 | sort -u; sed 's/old/new/g' input.txt > output.txt; awk -F',' '{print $1, $3}' data.csv; tr '[:lower:]' '[:upper:]' < file.txt; cut -d$'\t' -f1,3 | paste -d',' - -" },
+          { id: "1c", title: "Redirection", text: "command > stdout.txt 2> stderr.txt; command &> all_output.txt; command >> log.txt 2>&1; (command_a; command_b) | tee result.txt; output=$(command) && echo \"Got: $output\"; exec 3>debug.txt; echo \"debug\" >&3; exec 3>&-" },
+          { id: "1d", title: "Variables & Expansion", text: "name=\"Alice\"; count=5; path=\"${HOME}/projects\"; echo \"Hello ${name:-World}\"; echo \"${#name}\"; echo \"${name^^}\"; files=(*.txt); echo \"${files[0]}\"; echo \"${files[@]:0:3}\"; result=$(find . -type f -printf '%T+\t%p\n' | sort -r | head -1)" },
+          { id: "1e", title: "Common Patterns", text: "for file in *.jpg; do convert \"$file\" \"${file%.jpg}.png\"; done; while IFS= read -r line; do handle \"$line\"; done < input.txt; if [[ -f config.yaml ]]; then source config.sh; fi; case $1 in start) service start;; stop) service stop;; *) echo \"Usage: $0 {start|stop}\";; esac" }
+        ],
+        test: { title: "Bash Commands Test", text: "find src/ -name '*.js' -print0 | xargs -0 grep -l 'TODO' | while IFS= read -r file; do echo \"$file: $(grep -c 'TODO' \"$file\")\"; done | sort -t: -k2 -rn", minWpm: 26, minAccuracy: 90 }
+      },
+      {
+        id: 2, title: "Scripting Logic", desc: "Conditionals, loops, functions and error handling", icon: "🔀",
+        lessons: [
+          { id: "2a", title: "Functions", text: "die() { echo \"${1:-Fatal error}\" >&2; exit \"${2:-1}\"; } log() { local level=$1 msg=$2; echo \"[$(date -Iseconds)] [$level] $msg\"; } retry() { local n=$1; shift; for ((i=0; i<n; i++)); do \"$@\" && return; sleep 2; done; return 1; }" },
+          { id: "2b", title: "Conditionals", text: "if [[ ! -d \"$dir\" ]]; then mkdir -p \"$dir\" || die \"Cannot create $dir\"; fi; if (( count > MAX )); then echo \"Over limit: $count > $MAX\"; fi; if command -v jq &>/dev/null; then jq '.version' package.json; fi; [[ -z \"$1\" ]] && { echo \"Usage: $0 <file>\"; exit 1; }" },
+          { id: "2c", title: "Loops", text: "for dir in */; do echo \"Processing $dir\"; (cd \"$dir\" && npm test) || die \"Tests failed in $dir\"; done; while (( SECONDS < timeout )); do if curl -sf \"$url\" > /dev/null; then echo \"Ready\"; break; fi; sleep 1; done; for ((i=1; i<=10; i++)); do printf '%s' \"#$i \"; done; echo" },
+          { id: "2d", title: "Arrays & Associative", text: "declare -A config; config[host]=localhost; config[port]=8080; for key in \"${!config[@]}\"; do echo \"$key = ${config[$key]}\"; done; versions=(v1.0 v1.1 v2.0 latest); for v in \"${versions[@]}\"; do git tag \"$v\"; done; tags=($(git tag --sort=-v:refname | head -10)); echo \"Latest: ${tags[0]}\"" },
+          { id: "2e", title: "Trap & Cleanup", text: "cleanup() { rm -rf \"$tmpdir\"; echo \"Cleaned up\"; }; trap cleanup EXIT; tmpdir=$(mktemp -d) || die \"Cannot create temp\"; trap 'echo \"Interrupted at line $LINENO\" >&2; exit 130' INT TERM; set -euo pipefail; set -x; # debug mode; set +x; # turn off" }
+        ],
+        test: { title: "Bash Script Test", text: "#!/usr/bin/env bash\nset -euo pipefail\ndeploy() { local env=$1 tag=$2\n  echo \"Deploying $tag to $env\"\n  kubectl set image deployment/app app=\"image:$tag\" -n \"$env\"\n  kubectl rollout status deployment/app -n \"$env\" --timeout=120s\n}\nif [[ \"${1:-}\" != production && \"${1:-}\" != staging ]]; then echo \"Usage: $0 {production|staging} <tag>\"; exit 1; fi\ndeploy \"$1\" \"${2:-latest}\"", minWpm: 26, minAccuracy: 88 }
+      },
+      {
+        id: 3, title: "Real Scripts", desc: "Backup, deployment, git automation and Docker helpers", icon: "📦",
+        lessons: [
+          { id: "3a", title: "Backup Script", text: "#!/usr/bin/env bash\nset -euo pipefail\nBACKUP_DIR=\"/backups/$(date +%Y-%m-%d_%H%M%S)\"\nmkdir -p \"$BACKUP_DIR\"\npg_dump \"$DATABASE_URL\" | gzip > \"$BACKUP_DIR/db.sql.gz\"\ntar -czf \"$BACKUP_DIR/uploads.tar.gz\" -C /app uploads/\naws s3 sync \"$BACKUP_DIR\" \"s3://my-backups/$(hostname)/\"\nfind /backups -maxdepth 1 -type d -mtime +7 -exec rm -rf {} +" },
+          { id: "3b", title: "Git Automation", text: "git fetch origin\ndeclare -a branches=(\"main\" \"develop\")\ndeclare -a stale=()\nfor branch in \"${branches[@]}\"; do\n  if ! git merge-base --is-ancestor \"origin/$branch\" HEAD 2>/dev/null; then\n    stale+=(\"$branch\")\n  fi\ndone\nif ((${#stale[@]})); then\n  git checkout \"${stale[0]}\" && git merge \"origin/${stale[0]}\"\nfi" },
+          { id: "3c", title: "Docker Helper", text: "docker_build() {\n  local tag=${1:-latest}\n  docker build -t \"myapp:$tag\" --build-arg \"VERSION=$tag\" .\n  docker tag \"myapp:$tag\" \"registry.example.com/myapp:$tag\"\n  docker push \"registry.example.com/myapp:$tag\"\n}\ndocker logs -f --tail 100 \"$(docker ps -qf 'name=myapp')\"\ndocker system prune -af --filter 'until=168h'\ndocker exec -it \"$(docker ps -qf 'name=myapp')\" /bin/sh" },
+          { id: "3d", title: "CI/CD Steps", text: "#!/usr/bin/env bash\nset -euo pipefail\nnpm ci --silent\nnpm run lint || { echo \"Linting failed\"; exit 1; }\nnpm run build\nnpm test -- --coverage\nif [[ \"${CI_COMMIT_REF_NAME:-}\" == main ]]; then\n  npm version patch --no-git-tag-version\n  VERSION=$(node -p \"require('./package.json').version\")\n  git tag \"v$VERSION\"\n  echo \"RELEASE_VERSION=$VERSION\" >> $GITHUB_ENV\nfi" },
+          { id: "3e", title: "JSON with jq", text: "version=$(jq -r '.version' package.json)\ndeps=$(jq '[.dependencies | to_entries[] | .key + \"@\" + .value] | join(\", \")' package.json)\nitems=$(jq -r '.[] | \"\\(.name) (\\(.id))\"' data.json)\nchanged=$(diff <(jq -S . old.json) <(jq -S . new.json))\njq 'map(select(.active == true) | {name, email})' users.json\ncurl -s \"$API\" | jq '.results | sort_by(-.score) | .[0:10]' | jq '.[].name'" }
+        ],
+        test: { title: "Bash Mastery Test", text: "#!/usr/bin/env bash\nset -euo pipefail\nrelease() {\n  local version=${1:?Version required}\n  git checkout main && git pull --rebase\n  npm version \"$version\" --no-git-tag-version\n  git add package.json && git commit -m \"chore: bump to $version\"\n  git tag \"v$version\" && git push --follow-tags\n  echo \"Released v$version\"\n}\nrelease \"$@\"", minWpm: 26, minAccuracy: 90 }
       }
     ]
   },
@@ -2250,7 +2690,7 @@ const THEMES = {
   }
 };
 
-const THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"];
+const THEME_ORDER = ["general", "go", "htmlcss", "javascript", "typescript", "java", "csharp", "c", "swift", "kotlin", "python", "sql", "bash", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"];
 function getStages(themeId) { return THEMES[themeId]?.stages || []; }
 
 // Stage ids (1..N) and lesson ids ("1a".."8e") repeat across every kit, so
@@ -2261,7 +2701,7 @@ function stageKey(kitId, stageId) { return kitId + ":" + stageId; }
 
 const KIT_CATEGORIES = [
   { id: "general",     name: "General",     icon: "⌨️" },
-  { id: "programming", name: "Programming", icon: "💻" },
+  { id: "tech",        name: "Tech",        icon: "💻" },
   { id: "languages",   name: "Languages",   icon: "🌍" },
 ];
 function getKitsByCategory(catId) {
@@ -3396,6 +3836,9 @@ const App = {
 
   beginTyping(text, stageId) {
     this.text = text;
+    this.cursor = 0;
+    this.errors = 0;
+    this.chars = [...text];
     this.totalTyped = 0;
     this.combo = 0;
     this.maxCombo = 0;

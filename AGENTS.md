@@ -45,8 +45,8 @@ Makefile              ← `make serve` to run local HTTP server
 Content is organized into typing kits, each with sequential stages:
 
 ```js
-THEMES = { general, go, pt, en, es, fr, it, zh, hi, ar, bn }   // 11 kits
-THEME_ORDER = ["general", "go", "pt", "en", "es", "fr", "it", "zh", "hi", "ar", "bn"]
+THEMES = { general, go, htmlcss, javascript, typescript, java, csharp, c, swift, kotlin, python, sql, bash, pt, en, es, fr, it, zh, hi, ar, bn }  // 22 kits
+THEME_ORDER = ["general", "go", "htmlcss", ..., "pt", "en", ..., "bn"]
 ```
 
 - Each stage has `id` (int), `lessons[]`, and optional `test`.
