@@ -189,20 +189,20 @@ html[data-theme="dark"] {
 
 /* ── Sepia theme ── warm parchment: mid-light paper with sienna accents ── */
 html[data-theme="sepia"] {
-  --bg: #f2e7cf;
-  --bg-subtle: #f6ecd9;
-  --surface: #faf4e3;
-  --surface-alt: #eee2c6;
-  --surface-sunken: #e5d8b8;
-  --border: #ddcfac;
-  --border-strong: #c7b488;
-  --text: #40331f;
-  --text-dim: #6a5940;
-  --text-muted: #937f5c;
+  --bg: #e9dcbd;
+  --bg-subtle: #ede2c6;
+  --surface: #f1e7cd;
+  --surface-alt: #e2d4b1;
+  --surface-sunken: #d8c9a3;
+  --border: #cebc93;
+  --border-strong: #b8a373;
+  --text: #372c19;
+  --text-dim: #5f4f37;
+  --text-muted: #877352;
 
   --accent: #a15c2a;
   --accent-hover: #874c22;
-  --accent-soft: #f0e0c2;
+  --accent-soft: #e7d5b0;
   --green: #4f7a34;
   --green-soft: #e7edcf;
   --red: #b23a2e;
@@ -230,15 +230,15 @@ html[data-theme="sepia"] {
   --f-thumb: #8a7a5f;
 
   --scrim: rgba(60,45,25,0.36);
-  --veil: rgba(246,236,217,0.86);
-  --veil-solid: rgba(246,236,217,0.95);
+  --veil: rgba(237,226,198,0.86);
+  --veil-solid: rgba(237,226,198,0.95);
   --on-accent: #fbf3e2;
   --on-accent-veil: rgba(251,243,226,0.20);
   --on-accent-line: rgba(251,243,226,0.30);
   --accent-cast: rgba(161,92,42,0.24);
   --accent-cast-strong: rgba(161,92,42,0.32);
   --char-pending: #b7a684;
-  --earned-tint: #fbf4df;
+  --earned-tint: #f1e7cd;
   --heat-1: #e4d3ab;
   --heat-2: #d3b078;
   --heat-3: #bd8945;
@@ -885,7 +885,7 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .insight-foot { margin-top: 7px; font-size: 0.68rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 
 .kit-strip { display: flex; flex-direction: column; gap: 8px; }
-.kit-strip-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.15s; }
+.kit-strip-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.15s; }
 .kit-strip-row:hover { border-color: var(--accent); transform: translateX(2px); }
 .kit-strip-row.active { border-color: var(--accent); background: var(--accent-soft); }
 .kit-strip-icon { font-size: 1.3rem; flex-shrink: 0; }
@@ -3545,7 +3545,7 @@ const App = {
       meta.name = "theme-color";
       document.head.appendChild(meta);
     }
-    meta.content = { light: "#ffffff", sepia: "#f2e7cf", dark: "#0e1116" }[theme];
+    meta.content = { light: "#ffffff", sepia: "#e9dcbd", dark: "#0e1116" }[theme];
   },
 
   toggleTheme() {
