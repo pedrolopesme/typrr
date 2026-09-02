@@ -3540,19 +3540,23 @@ const App = {
     const target = this.nextTarget();
     const enabled = d.enabledKits || THEME_ORDER;
 
-    // ── Evolution insights ──
+    // ── Aggregates (general — used by the greeting, kit strip and discover) ──
     const hist = d.history;
-    const last5 = hist.slice(-5), prev5 = hist.slice(-10, -5);
     const avgWpm = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
     const avgAcc = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
     const weekAgo = Date.now() - 7 * 864e5;
     const thisWeek = hist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
-
-    // Aggregate progress across every installed kit.
     const lessonsOf = t => t.stages.reduce((s, st) => s + st.lessons.length, 0);
     const doneOf = tid => THEMES[tid].stages.reduce((s, st) => s + st.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
-    const installedLessons = enabled.reduce((s, tid) => s + lessonsOf(THEMES[tid]), 0);
-    const installedDone = enabled.reduce((s, tid) => s + doneOf(tid), 0);
+
+    // ── This kit only — Progress and Your evolution reflect the current kit ──
+    const kitHist = hist.filter(r => r.themeId === this.currentTheme);
+    const kitLast5 = kitHist.slice(-5), kitPrev5 = kitHist.slice(-10, -5);
+    const kitBestWpm = kitHist.length ? Math.max(...kitHist.map(r => r.wpm)) : 0;
+    const kitBestAcc = kitHist.length ? Math.max(...kitHist.map(r => r.accuracy)) : 0;
+    const kitWeek = kitHist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
+    const kitTotal = lessonsOf(theme);
+    const kitDone = doneOf(this.currentTheme);
 
     const need = this.xpForLevel(d.level);
     const xpPct = Math.round((d.xp / need) * 100);
@@ -3561,17 +3565,17 @@ const App = {
     const insight = d.streak > 1
       ? `You're on a <strong>${d.streak}-day streak</strong> — ${thisWeek} session${thisWeek === 1 ? '' : 's'} this week. Keep the momentum.`
       : hist.length
-        ? `${installedDone} of ${installedLessons} lessons cleared across your kits. One more today keeps you sharp.`
+        ? `${kitDone} of ${kitTotal} lessons cleared in <strong>${esc(theme.name)}</strong>. One more today keeps you sharp.`
         : 'Your first lesson is one keystroke away. Build the habit today.';
 
-    const recent = hist.slice(-14);
-    const spark = recent.length > 1 ? `<div class="panel">
+    const kitRecent = kitHist.slice(-14);
+    const spark = kitRecent.length > 1 ? `<div class="panel">
         <div class="panel-head">
-          <div class="panel-title">Speed over your last ${recent.length} sessions</div>
-          <div class="panel-note">peak ${Math.max(...recent.map(r => r.wpm))} · latest ${recent[recent.length - 1].wpm} wpm</div>
+          <div class="panel-title">${esc(theme.name)} speed · last ${kitRecent.length} sessions</div>
+          <div class="panel-note">peak ${Math.max(...kitRecent.map(r => r.wpm))} · latest ${kitRecent[kitRecent.length - 1].wpm} wpm</div>
         </div>
-        ${lineChart(recent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'dash', aria: 'WPM trend' })}
-      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet</div><div class="empty-desc">Finish two sessions to unlock your evolution chart.</div></div>`;
+        ${lineChart(kitRecent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'dash', aria: 'WPM trend' })}
+      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet in ${esc(theme.name)}</div><div class="empty-desc">Finish two sessions in this kit to unlock its evolution chart.</div></div>`;
 
     // ── Installed kits strip ──
     const kitStrip = enabled.map(tid => {
@@ -3640,31 +3644,31 @@ const App = {
         <span class="continue-cta"><kbd>n</kbd> Start</span>
       </button>
 
-      <div class="section-title">Your evolution</div>
+      <div class="section-title">Your evolution <span class="count">${esc(theme.name)}</span></div>
       <div class="insight-grid">
         <div class="insight-card" style="--tone:var(--accent)">
           <div class="insight-label">Best WPM</div>
-          <div class="insight-value">${d.bestWpm}</div>
-          <div class="insight-foot">${avgWpm(last5) != null ? (deltaChip(avgWpm(last5), avgWpm(prev5), '') || `last 5 avg ${avgWpm(last5)}`) : 'no sessions yet'}</div>
+          <div class="insight-value">${kitBestWpm}</div>
+          <div class="insight-foot">${kitHist.length ? (deltaChip(avgWpm(kitLast5), avgWpm(kitPrev5), '') || `last ${kitLast5.length} avg ${avgWpm(kitLast5)}`) : 'no sessions yet'}</div>
         </div>
         <div class="insight-card" style="--tone:var(--green)">
           <div class="insight-label">Best accuracy</div>
-          <div class="insight-value">${d.bestAccuracy}<span class="unit">%</span></div>
-          <div class="insight-foot">${avgAcc(last5) != null ? (deltaChip(avgAcc(last5), avgAcc(prev5), '%') || `last 5 avg ${avgAcc(last5)}%`) : 'no sessions yet'}</div>
+          <div class="insight-value">${kitBestAcc}<span class="unit">%</span></div>
+          <div class="insight-foot">${kitHist.length ? (deltaChip(avgAcc(kitLast5), avgAcc(kitPrev5), '%') || `last ${kitLast5.length} avg ${avgAcc(kitLast5)}%`) : 'no sessions yet'}</div>
         </div>
         <div class="insight-card" style="--tone:var(--amber-fill)">
-          <div class="insight-label">Day streak</div>
-          <div class="insight-value">${d.streak}<span class="unit">${d.streak === 1 ? 'day' : 'days'}</span></div>
-          <div class="insight-foot">${thisWeek} session${thisWeek === 1 ? '' : 's'} this week</div>
+          <div class="insight-label">Kit sessions</div>
+          <div class="insight-value">${kitHist.length}</div>
+          <div class="insight-foot">${kitWeek} this week</div>
         </div>
         <div class="insight-card" style="--tone:var(--cyan)">
           <div class="insight-label">Lessons cleared</div>
-          <div class="insight-value">${installedDone}<span class="unit">/${installedLessons}</span></div>
-          <div class="insight-foot">across ${enabled.length} installed kit${enabled.length === 1 ? '' : 's'}</div>
+          <div class="insight-value">${kitDone}<span class="unit">/${kitTotal}</span></div>
+          <div class="insight-foot">in ${esc(theme.name)}</div>
         </div>
       </div>
 
-      <div class="section-title">Progress</div>
+      <div class="section-title">Progress <span class="count">${esc(theme.name)}</span></div>
       ${spark}
 
       <div class="section-head">
