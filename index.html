@@ -187,6 +187,73 @@ html[data-theme="dark"] {
   --cord-knob-line: rgba(0, 0, 0, 0.3);
 }
 
+/* ── Sepia theme ── warm parchment: mid-light paper with sienna accents ── */
+html[data-theme="sepia"] {
+  --bg: #f2e7cf;
+  --bg-subtle: #f6ecd9;
+  --surface: #faf4e3;
+  --surface-alt: #eee2c6;
+  --surface-sunken: #e5d8b8;
+  --border: #ddcfac;
+  --border-strong: #c7b488;
+  --text: #40331f;
+  --text-dim: #6a5940;
+  --text-muted: #937f5c;
+
+  --accent: #a15c2a;
+  --accent-hover: #874c22;
+  --accent-soft: #f0e0c2;
+  --green: #4f7a34;
+  --green-soft: #e7edcf;
+  --red: #b23a2e;
+  --red-soft: #f6ddd3;
+  --amber: #9a6c12;
+  --amber-fill: #d3982a;
+  --amber-soft: #f4e6c4;
+  --cyan: #2a7378;
+  --cyan-soft: #dcebe6;
+  --violet: #7a5299;
+  --violet-soft: #ece0ec;
+  --pink: #a8496a;
+  --pink-soft: #f4dee0;
+  --gold: #a37d1c;
+  --gold-fill: #cf9e2b;
+
+  --f-l5: #c0392b;
+  --f-l4: #cf6a1e;
+  --f-l3: #4e8a2f;
+  --f-l2: #1f7d86;
+  --f-r2: #5b53c9;
+  --f-r3: #b83a72;
+  --f-r4: #b58a1c;
+  --f-r5: #7c5bbf;
+  --f-thumb: #8a7a5f;
+
+  --scrim: rgba(60,45,25,0.36);
+  --veil: rgba(246,236,217,0.86);
+  --veil-solid: rgba(246,236,217,0.95);
+  --on-accent: #fbf3e2;
+  --on-accent-veil: rgba(251,243,226,0.20);
+  --on-accent-line: rgba(251,243,226,0.30);
+  --accent-cast: rgba(161,92,42,0.24);
+  --accent-cast-strong: rgba(161,92,42,0.32);
+  --char-pending: #b7a684;
+  --earned-tint: #fbf4df;
+  --heat-1: #e4d3ab;
+  --heat-2: #d3b078;
+  --heat-3: #bd8945;
+  --heat-4: #a15c2a;
+
+  --shadow-xs: 0 1px 2px rgba(90,70,40,0.08);
+  --shadow-md: 0 4px 12px rgba(90,70,40,0.12);
+  --shadow-lg: 0 16px 40px rgba(90,70,40,0.18);
+
+  --cord-ink: rgba(120,95,60,0.42);
+  --cord-knob-a: #fbf4e2;
+  --cord-knob-b: #e6d6b4;
+  --cord-knob-line: rgba(80,60,30,0.18);
+}
+
 html { font-size: 16px; }
 body {
   font-family: var(--font-sans);
@@ -1432,7 +1499,7 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem("typrr_data") || "{}"); } catch (e) {}
   var t = saved.theme;
-  if (t !== "light" && t !== "dark") {
+  if (t !== "light" && t !== "sepia" && t !== "dark") {
     t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
   document.documentElement.dataset.theme = t;
@@ -1518,8 +1585,8 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
   <svg class="pullcord-rope" viewBox="0 0 76 340" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
     <path id="pullcordPath" d=""></path>
   </svg>
-  <span class="pullcord-tip" id="pullcordTip" aria-hidden="true">pull for dark</span>
-  <button class="pullcord-knob" id="pullcordKnob" type="button" role="switch" aria-checked="false" aria-label="Dark mode"></button>
+  <span class="pullcord-tip" id="pullcordTip" aria-hidden="true">pull for sepia</span>
+  <button class="pullcord-knob" id="pullcordKnob" type="button" role="switch" aria-checked="false" aria-label="Colour theme"></button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -3042,9 +3109,12 @@ const PullCord = {
     if (!this.reduced) this.wake();
   },
 
-  setState(dark) {
-    this.knob.setAttribute("aria-checked", String(dark));
-    this.tip.textContent = dark ? "pull for light" : "pull for dark";
+  // Three-way cycle: the label always names the NEXT theme in the pull order.
+  setState(theme) {
+    const next = { light: "sepia", sepia: "dark", dark: "light" }[theme] || "sepia";
+    this.knob.setAttribute("aria-checked", String(theme !== "light"));
+    this.knob.setAttribute("aria-label", `Colour theme: ${theme}. Pull for ${next}.`);
+    this.tip.textContent = `pull for ${next}`;
   },
 
   // Pointer position in viewBox coordinates.
@@ -3451,20 +3521,21 @@ const App = {
     btn.setAttribute("aria-label", shown ? "Hide sidebar" : "Show sidebar");
   },
 
-  // ── Dark mode ──
+  // ── Colour theme ──
   // Store.data.theme is null until the user picks one, so the OS preference
-  // keeps winning for anyone who never touches the toggle.
+  // keeps winning for anyone who never touches the cord. The cord cycles
+  // light → sepia → dark → light.
+  THEME_CYCLE: ["light", "sepia", "dark"],
   resolvedTheme() {
     const saved = Store.get().theme;
-    if (saved === "light" || saved === "dark") return saved;
+    if (this.THEME_CYCLE.includes(saved)) return saved;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   },
 
   applyTheme() {
     const theme = this.resolvedTheme();
-    const dark = theme === "dark";
     document.documentElement.dataset.theme = theme;
-    PullCord.setState(dark);
+    PullCord.setState(theme);
     // The media-scoped <meta name="theme-color"> tags only track the OS, so a
     // single overriding tag carries the resolved choice to the OS chrome.
     let meta = document.getElementById("themeColor");
@@ -3474,11 +3545,12 @@ const App = {
       meta.name = "theme-color";
       document.head.appendChild(meta);
     }
-    meta.content = dark ? "#0e1116" : "#ffffff";
+    meta.content = { light: "#ffffff", sepia: "#f2e7cf", dark: "#0e1116" }[theme];
   },
 
   toggleTheme() {
-    Store.get().theme = this.resolvedTheme() === "dark" ? "light" : "dark";
+    const order = this.THEME_CYCLE;
+    Store.get().theme = order[(order.indexOf(this.resolvedTheme()) + 1) % order.length];
     Store.save();
     this.applyTheme();
   },
@@ -4275,7 +4347,7 @@ const App = {
           ]],
           ['Act', [
             [['n'], 'Start next recommended lesson'],
-            [['m'], 'Pull the cord (dark mode)'],
+            [['m'], 'Pull the cord (light → sepia → dark)'],
             [['c'], 'Collapse the sidebar'],
             [['Esc'], 'Go back'],
             [['?'], 'Toggle this help'],

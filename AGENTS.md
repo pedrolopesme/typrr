@@ -36,7 +36,7 @@ Makefile              ← `make serve` to run local HTTP server
 |`history`|`Array<{date, themeId, lessonId, stageId, wpm, accuracy, xp, stars, maxCombo, totalChars, errorCount}>`|Session log|
 |`errorKeys`|`{key: count}`|Drives the "keys you miss most" panel|
 |`badges`|`string[]`|Earned badge IDs|
-|`theme`|`"light"｜"dark"｜null`|Explicit colour-scheme choice; `null` follows the OS|
+|`theme`|`"light"｜"sepia"｜"dark"｜null`|Explicit colour-scheme choice; `null` follows the OS. The pull cord cycles light → sepia → dark|
 |`enabledKits`|`string[]`|Kit IDs visible in the sidebar; managed by the Kit Hub|
 |`schema`|number|Storage version; `Store.migrate()` runs when it is below 2|
 
@@ -58,8 +58,8 @@ The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enable
 
 ## UI Conventions
 
-- **CSS variables for all colors.** Reference `design.md` tokens. Never hardcode a colour outside the `:root` / `html[data-theme="dark"]` blocks — a literal in a component rule silently breaks dark mode. Translucent and on-accent surfaces have their own tokens (`--veil`, `--scrim`, `--on-accent`, `--heat-*`) precisely so they can invert.
-- **Dark mode is a token swap.** Add the light value to `:root` and the dark value to `html[data-theme="dark"]`; never write a second component rule for dark. The inline `<head>` script resolves the theme before first paint — keep it dependency-free and in sync with `App.resolvedTheme()`.
+- **CSS variables for all colors.** Reference `design.md` tokens. Never hardcode a colour outside the `:root` (light), `html[data-theme="sepia"]` and `html[data-theme="dark"]` blocks — a literal in a component rule silently breaks the other themes. Translucent and on-accent surfaces have their own tokens (`--veil`, `--scrim`, `--on-accent`, `--heat-*`) precisely so they can invert.
+- **Themes are token swaps.** Light lives in `:root`; add the sepia value to `html[data-theme="sepia"]` and the dark value to `html[data-theme="dark"]`; never write a second component rule per theme. The pull cord cycles light → sepia → dark via `App.toggleTheme()` (order in `App.THEME_CYCLE`); the inline `<head>` script resolves the theme before first paint — keep it dependency-free and in sync with `App.resolvedTheme()`.
 - **Sidebar collapse is desktop-scoped.** Keep `html.sidebar-collapsed` rules inside `@media (min-width: 769px)`; unscoped they outrank `.sidebar.open` on specificity and the phone drawer stops opening. `App.autoCollapsed` marks a collapse the app performed for a session — only that one is undone on leaving, so an explicit preference is never clobbered.
 - **The pull cord owns `--cord-w`.** That token is both the header's right padding and the cord container's width, and it must stay equal to the SVG `viewBox` width (76) — the knob is an HTML button positioned in viewBox units, so scaling the SVG desyncs it from the rope.
 - **Three typographic voices.** `--font-display` (slab serif) for titles, `--mono` uppercase for labels, `--font-sans` for body. Do not introduce a fourth.

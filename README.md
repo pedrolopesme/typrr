@@ -21,7 +21,7 @@ A standalone typing practice app — **zero dependencies, single HTML file**. Op
 - **Stats that mean something** — WPM/accuracy trend charts, 5-session deltas, an 18-week practice heatmap and your most-missed keys
 - **Full keyboard control** — every screen is drivable without a mouse; press `?` for the shortcut sheet
 - **Focus mode** — the sidebar collapses on its own when a session starts, and comes back when you leave
-- **Light and dark themes** — follows your OS by default; grab the pull cord hanging in the header to switch
+- **Light, sepia and dark themes** — follows your OS by default; grab the pull cord in the header to cycle light → sepia → dark
 - **Progress persistence** — everything saved in `localStorage`
 - **Installable** — add it to your home screen or dock; it runs standalone and works offline
 
@@ -71,7 +71,7 @@ Press <kbd>?</kbd> anywhere for the full list.
 | `g``d` `g``s` `g``b` `g``h` | Go to Dashboard / Stats / Badges / History |
 | `g``k` | Go to the Kit Hub |
 | `g``t` / `g``T` | Next / previous typing kit |
-| `m` | Pull the cord (dark mode) |
+| `m` | Pull the cord (light → sepia → dark) |
 | `c` | Collapse / expand the sidebar |
 | `Space` | Start the typing session |
 | `Esc` | Go back / dismiss |
@@ -83,7 +83,7 @@ White-first and low-chrome: hairline-bordered cards on white, with saturated col
 
 Titles are set in a slab serif (`American Typewriter` → `Rockwell` → Georgia) for the typewriter voice, labels in letterspaced mono small caps, body in the system sans. All faces are already on your machine — no webfonts.
 
-Dark mode is a pure token swap on `html[data-theme="dark"]`, resolved before first paint so it never flashes. The switch itself is a ceiling pull cord at the far right of the header — a real Verlet rope that hangs, swings and trips mid-pull like a lamp chain. See [design.md](design.md) for the full token reference.
+Themes are pure token swaps on `html[data-theme]` (`:root` light, `sepia`, `dark`), resolved before first paint so they never flash. The switch itself is a ceiling pull cord at the far right of the header — a real Verlet rope that hangs, swings and trips mid-pull like a lamp chain — and it cycles light → sepia → dark. See [design.md](design.md) for the full token reference.
 
 ## Project Structure
 
