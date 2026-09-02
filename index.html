@@ -792,6 +792,48 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .continue-cta { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
 .continue-cta kbd { background: var(--on-accent-veil); border-color: var(--on-accent-line); color: var(--on-accent); }
 
+/* ── Dashboard home ── */
+.dash-hero {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  padding: 20px 24px; margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent-soft), var(--surface));
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.dash-hero-greeting { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; margin: 0; }
+.dash-hero-sub { font-size: 0.86rem; color: var(--text-dim); margin: 6px 0 0; line-height: 1.5; }
+.dash-hero-sub strong { color: var(--accent); }
+.dash-level { min-width: 160px; flex-shrink: 0; }
+.dash-level-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.dash-level-num { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.dash-level-xp { font-family: var(--mono); font-size: 0.64rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.dash-xp-track { height: 7px; background: var(--surface-sunken); border-radius: 4px; overflow: hidden; }
+.dash-xp-fill { display: block; height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.5s ease; }
+
+.insight-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; border-top: 3px solid var(--tone, var(--accent)); }
+.insight-label { font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-muted); }
+.insight-value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-top: 5px; line-height: 1; font-variant-numeric: tabular-nums; }
+.insight-value .unit { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
+.insight-foot { margin-top: 7px; font-size: 0.68rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+
+.kit-strip { display: flex; flex-direction: column; gap: 8px; }
+.kit-strip-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; text-align: left; transition: border-color 0.15s, transform 0.15s; }
+.kit-strip-row:hover { border-color: var(--accent); transform: translateX(2px); }
+.kit-strip-row.active { border-color: var(--accent); background: var(--accent-soft); }
+.kit-strip-icon { font-size: 1.3rem; flex-shrink: 0; }
+.kit-strip-body { flex: 1; min-width: 0; }
+.kit-strip-name { display: block; font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; }
+.kit-strip-meta { display: block; font-family: var(--mono); font-size: 0.63rem; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.kit-strip-track { width: 90px; height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.kit-strip-pct { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.section-head .section-title { flex: 1; }
+.section-link { font-family: var(--mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: var(--radius-xs); }
+.section-link:hover { background: var(--accent-soft); }
+@media (max-width: 900px) { .insight-grid { grid-template-columns: repeat(2, 1fr); } }
+
 /* ── Charts ── */
 .panel {
   background: var(--surface);
@@ -3262,7 +3304,7 @@ const App = {
   renderViewNav() {
     document.getElementById("viewNav").innerHTML = VIEWS.map(v =>
       `<button class="view-btn" data-act="view" data-arg="${v.id}" data-view="${v.id}">
-        <kbd>${v.key}</kbd><span>${v.label}</span>
+        <kbd>g${v.key}</kbd><span>${v.label}</span>
       </button>`).join('');
   },
 
@@ -3493,65 +3535,149 @@ const App = {
     const stages = getStages(this.currentTheme);
     const theme = THEMES[this.currentTheme];
     this.setViewChrome("dashboard", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Dashboard' }],
-      [['n', 'start next lesson'], ['1-9', 'open stage'], ['↑↓←→', 'move']]);
+      [['n', 'next lesson'], ['j', 'k', 'move'], ['gk', 'kit hub']]);
 
     const target = this.nextTarget();
-    const recent = d.history.slice(-14);
-    const spark = recent.length > 1 ? `<div class="panel" style="margin-bottom:12px">
+    const enabled = d.enabledKits || THEME_ORDER;
+
+    // ── Evolution insights ──
+    const hist = d.history;
+    const last5 = hist.slice(-5), prev5 = hist.slice(-10, -5);
+    const avgWpm = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
+    const avgAcc = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
+    const weekAgo = Date.now() - 7 * 864e5;
+    const thisWeek = hist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
+
+    // Aggregate progress across every installed kit.
+    const lessonsOf = t => t.stages.reduce((s, st) => s + st.lessons.length, 0);
+    const doneOf = tid => THEMES[tid].stages.reduce((s, st) => s + st.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
+    const installedLessons = enabled.reduce((s, tid) => s + lessonsOf(THEMES[tid]), 0);
+    const installedDone = enabled.reduce((s, tid) => s + doneOf(tid), 0);
+
+    const need = this.xpForLevel(d.level);
+    const xpPct = Math.round((d.xp / need) * 100);
+    const hour = new Date().getHours();
+    const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    const insight = d.streak > 1
+      ? `You're on a <strong>${d.streak}-day streak</strong> — ${thisWeek} session${thisWeek === 1 ? '' : 's'} this week. Keep the momentum.`
+      : hist.length
+        ? `${installedDone} of ${installedLessons} lessons cleared across your kits. One more today keeps you sharp.`
+        : 'Your first lesson is one keystroke away. Build the habit today.';
+
+    const recent = hist.slice(-14);
+    const spark = recent.length > 1 ? `<div class="panel">
         <div class="panel-head">
-          <div class="panel-title">WPM over your last ${recent.length} sessions</div>
-          <div class="panel-note">best ${Math.max(...recent.map(r => r.wpm))} · latest ${recent[recent.length - 1].wpm}</div>
+          <div class="panel-title">Speed over your last ${recent.length} sessions</div>
+          <div class="panel-note">peak ${Math.max(...recent.map(r => r.wpm))} · latest ${recent[recent.length - 1].wpm} wpm</div>
         </div>
         ${lineChart(recent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'dash', aria: 'WPM trend' })}
-      </div>` : '';
+      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet</div><div class="empty-desc">Finish two sessions to unlock your evolution chart.</div></div>`;
 
-    const last5 = d.history.slice(-5);
-    const prev5 = d.history.slice(-10, -5);
-    const avg = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
-    const accAvg = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
+    // ── Installed kits strip ──
+    const kitStrip = enabled.map(tid => {
+      const t = THEMES[tid];
+      const total = lessonsOf(t), done = doneOf(tid);
+      const p = pct(done, total);
+      return `<button class="kit-strip-row ${tid === this.currentTheme ? 'active' : ''}" data-act="theme" data-arg="${tid}" data-nav>
+        <span class="kit-strip-icon">${t.icon}</span>
+        <span class="kit-strip-body">
+          <span class="kit-strip-name">${esc(t.name)}</span>
+          <span class="kit-strip-meta">${done}/${total} lessons · ${t.stages.length} stages</span>
+        </span>
+        <span class="kit-strip-track"><span class="progress-fill ${p === 100 ? 'done' : ''}" style="width:${p}%"></span></span>
+        <span class="kit-strip-pct">${p}%</span>
+      </button>`;
+    }).join('');
+
+    // ── Discover: kits not yet installed, a rotating sample ──
+    const notInstalled = THEME_ORDER.filter(tid => !enabled.includes(tid));
+    const sample = notInstalled.slice(0, 3);
+    const discover = sample.map(tid => {
+      const t = THEMES[tid];
+      const cat = KIT_CATEGORIES.find(c => c.id === t.category);
+      return `<div class="hub-card">
+        <button class="hub-card-detail" data-act="kit-detail" data-arg="${tid}" data-nav>
+          <span class="card-corner-key"></span>
+          <span class="hub-card-cover">
+            <span class="hub-card-icon">${t.icon}</span>
+            <span class="hub-card-heading">
+              <span class="hub-card-name">${esc(t.name)}</span>
+              <span class="hub-card-flag">${cat ? esc(cat.name) : 'Kit'}</span>
+            </span>
+          </span>
+          <span class="hub-card-desc">${esc(t.desc)}</span>
+          <span class="hub-card-chips">
+            <span class="hub-chip">${t.stages.length} stages</span>
+            <span class="hub-chip">${lessonsOf(t)} lessons</span>
+          </span>
+        </button>
+        <button class="hub-card-action" data-act="kit-toggle" data-arg="${tid}">⬇ Download</button>
+      </div>`;
+    }).join('');
 
     document.getElementById("content").innerHTML = `
-      <div class="page-head">
-        <h1 class="page-title">${theme.icon} ${esc(theme.name)}</h1>
-        <p class="page-subtitle">${esc(theme.desc)}</p>
+      <div class="dash-hero">
+        <div>
+          <h1 class="dash-hero-greeting">${greet} 👋</h1>
+          <p class="dash-hero-sub">${insight}</p>
+        </div>
+        <div class="dash-level">
+          <div class="dash-level-row">
+            <span class="dash-level-num">Level ${d.level}</span>
+            <span class="dash-level-xp">${d.xp} / ${need} XP</span>
+          </div>
+          <span class="dash-xp-track"><span class="dash-xp-fill" style="width:${xpPct}%"></span></span>
+        </div>
       </div>
 
       <button class="continue-card" data-act="${target.isTest ? 'test' : 'lesson'}" data-arg="${target.stage.id}" data-arg2="${target.lesson ? target.lesson.id : ''}" data-nav>
         <span class="continue-icon">${target.isTest ? '🧪' : '▶'}</span>
         <span class="continue-body">
-          <span class="continue-eyebrow">${target.isTest ? 'Stage test unlocked' : 'Continue where you left off'}</span>
+          <span class="continue-eyebrow">${target.isTest ? 'Stage test unlocked · recommended next' : 'Pick up where you left off'}</span>
           <span class="continue-title">${esc(target.isTest ? target.stage.test.title : target.lesson.title)}</span>
-          <span class="continue-meta">${esc(target.stage.title)}</span>
+          <span class="continue-meta">${esc(theme.name)} · ${esc(target.stage.title)}</span>
         </span>
         <span class="continue-cta"><kbd>n</kbd> Start</span>
       </button>
 
-      <div class="section-title">Your numbers</div>
-      <div class="stats-grid">
-        <div class="stat-card" style="--tone:var(--accent)">
-          <div class="stat-card-label">Best WPM</div>
-          <div class="stat-card-value">${d.bestWpm}</div>
-          <div class="stat-card-foot">${avg(last5) != null ? deltaChip(avg(last5), avg(prev5), '') || `last 5 avg ${avg(last5)}` : 'no sessions yet'}</div>
+      <div class="section-title">Your evolution</div>
+      <div class="insight-grid">
+        <div class="insight-card" style="--tone:var(--accent)">
+          <div class="insight-label">Best WPM</div>
+          <div class="insight-value">${d.bestWpm}</div>
+          <div class="insight-foot">${avgWpm(last5) != null ? (deltaChip(avgWpm(last5), avgWpm(prev5), '') || `last 5 avg ${avgWpm(last5)}`) : 'no sessions yet'}</div>
         </div>
-        <div class="stat-card" style="--tone:var(--green)">
-          <div class="stat-card-label">Best accuracy</div>
-          <div class="stat-card-value">${d.bestAccuracy}<span class="unit">%</span></div>
-          <div class="stat-card-foot">${accAvg(last5) != null ? deltaChip(accAvg(last5), accAvg(prev5), '%') || `last 5 avg ${accAvg(last5)}%` : 'no sessions yet'}</div>
+        <div class="insight-card" style="--tone:var(--green)">
+          <div class="insight-label">Best accuracy</div>
+          <div class="insight-value">${d.bestAccuracy}<span class="unit">%</span></div>
+          <div class="insight-foot">${avgAcc(last5) != null ? (deltaChip(avgAcc(last5), avgAcc(prev5), '%') || `last 5 avg ${avgAcc(last5)}%`) : 'no sessions yet'}</div>
         </div>
-        <div class="stat-card" style="--tone:var(--cyan)">
-          <div class="stat-card-label">Lessons done</div>
-          <div class="stat-card-value">${d.totalLessons}</div>
-          <div class="stat-card-foot">${d.history.length} total sessions</div>
+        <div class="insight-card" style="--tone:var(--amber-fill)">
+          <div class="insight-label">Day streak</div>
+          <div class="insight-value">${d.streak}<span class="unit">${d.streak === 1 ? 'day' : 'days'}</span></div>
+          <div class="insight-foot">${thisWeek} session${thisWeek === 1 ? '' : 's'} this week</div>
         </div>
-        <div class="stat-card" style="--tone:var(--amber-fill)">
-          <div class="stat-card-label">Stages cleared</div>
-          <div class="stat-card-value">${stages.filter(s => d.clearedStages.includes(stageKey(this.currentTheme, s.id))).length}<span class="unit">/${stages.length}</span></div>
-          <div class="stat-card-foot">${esc(theme.name)}</div>
+        <div class="insight-card" style="--tone:var(--cyan)">
+          <div class="insight-label">Lessons cleared</div>
+          <div class="insight-value">${installedDone}<span class="unit">/${installedLessons}</span></div>
+          <div class="insight-foot">across ${enabled.length} installed kit${enabled.length === 1 ? '' : 's'}</div>
         </div>
       </div>
 
       <div class="section-title">Progress</div>
-      ${spark || `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet</div><div class="empty-desc">Finish two sessions to unlock your progress chart.</div></div>`}
+      ${spark}
+
+      <div class="section-head">
+        <div class="section-title">Your kits <span class="count">${enabled.length}</span></div>
+        <button class="section-link" data-act="view" data-arg="kits">Kit Hub →</button>
+      </div>
+      <div class="kit-strip">${kitStrip}</div>
+
+      ${discover ? `<div class="section-head">
+        <div class="section-title">Discover more kits</div>
+        <button class="section-link" data-act="view" data-arg="kits">Browse all →</button>
+      </div>
+      <div class="hub-grid">${discover}</div>` : ''}
 
       <div class="section-title">${esc(theme.name)} stages <span class="count">${stages.length}</span></div>
       <div class="card-grid">
@@ -3994,6 +4120,7 @@ const App = {
     else if (id === "performance") this.showPerformance();
     else if (id === "badges") this.showBadges();
     else if (id === "kits") this.showKitHub();
+    else if (id === "history") this.showHistory();
   },
 
   back() {
@@ -4040,23 +4167,42 @@ const App = {
         return;
       }
 
+      // VIM "go" chords: g then a second key. A short window keeps gg/gd/gt snappy.
+      if (this._pendingG) {
+        // A bare modifier keydown (Shift for gT) must not consume the chord.
+        if (["Shift", "Control", "Alt", "Meta"].includes(e.key)) return;
+        this._pendingG = false;
+        clearTimeout(this._gTimer);
+        e.preventDefault();
+        if (e.key === "g") { this.focusIndex(0); return; }        // gg — first card
+        if (e.key === "t") { this.cycleTheme(1); return; }         // gt — next kit
+        if (e.key === "T") { this.cycleTheme(-1); return; }        // gT — previous kit
+        if (e.key === "k") { this.showKitHub(); return; }          // gk — Kit Hub
+        const gv = VIEWS.find(v => v.key === e.key);               // gd/gs/gb/gh — views
+        if (gv) { this.showView(gv.id); return; }
+        return;
+      }
+
       switch (e.key) {
         case "?": e.preventDefault(); this.toggleHelp(true); return;
         case "m": e.preventDefault(); PullCord.yank(); return;
         case "c": e.preventDefault(); this.toggleSidebar(); return;
         case "Escape": e.preventDefault(); this.back(); return;
         case "n": e.preventDefault(); this.startNext(); return;
-        case "k": e.preventDefault(); this.showKitHub(); return;
-        case "t": e.preventDefault(); this.cycleTheme(e.shiftKey ? -1 : 1); return;
-        case "T": e.preventDefault(); this.cycleTheme(-1); return;
-        case "ArrowRight": case "ArrowDown": e.preventDefault(); this.moveFocus(e.key === "ArrowDown" ? "down" : "next"); return;
-        case "ArrowLeft": case "ArrowUp": e.preventDefault(); this.moveFocus(e.key === "ArrowUp" ? "up" : "prev"); return;
+        case "g": e.preventDefault(); this._pendingG = true; this._gTimer = setTimeout(() => { this._pendingG = false; }, 700); return;
+        case "G": e.preventDefault(); this.focusIndex(this.navItems().length - 1); return;
+        case "h": case "ArrowLeft": e.preventDefault(); this.moveFocus("prev"); return;
+        case "l": case "ArrowRight": e.preventDefault(); this.moveFocus("next"); return;
+        case "j": case "ArrowDown": e.preventDefault(); this.moveFocus("down"); return;
+        case "k": case "ArrowUp": e.preventDefault(); this.moveFocus("up"); return;
+        case "o": {
+          const el = document.activeElement;
+          if (el && el.matches && el.matches("[data-nav]")) { e.preventDefault(); el.click(); }
+          return;
+        }
         case "Home": e.preventDefault(); this.focusIndex(0); return;
         case "End": e.preventDefault(); this.focusIndex(this.navItems().length - 1); return;
       }
-
-      const view = VIEWS.find(v => v.key === e.key);
-      if (view) { e.preventDefault(); this.showView(view.id); return; }
 
       if (/^[1-9]$/.test(e.key)) {
         const item = this.navItems()[Number(e.key) - 1];
@@ -4109,18 +4255,24 @@ const App = {
           <button class="ghost-btn" data-close-help><kbd>Esc</kbd> Close</button>
         </div>
         ${[
-          ['Navigate', [
-            [['k'], 'Kit Hub'],
-            [['t'], 'Next kit'], [['Shift', 't'], 'Previous kit'],
-            [['m'], 'Pull the cord (dark mode)'], [['c'], 'Collapse the sidebar'],
-            [['Esc'], 'Go back'],
+          ['Move (Vim)', [
+            [['h'], 'Left'], [['j'], 'Down'], [['k'], 'Up'], [['l'], 'Right'],
+            [['g', 'g'], 'First card'], [['G'], 'Last card'],
+            [['o'], 'Open the focused card'],
+            [['1', '…', '9'], 'Jump to a numbered card'],
+          ]],
+          ['Go to (Vim)', [
+            [['g', 'd'], 'Dashboard'], [['g', 's'], 'Stats'],
+            [['g', 'b'], 'Badges'], [['g', 'h'], 'History'],
+            [['g', 'k'], 'Kit Hub'],
+            [['g', 't'], 'Next kit'], [['g', 'T'], 'Previous kit'],
           ]],
           ['Act', [
             [['n'], 'Start next recommended lesson'],
-            [['1', '…', '9'], 'Open the numbered card'],
-            [['↑', '↓', '←', '→'], 'Move between cards'],
-            [['Enter'], 'Open the focused card'],
-            [['Tab'], 'Move through every control'],
+            [['m'], 'Pull the cord (dark mode)'],
+            [['c'], 'Collapse the sidebar'],
+            [['Esc'], 'Go back'],
+            [['?'], 'Toggle this help'],
           ]],
           ['While typing', [
             [['Space'], 'Start the session'],

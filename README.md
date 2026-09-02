@@ -63,13 +63,16 @@ Press <kbd>?</kbd> anywhere for the full list.
 
 | Key | Action |
 |-----|--------|
-| `k` | Kit Hub |
+| `h` `j` `k` `l` | Move between cards, Vim-style (left/down/up/right) |
+| `g``g` / `G` | First / last card |
+| `o` | Open the focused card |
+| `1`–`9` | Jump to a numbered card |
 | `n` | Start the next recommended lesson |
-| `t` / `Shift`+`t` | Cycle typing kits |
+| `g``d` `g``s` `g``b` `g``h` | Go to Dashboard / Stats / Badges / History |
+| `g``k` | Go to the Kit Hub |
+| `g``t` / `g``T` | Next / previous typing kit |
 | `m` | Pull the cord (dark mode) |
 | `c` | Collapse / expand the sidebar |
-| `1`–`9` | Open the numbered card |
-| `↑` `↓` `←` `→` | Move between cards (grid-aware) |
 | `Space` | Start the typing session |
 | `Esc` | Go back / dismiss |
 | `1` `2` `3` | Post-session actions |

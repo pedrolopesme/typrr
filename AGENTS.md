@@ -73,7 +73,7 @@ The Kit Hub (`k`) groups kits by category (`KIT_CATEGORIES`). `Store.data.enable
 
 - **Every clickable thing is a real `<button>`.** `<button>` accepts only phrasing content, so inner blocks are `<span>` with an explicit `display` rule — a plain span will silently collapse inline.
 - **No inline `onclick`.** Markup carries `data-act` / `data-arg` / `data-arg2`; `App.setupDelegation()` wires delegated listeners on `#content`, `#nav`, `#viewNav` and `#breadcrumb`, and `App.dispatch()` routes them. Never use `eval`.
-- **One keyboard router.** `App.setupGlobalKeys()` owns every global key, routed in priority order: help overlay → results modal → typing view → global shortcuts. Add new shortcuts there, and document them in `App.toggleHelp()` and the README.
+- **One keyboard router.** `App.setupGlobalKeys()` owns every global key, routed in priority order: help overlay → results modal → typing view → global shortcuts. Navigation is Vim-style: `h`/`j`/`k`/`l` move focus, `gg`/`G` jump to first/last, `o` opens the focused card. Two-key "go" chords (`gd`/`gs`/`gb`/`gh` views, `gk` Kit Hub, `gt`/`gT` cycle kits) run through a `_pendingG` latch with a 700ms window — a bare modifier keydown must not consume it. Add new shortcuts there, and document them in `App.toggleHelp()` and the README.
 - **Cards opted into keyboard nav** carry `data-nav`. `App.indexNavItems()` assigns the roving tabindex and the `1`–`9` quick-launch numbers; `App.moveFocus()` derives grid rows from live bounding boxes.
 - **Views must call `App.setViewChrome(id, crumbs, hints)`** — it syncs the sidebar highlight, breadcrumb, hint bar and nav indexing.
 - **Modal keyboard handling lives in the router**, keyed off `App._modalActions`; each action carries a `run()` closure.
