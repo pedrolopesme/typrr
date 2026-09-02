@@ -3363,12 +3363,14 @@ const App = {
       const cleared = stages.filter(s => d.clearedStages.includes(stageKey(tid, s.id))).length;
       const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
       const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
-      html += `<button class="nav-item ${tid === this.currentTheme ? 'active' : ''}" data-act="theme" data-arg="${tid}" ${tid === this.currentTheme ? 'aria-current="true"' : ''}>
+      const kitDone = stages.length > 0 && cleared === stages.length;
+      html += `<button class="nav-item ${tid === this.currentTheme ? 'active' : ''} ${kitDone ? 'completed' : ''}" data-act="theme" data-arg="${tid}" ${tid === this.currentTheme ? 'aria-current="true"' : ''}>
         <span class="nav-item-icon">${t.icon}</span>
         <span class="nav-item-text">
           <span class="nav-item-title">${esc(t.name)}</span>
           <span class="nav-item-sub">${done}/${total} lessons · ${cleared}/${stages.length} cleared</span>
         </span>
+        ${kitDone ? '<span class="nav-item-badge badge-done">✓</span>' : ''}
       </button>`;
     }
 
