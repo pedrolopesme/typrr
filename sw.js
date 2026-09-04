@@ -1,7 +1,7 @@
 // Typrr service worker.
 // Exists so the app is installable and works offline. Bump CACHE on release —
 // the old cache is dropped on activate.
-const CACHE = "typrr-v0.14.1";
+const CACHE = "typrr-v0.15.0";
 
 const SHELL = [
   "./",

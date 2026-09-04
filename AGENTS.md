@@ -146,7 +146,8 @@ The `check` function receives a stats object from `Store.get()`.
 |`App.setViewChrome()`|2166|Breadcrumb, hint bar, nav indexing|
 |`App.applyTheme()`|2273|Theme resolution, persistence, `theme-color`|
 |`App.renderSidebar()`|2203|Sidebar themes + stages|
-|`App.showDashboard()`|2344|Dashboard + continue CTA|
+|`App.showHome()`|—|App home: global stats, kit cards, discovery, recommended lesson|
+|`App.showKit()`|—|Per-kit view: kit-scoped evolution, stage grid, continue CTA|
 |`App.showPerformance()`|2438|Stats view|
 |`App.beginTyping()`|2687|Typing engine setup|
 |`App.setupGlobalKeys()`|2849|Global keyboard router|

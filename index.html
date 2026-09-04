@@ -328,7 +328,59 @@ kbd {
   transition: transform 0.25s ease;
 }
 .sidebar-header { padding: 20px 20px 16px; }
+button.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  transition: opacity 0.15s;
+}
+button.brand:hover .brand-name { color: var(--accent); }
+button.brand:focus-visible { outline: 2px solid var(--accent); border-radius: var(--radius-sm); }
 .brand { display: flex; align-items: center; gap: 11px; }
+.header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 3px 6px;
+  margin-right: 6px;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font: inherit;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.header-brand:hover { opacity: 0.85; }
+.header-brand:hover .header-brand-name { color: var(--accent); }
+.header-brand:focus-visible { outline: 2px solid var(--accent); }
+.header-brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+.brand-mark.sm {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+@media (min-width: 769px) {
+  .header-brand .header-brand-name { display: none; }
+  html.sidebar-collapsed .header-brand .header-brand-name { display: inline; }
+}
 /* The mark is a dark-ink gradient, so it keeps its light ground in both
    themes rather than dissolving into the dark surface. */
 .brand-mark {
@@ -899,6 +951,33 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 .section-head .section-title { flex: 1; margin: 0; }
 .section-link { font-family: var(--mono); font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: var(--radius-xs); }
 .section-link:hover { background: var(--accent-soft); }
+
+/* ── Home Page components ── */
+.home-quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
+.home-quick-card { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: left; cursor: pointer; font: inherit; color: var(--text); transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+.home-quick-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-xs); }
+.home-quick-icon { font-size: 1.35rem; flex-shrink: 0; }
+.home-quick-body { flex: 1; min-width: 0; }
+.home-quick-title { display: block; font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; }
+.home-quick-sub { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--text-muted); margin-top: 2px; }
+
+.home-kit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.home-kit-card { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: left; transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s; }
+.home-kit-card:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.home-kit-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.home-kit-card-title-group { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.home-kit-card-icon { font-size: 1.5rem; flex-shrink: 0; }
+.home-kit-card-name { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; color: var(--text); }
+.home-kit-card-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 12px; flex: 1; }
+.home-kit-card-meta { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 0.64rem; color: var(--text-dim); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.home-kit-card-bar { height: 6px; background: var(--surface-sunken); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.home-kit-card-bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; }
+.home-kit-card-bar.cleared i { background: var(--green); }
+.home-kit-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+.home-kit-status { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); }
+.home-kit-status.cleared { color: var(--green); font-weight: 700; }
+.home-kit-action { padding: 6px 14px; font-family: var(--mono); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; border: 1px solid var(--border-strong); border-radius: var(--radius-xs); background: var(--surface); color: var(--text); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.home-kit-action:hover { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 @media (max-width: 900px) { .insight-grid { grid-template-columns: repeat(2, 1fr); } }
 
 /* ── Charts ── */
@@ -1522,13 +1601,13 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
 <div class="app">
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
     <div class="sidebar-header">
-      <div class="brand">
+      <button class="brand" data-act="view" data-arg="home" type="button" title="Typrr Home" aria-label="Typrr Home">
         <img class="brand-mark" src="data:image/png;base64,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" alt="" width="36" height="36" decoding="async">
         <div>
           <div class="brand-name">Typrr</div>
           <div class="brand-sub">Touch typing mastery</div>
         </div>
-      </div>
+      </button>
     </div>
 
     <div class="level-block">
@@ -1569,6 +1648,10 @@ html.sidebar-collapsed .sidebar-toggle .panel-fill { opacity: 0; }
           <path d="M8 3.2V16.8"/>
           <rect class="panel-fill" x="2.2" y="3.2" width="5.8" height="13.6" rx="2.6" stroke="none"/>
         </svg>
+      </button>
+      <button class="header-brand" data-act="view" data-arg="home" type="button" title="Typrr Home" aria-label="Typrr Home">
+        <img class="brand-mark sm" width="22" height="22" alt="Typrr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAJYUlEQVR42tWaW2wc1RnHf985Z2Z2vV7ba2e9tuPccAi5NheSNEBp3ZRLKCmlSCAhoVaVALVq+lIEKqU8tCq8VEhUlIeWqlQqIFBFoELlFgjUFEKCgBA7cewk5OrYji/x3WvvzJw+7Ng4waG5Ns4nzZ7Vamf0/5/z/y7nfCNMMGutEpEw+r4UuBdYA3wNMPx/zQd2AB8CfxaRz07GyEngdTRWWmufstYO2qljgxGmyolYJwO/ylrbOuFG31obXETgQYRhzFqttasmYpaxJbHWrgZeB1JALpKMMDXMRpJygOPAOhHZZq1VYq1VQBqoj8YA0ExNG8PWASwBOsYc4pEIfG4KgyfClouwPiIioVhrFwMfAW4kGWFqm42uUWCVATYAsWh51EnODSIIcKSti5f/vYOtuw7Q3juAd2eY6G+NkaH0y/s0e4i50eGz2q3Y4K0y4E7gY2B6nI73Z8Rj5mDgb0BrF3qG0Q5GOG8N1lq7FPgs6Bh1gNfH+2wWkTXA58B0nK4v2a90wOux9uOa3ZkY/5P1w342K/s3oN5rO68w77Vp/Z1/Gfv3b8ff2V3Z2N8w/m/xN72W8T/X346/18b/4d+L/wX+m/10/7n1973W8ff6e/1d/P9z/W3//w/4f8H/D/h/wf8P+H/B/w8f/wK1/2aD7sLzQAAAAABJRU5ErkJggg==">
+        <span class="header-brand-name">Typrr</span>
       </button>
       <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
       <div class="header-right">
@@ -3042,7 +3125,7 @@ function heatmap(history, weeks) {
 }
 
 const VIEWS = [
-  { id: 'dashboard',   key: 'd', icon: '🏠', label: 'Dashboard' },
+  { id: 'home',        key: 'd', icon: '🏠', label: 'Home' },
   { id: 'performance', key: 's', icon: '📊', label: 'Stats' },
   { id: 'badges',      key: 'b', icon: '🏅', label: 'Badges' },
   { id: 'history',     key: 'h', icon: '📜', label: 'History' },
@@ -3247,7 +3330,7 @@ const PullCord = {
 // GAME ENGINE
 // ═══════════════════════════════════════════
 const App = {
-  view: "dashboard",
+  view: "home",
   currentTheme: "general",
   currentStage: null,
   currentLesson: null,
@@ -3276,7 +3359,7 @@ const App = {
     this.updateStreak();
     this.renderViewNav();
     this.renderSidebar();
-    this.showDashboard();
+    this.showHome();
     this.setupInput();
     this.setupGlobalKeys();
     this.setupDelegation();
@@ -3426,6 +3509,8 @@ const App = {
     let html = `<div class="nav-section-title">Typing Kits <kbd>t</kbd></div>`;
     html += `<button class="kit-hub-btn" data-act="view" data-arg="kits" title="Browse and manage typing kits">🧩 Kit Hub</button>`;
 
+    const inKit = this.view === "kit" || this.view === "stage" || this.view === "typing";
+    const activeKit = inKit ? this.currentTheme : null;
     const enabled = d.enabledKits || THEME_ORDER;
     for (const tid of enabled) {
       const t = THEMES[tid];
@@ -3434,7 +3519,7 @@ const App = {
       const total = stages.reduce((sum, s) => sum + s.lessons.length, 0);
       const done = stages.reduce((sum, s) => sum + s.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
       const kitDone = stages.length > 0 && cleared === stages.length;
-      html += `<button class="nav-item ${tid === this.currentTheme ? 'active' : ''} ${kitDone ? 'completed' : ''}" data-act="theme" data-arg="${tid}" ${tid === this.currentTheme ? 'aria-current="true"' : ''}>
+      html += `<button class="nav-item ${tid === activeKit ? 'active' : ''} ${kitDone ? 'completed' : ''}" data-act="theme" data-arg="${tid}" ${tid === activeKit ? 'aria-current="true"' : ''}>
         <span class="nav-item-icon">${t.icon}</span>
         <span class="nav-item-text">
           <span class="nav-item-title">${esc(t.name)}</span>
@@ -3477,8 +3562,7 @@ const App = {
   switchTheme(themeId) {
     if (!THEMES[themeId]) return;
     this.currentTheme = themeId;
-    this.renderSidebar();
-    this.showDashboard();
+    this.showKit(themeId);
   },
 
   cycleTheme(step) {
@@ -3580,97 +3664,140 @@ const App = {
     document.getElementById("sideAccuracy").textContent = avgAcc + "%";
   },
 
-  // ── Next recommended target ──
-  nextTarget() {
+  // ── Target calculations ──
+  targetForKit(kitId) {
     const d = Store.get();
-    const stages = getStages(this.currentTheme);
+    const stages = getStages(kitId);
     for (const stage of stages) {
-      if (d.clearedStages.includes(stageKey(this.currentTheme, stage.id))) continue;
-      const prevCleared = stage.id === 1 || d.clearedStages.includes(stageKey(this.currentTheme, stage.id - 1));
+      if (d.clearedStages.includes(stageKey(kitId, stage.id))) continue;
+      const prevCleared = stage.id === 1 || d.clearedStages.includes(stageKey(kitId, stage.id - 1));
       if (!prevCleared) break;
-      const pending = stage.lessons.find(l => !d.completedLessons[lessonKey(this.currentTheme, l.id)]);
-      if (pending) return { stage, lesson: pending, isTest: false };
-      if (stage.test) return { stage, lesson: null, isTest: true };
+      const pending = stage.lessons.find(l => !d.completedLessons[lessonKey(kitId, l.id)]);
+      if (pending) return { stage, lesson: pending, isTest: false, kitId };
+      if (stage.test) return { stage, lesson: null, isTest: true, kitId };
     }
     const last = stages[stages.length - 1];
-    return { stage: last, lesson: last.lessons[0], isTest: false };
+    return { stage: last, lesson: last ? last.lessons[0] : null, isTest: false, kitId };
+  },
+
+  nextTarget() {
+    return this.targetForKit(this.currentTheme);
+  },
+
+  nextHomeTarget() {
+    const d = Store.get();
+    const enabled = d.enabledKits || THEME_ORDER;
+    const hist = d.history || [];
+    if (hist.length) {
+      const lastTid = hist[hist.length - 1].themeId;
+      if (lastTid && enabled.includes(lastTid)) {
+        const t = this.targetForKit(lastTid);
+        if (t.lesson || t.isTest) return t;
+      }
+    }
+    const curr = this.targetForKit(this.currentTheme);
+    if (curr.lesson || curr.isTest) return curr;
+    for (const tid of enabled) {
+      const cand = this.targetForKit(tid);
+      if (cand.lesson || cand.isTest) return cand;
+    }
+    return curr;
   },
 
   startNext() {
-    const t = this.nextTarget();
+    const t = this.view === "home" ? this.nextHomeTarget() : this.nextTarget();
+    if (t.kitId && t.kitId !== this.currentTheme) {
+      this.currentTheme = t.kitId;
+      this.renderSidebar();
+    }
     if (t.isTest) this.startTest(t.stage.id);
-    else this.startLesson(t.stage.id, t.lesson.id);
+    else if (t.lesson) this.startLesson(t.stage.id, t.lesson.id);
   },
 
-  // ── Dashboard ──
-  showDashboard() {
+  // ── Home View (App Hub & Global Overview) ──
+  showHome() {
     this.stopTyping();
     const d = Store.get();
-    const stages = getStages(this.currentTheme);
-    const theme = THEMES[this.currentTheme];
-    this.setViewChrome("dashboard", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Dashboard' }],
-      [['n', 'next lesson'], ['j', 'k', 'move'], ['gk', 'kit hub']]);
-
-    const target = this.nextTarget();
     const enabled = d.enabledKits || THEME_ORDER;
+    const hist = d.history || [];
 
-    // ── Aggregates (general — used by the greeting, kit strip and discover) ──
-    const hist = d.history;
-    const avgWpm = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
-    const avgAcc = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
-    const weekAgo = Date.now() - 7 * 864e5;
-    const thisWeek = hist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
+    this.setViewChrome("home", [{ label: 'Home' }],
+      [['n', 'next lesson'], ['j', 'k', 'move'], ['gk', 'kit hub']]);
+    this.renderSidebar();
+
     const lessonsOf = t => t.stages.reduce((s, st) => s + st.lessons.length, 0);
     const doneOf = tid => THEMES[tid].stages.reduce((s, st) => s + st.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
+    const clearedOf = tid => THEMES[tid].stages.filter(s => d.clearedStages.includes(stageKey(tid, s.id))).length;
 
-    // ── This kit only — Progress and Your evolution reflect the current kit ──
-    const kitHist = hist.filter(r => r.themeId === this.currentTheme);
-    const kitLast5 = kitHist.slice(-5), kitPrev5 = kitHist.slice(-10, -5);
-    const kitBestWpm = kitHist.length ? Math.max(...kitHist.map(r => r.wpm)) : 0;
-    const kitBestAcc = kitHist.length ? Math.max(...kitHist.map(r => r.accuracy)) : 0;
-    const kitWeek = kitHist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
-    const kitTotal = lessonsOf(theme);
-    const kitDone = doneOf(this.currentTheme);
+    const totalInstalledLessons = enabled.reduce((s, tid) => s + lessonsOf(THEMES[tid]), 0);
+    const totalDone = enabled.reduce((s, tid) => s + doneOf(tid), 0);
+    const overallPct = pct(totalDone, totalInstalledLessons);
+
+    const weekAgo = Date.now() - 7 * 864e5;
+    const thisWeek = hist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
+    const avgWpm = hist.length ? Math.round(hist.reduce((s, r) => s + r.wpm, 0) / hist.length) : null;
+    const avgAcc = hist.length ? Math.round(hist.reduce((s, r) => s + r.accuracy, 0) / hist.length) : null;
+    const last5 = hist.slice(-5), prev5 = hist.slice(-10, -5);
+    const mean = (arr, k) => arr.length ? Math.round(arr.reduce((s, r) => s + r[k], 0) / arr.length) : null;
+
+    const target = this.nextHomeTarget();
+    const recTheme = THEMES[target.kitId] || THEMES[this.currentTheme] || THEMES.general;
 
     const need = this.xpForLevel(d.level);
     const xpPct = Math.round((d.xp / need) * 100);
     const hour = new Date().getHours();
     const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     const insight = d.streak > 1
-      ? `You're on a <strong>${d.streak}-day streak</strong> — ${thisWeek} session${thisWeek === 1 ? '' : 's'} this week. Keep the momentum.`
-      : hist.length
-        ? `${kitDone} of ${kitTotal} lessons cleared in <strong>${esc(theme.name)}</strong>. One more today keeps you sharp.`
-        : 'Your first lesson is one keystroke away. Build the habit today.';
+      ? `🔥 <strong>${d.streak}-day streak</strong> — ${thisWeek} session${thisWeek === 1 ? '' : 's'} logged this week. Keep up the rhythm!`
+      : totalDone > 0
+        ? `You have mastered <strong>${totalDone} of ${totalInstalledLessons} lessons</strong> across your active decks.`
+        : 'Welcome to Typrr. Pure touch typing mastery with zero fluff.';
 
-    const kitRecent = kitHist.slice(-14);
-    const spark = kitRecent.length > 1 ? `<div class="panel">
+    const recent = hist.slice(-14);
+    const spark = recent.length > 1 ? `<div class="panel">
         <div class="panel-head">
-          <div class="panel-title">${esc(theme.name)} speed · last ${kitRecent.length} sessions</div>
-          <div class="panel-note">peak ${Math.max(...kitRecent.map(r => r.wpm))} · latest ${kitRecent[kitRecent.length - 1].wpm} wpm</div>
+          <div class="panel-title">Global speed trend · last ${recent.length} sessions</div>
+          <div class="panel-note">peak ${Math.max(...recent.map(r => r.wpm))} · latest ${recent[recent.length - 1].wpm} wpm · avg ${avgWpm} wpm</div>
         </div>
-        ${lineChart(kitRecent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'dash', aria: 'WPM trend' })}
-      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet in ${esc(theme.name)}</div><div class="empty-desc">Finish two sessions in this kit to unlock its evolution chart.</div></div>`;
+        ${lineChart(recent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'home', aria: 'WPM trend' })}
+      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No speed data yet</div><div class="empty-desc">Complete your first lesson to start tracking your evolution!</div></div>`;
 
-    // ── Installed kits strip ──
-    const kitStrip = enabled.map(tid => {
+    const kitCards = enabled.map(tid => {
       const t = THEMES[tid];
+      const stages = t.stages;
       const total = lessonsOf(t), done = doneOf(tid);
+      const cleared = clearedOf(tid);
       const p = pct(done, total);
-      return `<button class="kit-strip-row ${tid === this.currentTheme ? 'active' : ''}" data-act="theme" data-arg="${tid}" data-nav>
-        <span class="kit-strip-icon">${t.icon}</span>
-        <span class="kit-strip-body">
-          <span class="kit-strip-name">${esc(t.name)}</span>
-          <span class="kit-strip-meta">${done}/${total} lessons · ${t.stages.length} stages</span>
-        </span>
-        <span class="kit-strip-track"><span class="progress-fill ${p === 100 ? 'done' : ''}" style="width:${p}%"></span></span>
-        <span class="kit-strip-pct">${p}%</span>
-      </button>`;
+      const isCleared = stages.length > 0 && cleared === stages.length;
+      const cat = KIT_CATEGORIES.find(c => c.id === t.category);
+      return `<div class="home-kit-card" data-nav>
+        <span class="card-corner-key"></span>
+        <div class="home-kit-card-head">
+          <div class="home-kit-card-title-group">
+            <span class="home-kit-card-icon">${t.icon}</span>
+            <div>
+              <span class="home-kit-card-name">${esc(t.name)}</span>
+              <span class="tag" style="margin-top:3px">${cat ? esc(cat.name) : 'Deck'}</span>
+            </div>
+          </div>
+          ${isCleared ? '<span class="nav-item-badge badge-done">✓</span>' : ''}
+        </div>
+        <div class="home-kit-card-desc">${esc(t.desc)}</div>
+        <div class="home-kit-card-meta">
+          <span>${done}/${total} lessons · ${cleared}/${stages.length} cleared</span>
+          <span>${p}%</span>
+        </div>
+        <div class="home-kit-card-bar ${isCleared ? 'cleared' : ''}"><i style="width:${p}%"></i></div>
+        <div class="home-kit-card-footer">
+          <span class="home-kit-status ${isCleared ? 'cleared' : ''}">${isCleared ? '✅ Mastered' : done > 0 ? 'In progress' : 'Ready to start'}</span>
+          <button class="home-kit-action" data-act="theme" data-arg="${tid}">Open Deck →</button>
+        </div>
+      </div>`;
     }).join('');
 
-    // ── Discover: kits not yet installed, a rotating sample ──
     const notInstalled = THEME_ORDER.filter(tid => !enabled.includes(tid));
     const sample = notInstalled.slice(0, 3);
-    const discover = sample.map(tid => {
+    const discoverCards = sample.map(tid => {
       const t = THEMES[tid];
       const cat = KIT_CATEGORIES.find(c => c.id === t.category);
       return `<div class="hub-card">
@@ -3680,7 +3807,7 @@ const App = {
             <span class="hub-card-icon">${t.icon}</span>
             <span class="hub-card-heading">
               <span class="hub-card-name">${esc(t.name)}</span>
-              <span class="hub-card-flag">${cat ? esc(cat.name) : 'Kit'}</span>
+              <span class="hub-card-flag">${cat ? esc(cat.name) : 'Deck'}</span>
             </span>
           </span>
           <span class="hub-card-desc">${esc(t.desc)}</span>
@@ -3708,10 +3835,147 @@ const App = {
         </div>
       </div>
 
+      <button class="continue-card" data-act="start-next" data-nav>
+        <span class="continue-icon">${target.isTest ? '🧪' : '▶'}</span>
+        <span class="continue-body">
+          <span class="continue-eyebrow">${target.isTest ? 'STAGE TEST UNLOCKED · RECOMMENDED NEXT' : 'RECOMMENDED PRACTICE · PICK UP WHERE YOU LEFT OFF'}</span>
+          <span class="continue-title">${esc(target.isTest ? target.stage.test.title : (target.lesson ? target.lesson.title : 'First Lesson'))}</span>
+          <span class="continue-meta">${recTheme.icon} ${esc(recTheme.name)} · ${esc(target.stage ? target.stage.title : '')}</span>
+        </span>
+        <span class="continue-cta"><kbd>n</kbd> Start lesson</span>
+      </button>
+
+      <div class="home-quick-grid">
+        <button class="home-quick-card" data-act="theme" data-arg="general" data-nav>
+          <span class="home-quick-icon">⚡</span>
+          <span class="home-quick-body">
+            <span class="home-quick-title">General Flow</span>
+            <span class="home-quick-sub">Touch typing fundamentals</span>
+          </span>
+        </button>
+        <button class="home-quick-card" data-act="view" data-arg="kits" data-nav>
+          <span class="home-quick-icon">🧩</span>
+          <span class="home-quick-body">
+            <span class="home-quick-title">Explore Decks</span>
+            <span class="home-quick-sub">22 coding & language kits</span>
+          </span>
+        </button>
+        <button class="home-quick-card" data-act="view" data-arg="performance" data-nav>
+          <span class="home-quick-icon">📊</span>
+          <span class="home-quick-body">
+            <span class="home-quick-title">Analytics</span>
+            <span class="home-quick-sub">Global stats & miss rates</span>
+          </span>
+        </button>
+        <button class="home-quick-card" data-act="view" data-arg="badges" data-nav>
+          <span class="home-quick-icon">🏅</span>
+          <span class="home-quick-body">
+            <span class="home-quick-title">Achievements</span>
+            <span class="home-quick-sub">Badges & milestones</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="section-head">
+        <div class="section-title">Overall evolution</div>
+        <span class="section-link" style="cursor:default">All-time across all decks</span>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card" style="--tone:var(--accent)">
+          <div class="insight-label">Best speed</div>
+          <div class="insight-value">${d.bestWpm}<span class="unit">wpm</span></div>
+          <div class="insight-foot">${last5.length ? (deltaChip(mean(last5, 'wpm'), mean(prev5, 'wpm'), '') || `last 5 avg ${mean(last5, 'wpm')} wpm`) : 'no sessions yet'}</div>
+        </div>
+        <div class="insight-card" style="--tone:var(--green)">
+          <div class="insight-label">Best accuracy</div>
+          <div class="insight-value">${d.bestAccuracy}<span class="unit">%</span></div>
+          <div class="insight-foot">${last5.length ? (deltaChip(mean(last5, 'accuracy'), mean(prev5, 'accuracy'), '%') || `last 5 avg ${mean(last5, 'accuracy')}%`) : 'no sessions yet'}</div>
+        </div>
+        <div class="insight-card" style="--tone:var(--amber-fill)">
+          <div class="insight-label">Day streak</div>
+          <div class="insight-value">${d.streak}<span class="unit">${d.streak === 1 ? 'day' : 'days'}</span></div>
+          <div class="insight-foot">${thisWeek} session${thisWeek === 1 ? '' : 's'} this week</div>
+        </div>
+        <div class="insight-card" style="--tone:var(--cyan)">
+          <div class="insight-label">Total lessons cleared</div>
+          <div class="insight-value">${totalDone}<span class="unit">/${totalInstalledLessons}</span></div>
+          <div class="insight-foot">${overallPct}% across ${enabled.length} installed decks</div>
+        </div>
+      </div>
+
+      <div class="section-title">Speed progress</div>
+      ${spark}
+
+      <div class="section-head">
+        <div class="section-title">Your Typing Kits <span class="count">${enabled.length}</span></div>
+        <button class="section-link" data-act="view" data-arg="kits">Kit Hub →</button>
+      </div>
+      <div class="home-kit-grid">${kitCards}</div>
+
+      ${discoverCards ? `<div class="section-head">
+        <div class="section-title">Explore more decks</div>
+        <button class="section-link" data-act="view" data-arg="kits">Browse all 22 kits →</button>
+      </div>
+      <div class="hub-grid">${discoverCards}</div>` : ''}
+    `;
+    this.indexNavItems();
+  },
+
+  // ── Kit Specific View ──
+  showKit(themeId) {
+    if (themeId && THEMES[themeId]) this.currentTheme = themeId;
+    this.stopTyping();
+    const d = Store.get();
+    const stages = getStages(this.currentTheme);
+    const theme = THEMES[this.currentTheme];
+    const cat = KIT_CATEGORIES.find(c => c.id === theme.category);
+
+    this.setViewChrome("kit",
+      [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: theme.name }],
+      [['n', 'next lesson'], ['j', 'k', 'move'], ['gk', 'kit hub'], ['Esc', 'home']]);
+    this.renderSidebar();
+
+    const target = this.nextTarget();
+    const enabled = d.enabledKits || THEME_ORDER;
+
+    const lessonsOf = t => t.stages.reduce((s, st) => s + st.lessons.length, 0);
+    const doneOf = tid => THEMES[tid].stages.reduce((s, st) => s + st.lessons.filter(l => d.completedLessons[lessonKey(tid, l.id)]).length, 0);
+
+    const kitHist = (d.history || []).filter(r => r.themeId === this.currentTheme);
+    const kitLast5 = kitHist.slice(-5), kitPrev5 = kitHist.slice(-10, -5);
+    const kitBestWpm = kitHist.length ? Math.max(...kitHist.map(r => r.wpm)) : 0;
+    const kitBestAcc = kitHist.length ? Math.max(...kitHist.map(r => r.accuracy)) : 0;
+    const weekAgo = Date.now() - 7 * 864e5;
+    const kitWeek = kitHist.filter(r => new Date(r.date).getTime() >= weekAgo).length;
+    const kitTotal = lessonsOf(theme);
+    const kitDone = doneOf(this.currentTheme);
+    const avgWpm = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.wpm, 0) / arr.length) : null;
+    const avgAcc = arr => arr.length ? Math.round(arr.reduce((s, r) => s + r.accuracy, 0) / arr.length) : null;
+
+    const kitRecent = kitHist.slice(-14);
+    const spark = kitRecent.length > 1 ? `<div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">${esc(theme.name)} speed · last ${kitRecent.length} sessions</div>
+          <div class="panel-note">peak ${Math.max(...kitRecent.map(r => r.wpm))} · latest ${kitRecent[kitRecent.length - 1].wpm} wpm</div>
+        </div>
+        ${lineChart(kitRecent.map(r => ({ value: r.wpm, label: new Date(r.date).toLocaleDateString() })), { color: 'var(--accent)', unit: ' wpm', id: 'kit', aria: 'WPM trend' })}
+      </div>` : `<div class="empty"><div class="empty-icon">📈</div><div class="empty-title">No trend yet in ${esc(theme.name)}</div><div class="empty-desc">Finish two sessions in this kit to unlock its evolution chart.</div></div>`;
+
+    document.getElementById("content").innerHTML = `
+      <div class="page-head">
+        <div class="kit-badge" style="margin-bottom:8px">
+          <span class="kit-badge-icon">${theme.icon}</span>
+          <span class="kit-badge-name">${esc(theme.name)}</span>
+          <span class="kit-badge-meta">${cat ? esc(cat.name) : 'Deck'}</span>
+        </div>
+        <h1 class="page-title">${theme.icon} ${esc(theme.name)}</h1>
+        <p class="page-subtitle">${esc(theme.desc)}</p>
+      </div>
+
       <button class="continue-card" data-act="${target.isTest ? 'test' : 'lesson'}" data-arg="${target.stage.id}" data-arg2="${target.lesson ? target.lesson.id : ''}" data-nav>
         <span class="continue-icon">${target.isTest ? '🧪' : '▶'}</span>
         <span class="continue-body">
-          <span class="continue-eyebrow">${target.isTest ? 'Stage test unlocked · recommended next' : 'Pick up where you left off'}</span>
+          <span class="continue-eyebrow">${target.isTest ? 'STAGE TEST UNLOCKED · RECOMMENDED NEXT' : 'CONTINUE WHERE YOU LEFT OFF'}</span>
           <span class="continue-title">${esc(target.isTest ? target.stage.test.title : target.lesson.title)}</span>
           <span class="continue-meta">${esc(theme.name)} · ${esc(target.stage.title)}</span>
         </span>
@@ -3745,18 +4009,6 @@ const App = {
       <div class="section-title">Progress <span class="count">${esc(theme.name)}</span></div>
       ${spark}
 
-      <div class="section-head">
-        <div class="section-title">Your kits <span class="count">${enabled.length}</span></div>
-        <button class="section-link" data-act="view" data-arg="kits">Kit Hub →</button>
-      </div>
-      <div class="kit-strip">${kitStrip}</div>
-
-      ${discover ? `<div class="section-head">
-        <div class="section-title">Discover more kits</div>
-        <button class="section-link" data-act="view" data-arg="kits">Browse all →</button>
-      </div>
-      <div class="hub-grid">${discover}</div>` : ''}
-
       <div class="section-title">${esc(theme.name)} stages <span class="count">${stages.length}</span></div>
       <div class="card-grid">
         ${stages.map(s => {
@@ -3784,11 +4036,16 @@ const App = {
     this.indexNavItems();
   },
 
+  showDashboard(themeId) {
+    if (themeId) this.showKit(themeId);
+    else this.showHome();
+  },
+
   // ── Stats ──
   showPerformance() {
     this.stopTyping();
     const d = Store.get();
-    this.setViewChrome("performance", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Stats' }], [['d', 'dashboard']]);
+    this.setViewChrome("performance", [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: 'Stats' }], [['d', 'home']]);
 
     const h = d.history;
     const sessions = h.length;
@@ -3941,7 +4198,7 @@ const App = {
     this.stopTyping();
     this.currentStage = stage;
     this.setViewChrome("stage",
-      [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: THEMES[this.currentTheme].name, act: 'view', arg: 'dashboard' }, { label: stage.title }],
+      [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: THEMES[this.currentTheme].name, act: 'kit', arg: this.currentTheme }, { label: stage.title }],
       [['1-9', 'start lesson'], ['↑↓←→', 'move'], ['Enter', 'open']]);
 
     const cleared = d.clearedStages.includes(stageKey(this.currentTheme, stageId));
@@ -4055,7 +4312,7 @@ const App = {
     const stage = this.currentStage;
     const label = this.isTest ? stage.test.title : this.currentLesson.title;
     this.setViewChrome("typing",
-      [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: stage.title, act: 'stage', arg: stage.id }, { label }],
+      [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: THEMES[this.currentTheme].name, act: 'kit', arg: this.currentTheme }, { label: stage.title, act: 'stage', arg: stage.id }, { label }],
       [['Space', 'start'], ['Esc', 'back to stage'], ['⌫', 'fix last char']]);
 
     const charHtml = this.chars.map((c, i) =>
@@ -4171,9 +4428,8 @@ const App = {
       this.dispatch(el.dataset.act, el.dataset.arg, el.dataset.arg2);
     };
     document.getElementById("content").addEventListener("click", run);
-    document.getElementById("nav").addEventListener("click", run);
-    document.getElementById("viewNav").addEventListener("click", run);
-    document.getElementById("breadcrumb").addEventListener("click", run);
+    document.getElementById("sidebar").addEventListener("click", run);
+    document.querySelector(".main-header").addEventListener("click", run);
     document.getElementById("helpBtn").addEventListener("click", () => this.toggleHelp(true));
     document.getElementById("sidebarToggle").addEventListener("click", () => this.toggleSidebar());
     document.getElementById("sidebarScrim").addEventListener("click", () => this.setSidebar(true));
@@ -4182,19 +4438,21 @@ const App = {
   dispatch(act, arg, arg2) {
     switch (act) {
       case "view": this.showView(arg); break;
-      case "theme": this.switchTheme(arg); break;
+      case "theme":
+      case "kit": this.switchTheme(arg); break;
       case "kit-detail": this.showKitDetail(arg); break;
       case "kit-toggle": this.toggleKit(arg); break;
       case "stage": this.openStage(Number(arg)); break;
       case "lesson": this.startLesson(Number(arg), arg2); break;
       case "test": this.startTest(Number(arg)); break;
       case "focus": this.startFocus(); break;
+      case "start-next": this.startNext(); break;
       case "restart": this.restart(); break;
     }
   },
 
   showView(id) {
-    if (id === "dashboard") this.showDashboard();
+    if (id === "home" || id === "dashboard") this.showHome();
     else if (id === "performance") this.showPerformance();
     else if (id === "badges") this.showBadges();
     else if (id === "kits") this.showKitHub();
@@ -4203,7 +4461,8 @@ const App = {
 
   back() {
     if (this.view === "typing" && this.currentStage) this.openStage(this.currentStage.id);
-    else if (this.view !== "dashboard") this.showDashboard();
+    else if (this.view === "stage") this.showKit(this.currentTheme);
+    else if (this.view !== "home") this.showHome();
   },
 
   // ── Global keyboard router ──
@@ -4340,7 +4599,7 @@ const App = {
             [['1', '…', '9'], 'Jump to a numbered card'],
           ]],
           ['Go to (Vim)', [
-            [['g', 'd'], 'Dashboard'], [['g', 's'], 'Stats'],
+            [['g', 'd'], 'Home'], [['g', 's'], 'Stats'],
             [['g', 'b'], 'Badges'], [['g', 'h'], 'History'],
             [['g', 'k'], 'Kit Hub'],
             [['g', 't'], 'Next kit'], [['g', 'T'], 'Previous kit'],
@@ -4359,7 +4618,7 @@ const App = {
             [['Esc'], 'Leave and return to the stage'],
           ]],
           ['Results', [
-            [['1'], 'Primary action'], [['2'], 'Stage menu'], [['3'], 'Dashboard'], [['Esc'], 'Dismiss'],
+            [['1'], 'Primary action'], [['2'], 'Stage menu'], [['3'], 'Home'], [['Esc'], 'Dismiss'],
           ]],
         ].map(([title, rows]) => `<div class="shortcut-group">
           <h4>${title}</h4>
@@ -4615,7 +4874,7 @@ const App = {
       actions.push({ key: "1", label: "Practice again", primary: true, run: () => { this.closeModal(); this.restart(); } });
     }
     actions.push({ key: "2", label: "Stage menu", primary: false, run: () => { this.closeModal(); this.openStage(stageId); } });
-    actions.push({ key: "3", label: "Dashboard", primary: false, run: () => { this.closeModal(); this.showDashboard(); } });
+    actions.push({ key: "3", label: "Home", primary: false, run: () => { this.closeModal(); this.showHome(); } });
     this._modalActions = actions;
 
     document.getElementById("modal").innerHTML = `
@@ -4665,7 +4924,7 @@ const App = {
   showBadges() {
     this.stopTyping();
     const d = Store.get();
-    this.setViewChrome("badges", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Badges' }], [['d', 'dashboard']]);
+    this.setViewChrome("badges", [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: 'Badges' }], [['d', 'home']]);
     const earnedCount = d.badges.length;
 
     document.getElementById("content").innerHTML = `
@@ -4692,7 +4951,7 @@ const App = {
   showHistory() {
     this.stopTyping();
     const d = Store.get();
-    this.setViewChrome("history", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'History' }], [['d', 'dashboard']]);
+    this.setViewChrome("history", [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: 'History' }], [['d', 'home']]);
     const rows = [...d.history].reverse().slice(0, 60);
 
     document.getElementById("content").innerHTML = `
@@ -4742,7 +5001,7 @@ const App = {
     this.stopTyping();
     const d = Store.get();
     const enabled = new Set(d.enabledKits || THEME_ORDER);
-    this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'dashboard' }, { label: 'Kit Hub' }], []);
+    this.setViewChrome("kits", [{ label: 'Typrr', act: 'view', arg: 'home' }, { label: 'Kit Hub' }], []);
 
     const lessonsOf = (t) => t.stages.reduce((sum, s) => sum + s.lessons.length, 0);
     const totalStages = THEME_ORDER.reduce((sum, tid) => sum + THEMES[tid].stages.length, 0);
@@ -4846,10 +5105,10 @@ const App = {
     }).join('');
 
     this.setViewChrome("kit-detail", [
-      { label: 'Typrr', act: 'view', arg: 'dashboard' },
+      { label: 'Typrr', act: 'view', arg: 'home' },
       { label: 'Kit Hub', act: 'view', arg: 'kits' },
       { label: t.name }
-    ], [['d', 'dashboard'], ['k', 'kits']]);
+    ], [['d', 'home'], ['k', 'kits']]);
 
     document.getElementById("content").innerHTML = `
       <div class="kd-hero">
