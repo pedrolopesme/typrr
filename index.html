@@ -4618,7 +4618,7 @@ const App = {
             [['Esc'], 'Leave and return to the stage'],
           ]],
           ['Results', [
-            [['1'], 'Primary action'], [['2'], 'Stage menu'], [['3'], 'Home'], [['Esc'], 'Dismiss'],
+            [['1'], 'Primary action'], [['2'], '↻ Retry'], [['3'], 'Stage menu'], [['4'], 'Home'], [['Esc'], 'Dismiss'],
           ]],
         ].map(([title, rows]) => `<div class="shortcut-group">
           <h4>${title}</h4>
@@ -4873,8 +4873,9 @@ const App = {
     } else {
       actions.push({ key: "1", label: "Practice again", primary: true, run: () => { this.closeModal(); this.restart(); } });
     }
-    actions.push({ key: "2", label: "Stage menu", primary: false, run: () => { this.closeModal(); this.openStage(stageId); } });
-    actions.push({ key: "3", label: "Home", primary: false, run: () => { this.closeModal(); this.showHome(); } });
+    actions.push({ key: "2", label: "↻ Retry", primary: false, run: () => { this.closeModal(); this.restart(); } });
+    actions.push({ key: "3", label: "Stage menu", primary: false, run: () => { this.closeModal(); this.openStage(stageId); } });
+    actions.push({ key: "4", label: "Home", primary: false, run: () => { this.closeModal(); this.showHome(); } });
     this._modalActions = actions;
 
     document.getElementById("modal").innerHTML = `

@@ -75,7 +75,7 @@ Press <kbd>?</kbd> anywhere for the full list.
 | `c` | Collapse / expand the sidebar |
 | `Space` | Start the typing session |
 | `Esc` | Go back / dismiss |
-| `1` `2` `3` | Post-session actions |
+| `1` `2` `3` `4` | Post-session actions |
 
 ## Design
 
